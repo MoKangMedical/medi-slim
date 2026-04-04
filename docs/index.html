@@ -7,154 +7,194 @@
 <meta name="description" content="AI帮你辨体质，中医药食同源+现代营养科学，找到最适合你的养生方案">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--g:#2d5a27;--gl:#4a8c3f;--bg:#f8f5f0;--w:#fff;--t:#333;--t2:#999}
-body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--t)}
-a{color:var(--g);text-decoration:none}
-a:hover{text-decoration:underline}
-.hero{background:linear-gradient(135deg,#1a3a17,#2d5a27 40%,#4a8c3f);color:#fff;padding:80px 24px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 70%);animation:pulse 8s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-.hero h1{font-size:clamp(28px,6vw,48px);margin-bottom:16px;text-shadow:0 2px 8px rgba(0,0,0,.2)}
-.hero p{font-size:clamp(14px,3vw,18px);opacity:.9;max-width:640px;margin:0 auto 32px;line-height:1.8}
-.cta{display:inline-block;padding:16px 40px;background:#fff;color:var(--g);border-radius:30px;font-size:18px;font-weight:700;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:.2s}
-.cta:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.2);text-decoration:none}
-.wrap{max-width:960px;margin:0 auto;padding:0 20px}
-.sec{padding:60px 0}
-.sec h2{font-size:clamp(22px,4vw,32px);text-align:center;margin-bottom:8px;color:var(--g)}
-.sec .sub{text-align:center;color:var(--t2);margin-bottom:32px;font-size:15px}
-.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
-.type-card{background:var(--w);border-radius:14px;padding:20px 12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04);border:2px solid transparent;transition:.2s;cursor:default}
-.type-card:hover{border-color:var(--g);transform:translateY(-2px)}
-.type-card .icon{font-size:36px;margin-bottom:8px}
-.type-card .name{font-size:15px;font-weight:700}
-.type-card .desc{font-size:12px;color:var(--t2);margin-top:4px}
-.prod-section{background:var(--w);border-radius:16px;padding:32px 24px;box-shadow:0 2px 12px rgba(0,0,0,.04);margin-bottom:24px}
-.prod-section h3{font-size:20px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.prod-section .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
-.badge-green{background:#D1FAE5;color:#065F46}
-.badge-blue{background:#DBEAFE;color:#1E40AF}
-.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:16px}
-.prod-card{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;border:1px solid #eee;transition:.15s}
-.prod-card:hover{border-color:var(--g);background:#fafffe}
-.prod-card .icon{font-size:32px;flex-shrink:0}
+:root{--bg:#0f172a;--card:#1e293b;--card2:#334155;--t:#f8fafc;--t2:#94a3b8;--grad:linear-gradient(135deg,#7c3aed,#a855f7,#ec4899);--purple:#7c3aed;--green:#10b981}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t);line-height:1.6}
+a{color:var(--t);text-decoration:none}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;width:100%;background:rgba(15,23,42,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06);z-index:100;padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
+nav .brand{font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav .links{display:flex;gap:24px}
+nav .links a{color:var(--t2);font-size:14px;transition:.15s}
+nav .links a:hover{color:var(--t)}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(124,58,237,.15) 0%,transparent 50%),radial-gradient(ellipse at 70% 50%,rgba(168,85,247,.1) 0%,transparent 50%);animation:glow 8s ease-in-out infinite alternate}
+@keyframes glow{0%{transform:scale(1) rotate(0deg)}100%{transform:scale(1.1) rotate(5deg)}}
+.hero-content{position:relative;z-index:1;max-width:800px}
+.hero h1{font-size:clamp(36px,7vw,64px);font-weight:800;margin-bottom:16px;letter-spacing:-1px}
+.hero h1 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:clamp(16px,3vw,20px);color:var(--t2);max-width:600px;margin:0 auto 40px;line-height:1.8}
+.hero-stats{display:flex;justify-content:center;gap:48px;margin-bottom:40px;flex-wrap:wrap}
+.hero-stat .num{font-size:32px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat .label{font-size:13px;color:var(--t2)}
+.cta{display:inline-block;padding:16px 40px;background:var(--grad);color:#fff;border-radius:12px;font-size:16px;font-weight:700;transition:.2s;border:none;cursor:pointer}
+.cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,.4)}
+.cta-outline{display:inline-block;padding:14px 36px;border:1px solid rgba(255,255,255,.15);color:var(--t);border-radius:12px;font-size:15px;font-weight:600;transition:.15s;margin-left:12px}
+.cta-outline:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)}
+
+/* ===== SECTIONS ===== */
+section{padding:100px 24px;max-width:1100px;margin:0 auto}
+.sec-title{text-align:center;margin-bottom:16px}
+.sec-title h2{font-size:clamp(24px,4vw,36px);font-weight:800;margin-bottom:8px}
+.sec-title p{color:var(--t2);font-size:15px}
+
+/* ===== TYPE GRID ===== */
+.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:32px}
+.type-card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:20px 12px;text-align:center;transition:.2s}
+.type-card:hover{border-color:rgba(124,58,237,.4);transform:translateY(-2px)}
+.type-card .icon{font-size:32px;margin-bottom:8px}
+.type-card .name{font-size:14px;font-weight:700}
+.type-card .desc{font-size:11px;color:var(--t2);margin-top:4px}
+
+/* ===== PRODUCT CARDS ===== */
+.prod-section{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:32px;margin-top:40px}
+.prod-section h3{font-size:20px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.prod-section .badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(16,185,129,.15);color:#34d399}
+.badge-purple{background:rgba(124,58,237,.15);color:#a78bfa}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}
+.prod-card{display:flex;gap:14px;align-items:center;padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);transition:.15s}
+.prod-card:hover{border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05)}
+.prod-card .icon{font-size:28px;flex-shrink:0}
 .prod-card .info{flex:1}
 .prod-card .name{font-size:15px;font-weight:700}
 .prod-card .formula{font-size:12px;color:var(--t2);margin-top:2px}
-.prod-card .price{font-size:18px;font-weight:800;color:var(--g);flex-shrink:0}
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;text-align:center}
-.step{position:relative}
-.step .num{width:40px;height:40px;background:var(--g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;margin:0 auto 10px}
-.step .title{font-size:15px;font-weight:700}
-.step .desc{font-size:13px;color:var(--t2);margin-top:4px}
-.step::after{content:'';position:absolute;top:20px;right:-8px;width:16px;height:2px;background:#ddd}
-.step:last-child::after{display:none}
-.trust-box{background:var(--w);border-radius:16px;padding:40px 24px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.04)}
-.trust-grid{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:20px}
+.prod-card .price{font-size:18px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+
+/* ===== STEPS ===== */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:32px}
+.step{text-align:center;position:relative}
+.step .num{width:40px;height:40px;background:var(--grad);color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;margin:0 auto 12px}
+.step .title{font-size:15px;font-weight:700;margin-bottom:4px}
+.step .desc{font-size:13px;color:var(--t2)}
+
+/* ===== TRUST ===== */
+.trust{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:48px 24px;text-align:center;margin-top:40px}
+.trust-grid{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-top:24px}
 .trust-item{text-align:center}
-.trust-item b{display:block;font-size:24px;color:var(--g)}
+.trust-item b{display:block;font-size:28px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .trust-item span{font-size:13px;color:var(--t2)}
-.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;text-align:center;padding:40px 0}
-.stat .num{font-size:clamp(28px,5vw,40px);font-weight:800;color:var(--g)}
-.stat .label{font-size:13px;color:var(--t2);margin-top:4px}
-footer{background:#1a1a1a;color:#fff;padding:40px 24px;text-align:center}
-footer p{opacity:.6;font-size:13px;margin-top:8px}
-footer .brand{font-size:20px;font-weight:700}
+
+/* ===== FOOTER ===== */
+footer{border-top:1px solid rgba(255,255,255,.06);padding:48px 24px;text-align:center}
+footer .brand{font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+footer p{color:var(--t2);font-size:13px;margin-top:8px}
 footer .links{margin-top:16px;display:flex;justify-content:center;gap:24px}
-footer .links a{color:rgba(255,255,255,.7);font-size:13px}
-footer .links a:hover{color:#fff;text-decoration:none}
+footer .links a{color:var(--t2);font-size:13px;transition:.15s}
+footer .links a:hover{color:var(--t)}
+
 @media(max-width:600px){
-  .step::after{display:none}
-  .trust-grid{gap:20px}
+  nav .links{display:none}
+  .hero-stats{gap:24px}
+  .cta-outline{display:block;margin:12px auto 0}
   .prod-grid{grid-template-columns:1fr}
+  .type-grid{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
 <body>
 
+<!-- Nav -->
+<nav>
+  <div class="brand">🌿 MediSlim</div>
+  <div class="links">
+    <a href="#体质">体质测试</a>
+    <a href="#产品">产品</a>
+    <a href="#流程">流程</a>
+    <a href="https://mokangmedical.github.io/medroundtable/">技术品牌</a>
+  </div>
+</nav>
+
 <!-- Hero -->
 <div class="hero">
-  <h1>🌿 MediSlim</h1>
-  <p>中医体质调养 · 科学养生<br>AI帮你辨体质，老祖宗的智慧 + 现代营养科学，找到最适合你的养生方案</p>
-  <a href="#体质测试" class="cta">测测你的体质 →</a>
+  <div class="hero-content">
+    <h1>中医体质调养<br><span>科学养生新方式</span></h1>
+    <p>AI帮你辨体质，老祖宗的智慧 + 现代营养科学<br>找到最适合你的养生方案</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">19</div><div class="label">产品品类</div></div>
+      <div class="hero-stat"><div class="num">9种</div><div class="label">体质方案</div></div>
+      <div class="hero-stat"><div class="num">5min</div><div class="label">AI体质测试</div></div>
+      <div class="hero-stat"><div class="num">每月</div><div class="label">新鲜配送</div></div>
+    </div>
+    <a href="#体质" class="cta">测测你的体质 →</a>
+    <a href="#产品" class="cta-outline">浏览产品</a>
+  </div>
 </div>
 
-<div class="wrap">
-
-<!-- Stats -->
-<div class="stats-bar">
-  <div class="stat"><div class="num">19</div><div class="label">产品品类</div></div>
-  <div class="stat"><div class="num">9种</div><div class="label">体质方案</div></div>
-  <div class="stat"><div class="num">5分钟</div><div class="label">AI体质测试</div></div>
-  <div class="stat"><div class="num">每月</div><div class="label">新鲜配送</div></div>
-</div>
-
-<!-- 体质测试 -->
-<div class="sec" id="体质测试">
-  <h2>你属于哪种体质？</h2>
-  <p class="sub">中医九种体质，AI帮你找到专属调养方案</p>
+<!-- 体质 -->
+<section id="体质">
+  <div class="sec-title">
+    <h2>你属于哪种体质？</h2>
+    <p>中医九种体质，AI帮你找到专属调养方案</p>
+  </div>
   <div class="type-grid">
-    <div class="type-card"><div class="icon">😤</div><div class="name">气虚质</div><div class="desc">容易疲乏、气短、出虚汗</div></div>
-    <div class="type-card"><div class="icon">🥶</div><div class="name">阳虚质</div><div class="desc">怕冷、手脚冰凉、喜热饮</div></div>
-    <div class="type-card"><div class="icon">🔥</div><div class="name">阴虚质</div><div class="desc">口干、手脚心热、失眠多梦</div></div>
-    <div class="type-card"><div class="icon">💧</div><div class="name">痰湿质 ★</div><div class="desc">身体沉重、容易发胖</div></div>
-    <div class="type-card"><div class="icon">🌡️</div><div class="name">湿热质</div><div class="desc">面油、口苦口臭、长痘</div></div>
-    <div class="type-card"><div class="icon">🩸</div><div class="name">血瘀质</div><div class="desc">面色晦暗、容易瘀伤</div></div>
-    <div class="type-card"><div class="icon">😤</div><div class="name">气郁质</div><div class="desc">情绪低落、胸闷、爱叹气</div></div>
-    <div class="type-card"><div class="icon">🤧</div><div class="name">特禀质</div><div class="desc">容易过敏、打喷嚏</div></div>
-    <div class="type-card"><div class="icon">😊</div><div class="name">平和质</div><div class="desc">体质均衡、精力充沛</div></div>
+    <div class="type-card"><div class="icon">😤</div><div class="name">气虚质</div><div class="desc">容易疲乏、气短</div></div>
+    <div class="type-card"><div class="icon">🥶</div><div class="name">阳虚质</div><div class="desc">怕冷、手脚冰凉</div></div>
+    <div class="type-card"><div class="icon">🔥</div><div class="name">阴虚质</div><div class="desc">口干、手脚心热</div></div>
+    <div class="type-card"><div class="icon">💧</div><div class="name">痰湿质 ★</div><div class="desc">身体沉重、易胖</div></div>
+    <div class="type-card"><div class="icon">🌡️</div><div class="name">湿热质</div><div class="desc">面油、口苦</div></div>
+    <div class="type-card"><div class="icon">🩸</div><div class="name">血瘀质</div><div class="desc">面色晦暗、易瘀</div></div>
+    <div class="type-card"><div class="icon">😤</div><div class="name">气郁质</div><div class="desc">情绪低落、胸闷</div></div>
+    <div class="type-card"><div class="icon">🤧</div><div class="name">特禀质</div><div class="desc">容易过敏</div></div>
+    <div class="type-card"><div class="icon">😊</div><div class="name">平和质</div><div class="desc">体质均衡、健康</div></div>
   </div>
-</div>
+</section>
 
-<!-- 药食同源 -->
-<div class="sec" id="药食同源">
-  <h2>药食同源 · 老祖宗的养生智慧</h2>
-  <p class="sub">SC食品级认证 · 古法配方 · 每月新鲜配送</p>
+<!-- 产品 -->
+<section id="产品">
+  <div class="sec-title">
+    <h2>我们的产品</h2>
+    <p>药食同源 + 科学营养 · 为你找到最佳养生方案</p>
+  </div>
 
   <div class="prod-section">
-    <h3>🍵 祛湿轻体 <span class="badge badge-green">复购率80%</span></h3>
-    <p style="color:var(--t2);font-size:13px;margin-bottom:12px">针对痰湿质 — 中国最常见的体质类型</p>
+    <h3>🍵 药食同源 · 老祖宗的养生智慧 <span class="badge badge-green">复购率80%+</span></h3>
     <div class="prod-grid">
-      <div class="prod-card"><div class="icon">🍵</div><div class="info"><div class="name">祛湿轻体</div><div class="formula">红豆薏米+茯苓+陈皮+白扁豆</div></div><div class="price">¥168/月</div></div>
-      <div class="prod-card"><div class="icon">🩸</div><div class="info"><div class="name">气血调养</div><div class="formula">红枣+枸杞+阿胶+黄芪+党参</div></div><div class="price">¥198/月</div></div>
-      <div class="prod-card"><div class="icon">🫁</div><div class="info"><div class="name">护肝养生</div><div class="formula">葛根+枳椇子+菊花+决明子</div></div><div class="price">¥168/月</div></div>
-      <div class="prod-card"><div class="icon">🔥</div><div class="info"><div class="name">暖宫驱寒</div><div class="formula">姜+红糖+桂圆+当归+肉桂</div></div><div class="price">¥158/月</div></div>
-      <div class="prod-card"><div class="icon">🥣</div><div class="info"><div class="name">健脾养胃</div><div class="formula">山药+莲子+芡实+薏米+茯苓</div></div><div class="price">¥148/月</div></div>
-      <div class="prod-card"><div class="icon">🍐</div><div class="info"><div class="name">润肺清燥</div><div class="formula">雪梨+百合+银耳+枇杷+麦冬</div></div><div class="price">¥138/月</div></div>
+      <div class="prod-card"><div class="icon">🍵</div><div class="info"><div class="name">祛湿轻体</div><div class="formula">红豆薏米+茯苓+陈皮</div></div><div class="price">¥168/月</div></div>
+      <div class="prod-card"><div class="icon">🩸</div><div class="info"><div class="name">气血调养</div><div class="formula">红枣+枸杞+阿胶+黄芪</div></div><div class="price">¥198/月</div></div>
+      <div class="prod-card"><div class="icon">🫁</div><div class="info"><div class="name">护肝养生</div><div class="formula">葛根+枳椇子+菊花</div></div><div class="price">¥168/月</div></div>
+      <div class="prod-card"><div class="icon">🔥</div><div class="info"><div class="name">暖宫驱寒</div><div class="formula">姜+红糖+桂圆+当归</div></div><div class="price">¥158/月</div></div>
+      <div class="prod-card"><div class="icon">🥣</div><div class="info"><div class="name">健脾养胃</div><div class="formula">山药+莲子+芡实+薏米</div></div><div class="price">¥148/月</div></div>
+      <div class="prod-card"><div class="icon">🍐</div><div class="info"><div class="name">润肺清燥</div><div class="formula">雪梨+百合+银耳+枇杷</div></div><div class="price">¥138/月</div></div>
     </div>
   </div>
 
   <div class="prod-section">
-    <h3>🔬 科学营养补充 <span class="badge badge-blue">国际品质</span></h3>
-    <p style="color:var(--t2);font-size:13px;margin-bottom:12px">精准配方 · 订阅制每月配送 · AI个性化推荐</p>
+    <h3>🔬 科学营养补充 <span class="badge badge-purple">国际品质</span></h3>
     <div class="prod-grid">
-      <div class="prod-card"><div class="icon">🦠</div><div class="info"><div class="name">复合益生菌</div><div class="formula">多菌株+益生元 · 肠胃调理</div></div><div class="price">¥198/月</div></div>
-      <div class="prod-card"><div class="icon">✨</div><div class="info"><div class="name">胶原蛋白肽</div><div class="formula">鱼胶原蛋白+VC · 女性美容</div></div><div class="price">¥228/月</div></div>
-      <div class="prod-card"><div class="icon">☀️</div><div class="info"><div class="name">维生素D3+K2</div><div class="formula">VD3+MK7复合 · 办公族必备</div></div><div class="price">¥98/月</div></div>
-      <div class="prod-card"><div class="icon">🐟</div><div class="info"><div class="name">高纯度鱼油</div><div class="formula">Omega-3 80%+ · 心脑血管</div></div><div class="price">¥168/月</div></div>
-      <div class="prod-card"><div class="icon">👁️</div><div class="info"><div class="name">叶黄素酯</div><div class="formula">叶黄素+玉米黄质 · 护眼神器</div></div><div class="price">¥128/月</div></div>
-      <div class="prod-card"><div class="icon">💊</div><div class="info"><div class="name">综合维生素</div><div class="formula">男士/女士多维 · 全人群</div></div><div class="price">¥128/月</div></div>
+      <div class="prod-card"><div class="icon">🦠</div><div class="info"><div class="name">复合益生菌</div><div class="formula">多菌株+益生元</div></div><div class="price">¥198/月</div></div>
+      <div class="prod-card"><div class="icon">✨</div><div class="info"><div class="name">胶原蛋白肽</div><div class="formula">鱼胶原蛋白+VC</div></div><div class="price">¥228/月</div></div>
+      <div class="prod-card"><div class="icon">☀️</div><div class="info"><div class="name">维生素D3+K2</div><div class="formula">VD3+MK7复合</div></div><div class="price">¥98/月</div></div>
+      <div class="prod-card"><div class="icon">🐟</div><div class="info"><div class="name">高纯度鱼油</div><div class="formula">Omega-3 80%+</div></div><div class="price">¥168/月</div></div>
+      <div class="prod-card"><div class="icon">👁️</div><div class="info"><div class="name">叶黄素酯</div><div class="formula">叶黄素+玉米黄质</div></div><div class="price">¥128/月</div></div>
+      <div class="prod-card"><div class="icon">💊</div><div class="info"><div class="name">综合维生素</div><div class="formula">男士/女士多维</div></div><div class="price">¥128/月</div></div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- 流程 -->
-<div class="sec">
-  <h2>5步开启养生之旅</h2>
-  <p class="sub">AI驱动 · 全程跟踪 · 一键下单</p>
-  <div class="steps-grid">
+<section id="流程">
+  <div class="sec-title">
+    <h2>5步开启养生之旅</h2>
+    <p>AI驱动 · 全程跟踪 · 一键下单</p>
+  </div>
+  <div class="steps">
     <div class="step"><div class="num">1</div><div class="title">体质测试</div><div class="desc">5分钟AI问卷<br>中医九种体质辨识</div></div>
     <div class="step"><div class="num">2</div><div class="title">方案推荐</div><div class="desc">AI个性化方案<br>匹配你的体质</div></div>
     <div class="step"><div class="num">3</div><div class="title">一键下单</div><div class="desc">微信/支付宝<br>订阅制每月配送</div></div>
     <div class="step"><div class="num">4</div><div class="title">每月配送</div><div class="desc">顺丰冷链<br>新鲜到家</div></div>
     <div class="step"><div class="num">5</div><div class="title">持续调养</div><div class="desc">AI跟踪体质变化<br>动态调方案</div></div>
   </div>
-</div>
+</section>
 
-<!-- 品质保障 -->
-<div class="sec">
-  <div class="trust-box">
-    <h2>品质保障</h2>
+<!-- 信任 -->
+<section>
+  <div class="trust">
+    <h2 style="font-size:28px;font-weight:800">品质保障</h2>
     <p style="color:var(--t2);margin-top:8px">每一款产品都经过严格筛选和检测</p>
     <div class="trust-grid">
       <div class="trust-item"><b>SC认证</b><span>食品生产许可</span></div>
@@ -164,19 +204,16 @@ footer .links a:hover{color:#fff;text-decoration:none}
       <div class="trust-item"><b>AI跟踪</b><span>全程调养</span></div>
     </div>
   </div>
-</div>
-
-</div><!-- /wrap -->
+</section>
 
 <!-- Footer -->
 <footer>
   <div class="brand">🌿 MediSlim</div>
   <p>中医体质调养 · 科学养生</p>
-  <p style="margin-top:4px">AI驱动的消费健康平台</p>
   <div class="links">
     <a href="https://github.com/MoKangMedical/medi-slim">GitHub</a>
-    <a href="#体质测试">体质测试</a>
-    <a href="#药食同源">产品</a>
+    <a href="https://mokangmedical.github.io/medroundtable/">MedRoundTable</a>
+    <a href="#体质">体质测试</a>
   </div>
   <p style="margin-top:24px;opacity:.4">© 2026 MediSlim · OPC公司</p>
 </footer>
