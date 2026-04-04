@@ -1,0 +1,391 @@
+#!/usr/bin/env python3
+"""
+MediSlim 综合运营平台 v1.0
+功能：宣传展示 + 产品追踪 + 收入归总 + 多平台接入管理
+端口：8094
+"""
+import os, json, uuid, time
+from datetime import datetime, timedelta
+from pathlib import Path
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import urllib.parse
+
+DATA = Path("./data")
+DATA.mkdir(exist_ok=True)
+
+def ldb(n): return json.loads((DATA/f"{n}.json").read_text()) if (DATA/f"{n}.json").exists() else {}
+def sdb(n,d): (DATA/f"{n}.json").write_text(json.dumps(d,ensure_ascii=False,indent=2))
+def nid(): return str(uuid.uuid4())[:12]
+def now(): return datetime.now().isoformat()
+
+# ============ 产品目录 ============
+PRODUCTS = {
+    "glp1": {"name":"GLP-1减重","circle":"处方","icon":"💉","price":399,"renewal":599,"category":"prescription","cost_pct":0.45,"status":"active"},
+    "hair": {"name":"防脱生发","circle":"处方","icon":"💊","price":199,"renewal":299,"category":"prescription","cost_pct":0.40,"status":"active"},
+    "male": {"name":"男性健康","circle":"处方","icon":"💪","price":299,"renewal":499,"category":"prescription","cost_pct":0.38,"status":"active"},
+    "sleep": {"name":"助眠调理","circle":"处方","icon":"😴","price":199,"renewal":299,"category":"prescription","cost_pct":0.35,"status":"active"},
+    "skin": {"name":"皮肤处方","circle":"处方","icon":"🧴","price":249,"renewal":349,"category":"prescription","cost_pct":0.42,"status":"active"},
+    "damp": {"name":"祛湿轻体","circle":"药食同源","icon":"🍵","price":168,"renewal":168,"category":"tcm","cost_pct":0.21,"status":"active"},
+    "blood": {"name":"气血调养","circle":"药食同源","icon":"🩸","price":198,"renewal":198,"category":"tcm","cost_pct":0.23,"status":"active"},
+    "liver": {"name":"护肝养生","circle":"药食同源","icon":"🫁","price":168,"renewal":168,"category":"tcm","cost_pct":0.25,"status":"active"},
+    "warm": {"name":"暖宫驱寒","circle":"药食同源","icon":"🔥","price":158,"renewal":158,"category":"tcm","cost_pct":0.22,"status":"active"},
+    "spleen": {"name":"健脾养胃","circle":"药食同源","icon":"🥣","price":148,"renewal":148,"category":"tcm","cost_pct":0.24,"status":"active"},
+    "lung": {"name":"润肺清燥","circle":"药食同源","icon":"🍐","price":138,"renewal":138,"category":"tcm","cost_pct":0.20,"status":"active"},
+    "probiotic": {"name":"益生菌","circle":"保健品","icon":"🦠","price":198,"renewal":198,"category":"supplement","cost_pct":0.23,"status":"active"},
+    "collagen": {"name":"胶原蛋白","circle":"保健品","icon":"✨","price":228,"renewal":228,"category":"supplement","cost_pct":0.25,"status":"active"},
+    "vd": {"name":"维生素D","circle":"保健品","icon":"☀️","price":98,"renewal":98,"category":"supplement","cost_pct":0.18,"status":"active"},
+    "omega": {"name":"Omega-3鱼油","circle":"保健品","icon":"🐟","price":168,"renewal":168,"category":"supplement","cost_pct":0.22,"status":"active"},
+    "q10": {"name":"辅酶Q10","circle":"保健品","icon":"❤️","price":188,"renewal":188,"category":"supplement","cost_pct":0.24,"status":"active"},
+    "lutein": {"name":"叶黄素","circle":"保健品","icon":"👁️","price":128,"renewal":128,"category":"supplement","cost_pct":0.20,"status":"active"},
+    "protein": {"name":"蛋白粉","circle":"保健品","icon":"💪","price":188,"renewal":188,"category":"supplement","cost_pct":0.28,"status":"active"},
+    "multiv": {"name":"综合维生素","circle":"保健品","icon":"💊","price":128,"renewal":128,"category":"supplement","cost_pct":0.19,"status":"active"},
+}
+
+CHANNELS = {
+    "wechat": {"name":"微信公众号","icon":"💬","status":"pending","leads":0,"orders":0,"revenue":0,"cost":0},
+    "xiaohongshu": {"name":"小红书","icon":"📕","status":"ready","leads":0,"orders":0,"revenue":0,"cost":0},
+    "douyin": {"name":"抖音","icon":"🎵","status":"ready","leads":0,"orders":0,"revenue":0,"cost":0},
+    "wecom": {"name":"企业微信","icon":"🏢","status":"ready","leads":0,"orders":0,"revenue":0,"cost":0},
+    "direct": {"name":"直接访问","icon":"🔗","status":"active","leads":0,"orders":0,"revenue":0,"cost":0},
+    "referral": {"name":"裂变推荐","icon":"📣","status":"active","leads":0,"orders":0,"revenue":0,"cost":0},
+}
+
+def get_revenue_dashboard():
+    orders = ldb("orders")
+    leads = ldb("leads")
+    rev = ldb("revenue_log")
+    today = datetime.now().strftime("%Y-%m-%d")
+    this_month = datetime.now().strftime("%Y-%m")
+    
+    total_revenue = sum(r.get("amount",0) for r in rev.values())
+    today_revenue = sum(r.get("amount",0) for r in rev.values() if r.get("date","")[:10]==today)
+    month_revenue = sum(r.get("amount",0) for r in rev.values() if r.get("date","")[:7]==this_month)
+    
+    by_product = {}
+    by_channel = {}
+    by_circle = {}
+    for r in rev.values():
+        p = r.get("product","other")
+        ch = r.get("channel","direct")
+        amt = r.get("amount",0)
+        by_product[p] = by_product.get(p,0) + amt
+        by_channel[ch] = by_channel.get(ch,0) + amt
+    
+    # Daily revenue last 30 days
+    daily = {}
+    for r in rev.values():
+        d = r.get("date","")[:10]
+        if d: daily[d] = daily.get(d,0) + r.get("amount",0)
+    
+    return {
+        "total_revenue": total_revenue,
+        "today_revenue": today_revenue,
+        "month_revenue": month_revenue,
+        "total_orders": len(orders),
+        "total_leads": len(leads),
+        "conversion": round(len(orders)/max(len(leads),1)*100,1),
+        "by_product": by_product,
+        "by_channel": by_channel,
+        "daily": dict(sorted(daily.items())[-30:]),
+        "mrr": month_revenue,
+    }
+
+def get_product_dashboard():
+    orders = ldb("orders")
+    result = []
+    for pid, p in PRODUCTS.items():
+        porders = [o for o in orders.values() if o.get("product")==pid]
+        rev = sum(o.get("amount",0) for o in porders)
+        active = sum(1 for o in porders.values() if o.get("state") not in ["cancelled",""])
+        result.append({
+            "id": pid,
+            "name": p["name"],
+            "icon": p["icon"],
+            "circle": p["circle"],
+            "price": p["price"],
+            "status": p["status"],
+            "orders": len(porders),
+            "active": active,
+            "revenue": rev,
+            "profit": round(rev * (1 - p["cost_pct"]), 1),
+        })
+    return result
+"""
+MediSlim 中央管理平台
+统一管理：内容发布 / 用户CRM / 订单管理 / 数据分析 / 多平台对接
+"""
+import os
+import json
+import uuid
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import urllib.parse
+
+DATA_DIR = Path("./data")
+DATA_DIR.mkdir(exist_ok=True)
+
+def load_db(name):
+    f = DATA_DIR / f"{name}.json"
+    return json.loads(f.read_text()) if f.exists() else {}
+
+def save_db(name, data):
+    (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
+
+def now():
+    return datetime.now().isoformat()
+
+def gen_id():
+    return str(uuid.uuid4())[:12]
+
+# ========== 平台配置 ==========
+PLATFORMS = {
+    "wechat": {
+        "name": "微信公众号",
+        "icon": "💬",
+        "status": "pending",
+        "config_fields": ["app_id", "app_secret", "token", "encoding_aes_key"],
+        "capabilities": ["auto_reply", "menu", "template_msg", "customer_service", "payment"],
+        "setup_url": "https://mp.weixin.qq.com",
+        "docs": "需要：营业执照 + 认证服务号（¥300/年）",
+    },
+    "wechat_mini": {
+        "name": "微信小程序",
+        "icon": "📱",
+        "status": "pending",
+        "config_fields": ["app_id", "app_secret"],
+        "capabilities": ["assessment", "order", "tracking", "community"],
+        "setup_url": "https://mp.weixin.qq.com",
+        "docs": "需要：营业执照 + 小程序认证（¥300）+ 类目审核（医疗需资质）",
+    },
+    "wecom": {
+        "name": "企业微信",
+        "icon": "🏢",
+        "status": "ready",
+        "config_fields": ["corp_id", "agent_id", "secret"],
+        "capabilities": ["customer_service", "group_chat", "crm", "auto_reply"],
+        "setup_url": "https://work.weixin.qq.com",
+        "docs": "免费注册，可直接用作客服和私域运营",
+    },
+    "xiaohongshu": {
+        "name": "小红书",
+        "icon": "📕",
+        "status": "pending",
+        "config_fields": ["account_id", "cookie"],
+        "capabilities": ["publish", "analytics", "comment_manage"],
+        "setup_url": "https://www.xiaohongshu.com",
+        "docs": "企业号需营业执照，个人号直接注册",
+    },
+    "douyin": {
+        "name": "抖音",
+        "icon": "🎵",
+        "status": "pending",
+        "config_fields": ["client_key", "client_secret"],
+        "capabilities": ["publish", "analytics", "live", "ads"],
+        "setup_url": "https://developer.open-douyin.com",
+        "docs": "企业号需营业执照+对公打款验证",
+    },
+    "alipay": {
+        "name": "支付宝",
+        "icon": "💰",
+        "status": "pending",
+        "config_fields": ["app_id", "private_key", "alipay_public_key"],
+        "capabilities": ["payment", "refund", "transfer"],
+        "setup_url": "https://open.alipay.com",
+        "docs": "需要：营业执照 + 对公账户",
+    },
+    "wechat_pay": {
+        "name": "微信支付",
+        "icon": "💚",
+        "status": "pending",
+        "config_fields": ["mch_id", "api_key", "cert_path"],
+        "capabilities": ["payment", "refund", "transfer", "bill"],
+        "setup_url": "https://pay.weixin.qq.com",
+        "docs": "需要：营业执照 + 对公账户 + 认证服务号",
+    },
+    "sf_express": {
+        "name": "顺丰物流",
+        "icon": "📦",
+        "status": "pending",
+        "config_fields": ["customer_code", "check_word"],
+        "capabilities": ["create_order", "tracking", "cancel"],
+        "setup_url": "https://open.sf-express.com",
+        "docs": "需要签约顺丰月结客户",
+    },
+}
+
+# ========== 内容管理 ==========
+class ContentManager:
+    """多平台内容管理"""
+    
+    TEMPLATES = {
+        "xiaohongshu": {
+            "glp1_case": {
+                "title": "🔥 {name}减重{days}天记录：从{start}kg到{end}kg",
+                "content": "分享我的减重经历...\n#减重 #{product} #科学减重",
+                "type": "case",
+            },
+            "tcm_health": {
+                "title": "中医体质自测：你是哪种体质？9种体质对照表",
+                "content": "根据中医理论，人的体质分为9种...\n#中医 #体质 #养生",
+                "type": "education",
+            },
+            "product_review": {
+                "title": "💊 我在MediSlim的{product}体验：{summary}",
+                "content": "使用{days}天后的真实感受...\n#{product} #健康",
+                "type": "review",
+            },
+        },
+        "douyin": {
+            "hook_video": {
+                "title": "{hook}",
+                "script": "前3秒：{hook}\n中间：解决问题\n结尾：引导评论",
+                "duration": "30-60s",
+            },
+            "doctor_explain": {
+                "title": "医生说：{topic}",
+                "script": "专业科普+通俗表达+数据支撑",
+                "duration": "60-90s",
+            },
+        },
+        "wechat_article": {
+            "deep_dive": {
+                "title": "{topic}：你需要知道的一切",
+                "sections": ["引言", "原理", "方法", "案例", "总结", "CTA"],
+            },
+        },
+    }
+    
+    @staticmethod
+    def generate_content(platform, template_id, variables=None):
+        """生成内容"""
+        variables = variables or {}
+        template = ContentManager.TEMPLATES.get(platform, {}).get(template_id, {})
+        if not template:
+            return {"error": "模板不存在"}
+        
+        result = {}
+        for key, value in template.items():
+            if isinstance(value, str) and "{" in value:
+                try:
+                    result[key] = value.format(**variables)
+                except KeyError:
+                    result[key] = value
+            else:
+                result[key] = value
+        
+        result["id"] = gen_id()
+        result["platform"] = platform
+        result["template_id"] = template_id
+        result["status"] = "draft"
+        result["created_at"] = now()
+        
+        # 保存到内容库
+        contents = load_db("contents")
+        contents[result["id"]] = result
+        save_db("contents", contents)
+        
+        return result
+
+# ========== 用户CRM ==========
+class CRMManager:
+    """客户关系管理"""
+    
+    CHANNELS = ["wechat", "xiaohongshu", "douyin", "direct", "referral"]
+    
+    @staticmethod
+    def add_user(name, phone, channel="direct", tags=None):
+        """添加用户"""
+        users = load_db("crm_users")
+        # 检查是否已存在
+        existing = [u for u in users.values() if u.get("phone") == phone]
+        if existing:
+            return existing[0]
+        
+        user = {
+            "id": gen_id(),
+            "name": name,
+            "phone": phone,
+            "channel": channel,
+            "tags": tags or [],
+            "lifecycle": "lead",
+            "health_profile": {},
+            "orders": [],
+            "interactions": [],
+            "value_score": 0,
+            "created_at": now(),
+            "updated_at": now(),
+        }
+        users[user["id"]] = user
+        save_db("crm_users", users)
+        return user
+    
+    @staticmethod
+    def update_lifecycle(user_id, new_stage):
+        """更新用户生命周期"""
+        stages = ["lead", "assessed", "first_order", "active", "vip", "churned"]
+        users = load_db("crm_users")
+        user = users.get(user_id)
+        if user:
+            user["lifecycle"] = new_stage
+            user["updated_at"] = now()
+            user["interactions"].append({
+                "time": now(),
+                "type": "lifecycle_change",
+                "detail": f"从 {user.get('lifecycle')} 到 {new_stage}",
+            })
+            save_db("crm_users", users)
+        return user
+    
+    @staticmethod
+    def get_dashboard():
+        """CRM看板"""
+        users = load_db("crm_users").values()
+        by_lifecycle = {}
+        by_channel = {}
+        for u in users:
+            lc = u.get("lifecycle", "unknown")
+            ch = u.get("channel", "unknown")
+            by_lifecycle[lc] = by_lifecycle.get(lc, 0) + 1
+            by_channel[ch] = by_channel.get(ch, 0) + 1
+        
+        return {
+            "total_users": len(list(users)),
+            "by_lifecycle": by_lifecycle,
+            "by_channel": by_channel,
+        }
+
+# ========== 数据分析 ==========
+class AnalyticsManager:
+    """数据分析引擎"""
+    
+    @staticmethod
+    def get_overview():
+        """总览数据"""
+        users = load_db("crm_users")
+        orders = load_db("orders")
+        leads = load_db("leads")
+        contents = load_db("contents")
+        
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        return {
+            "overview": {
+                "total_users": len(users),
+                "total_orders": len(orders),
+                "total_leads": len(leads),
+                "total_content": len(contents),
+            },
+            "today": {
+                "new_users": sum(1 for u in users.values() if u.get("created_at", "")[:10] == today),
+                "new_leads": sum(1 for l in leads.values() if l.get("created_at", "")[:10] == today),
+                "new_orders": sum(1 for o in orders.values() if o.get("created_at", "")[:10] == today),
+            },
+            "conversion": {
+                "lead_to_order": round(len(orders) / max(len(leads), 1) * 100, 1),
+                "content_published": sum(1 for c in contents.values() if c.get("status") == "published"),
+            },
+        }
+
+# ========== HTTP管理后台 ==========

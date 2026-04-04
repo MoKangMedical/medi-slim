@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediSlim 运营平台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#f0f2f5}
+.hdr{background:linear-gradient(135deg,#07C160,#047B3A);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:99}
+.hdr h1{font-size:20px;margin-bottom:8px}
+.tabs{display:flex;gap:4px}
+.tab{padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7)}
+.tab:hover,.tab.on{background:rgba(255,255,255,.2);color:#fff}
+.w{max-width:1100px;margin:16px auto;padding:0 12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.c{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.c h3{font-size:15px;font-weight:600;margin-bottom:10px}
+.bn{font-size:30px;font-weight:700;color:#07C160}
+.su{font-size:12px;color:#999;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #f0f0f0;font-size:13px}
+th{color:#999;font-weight:500;font-size:11px}
+.b{padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500;display:inline-block}
+.bg{background:#D1FAE5;color:#065F46}
+.by{background:#FEF3C7;color:#92400E}
+.br{background:#FEE2E2;color:#991B1B}
+.bt{padding:6px 12px;border-radius:8px;border:1px solid #07C160;color:#07C160;background:#fff;cursor:pointer;font-size:12px;margin:2px}
+.bar{display:flex;align-items:end;gap:2px;height:60px;margin-top:8px}
+.bar div{flex:1;background:#07C160;border-radius:2px 2px 0 0;min-height:3px}
+.sec{display:none}
+.sec.on{display:block}
+@media(max-width:768px){.g4,.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>MediSlim 运营平台</h1>
+  <div class="tabs">
+    <div class="tab on" onclick="sw('overview',this)">总览</div>
+    <div class="tab" onclick="sw('products',this)">产品</div>
+    <div class="tab" onclick="sw('revenue',this)">收入</div>
+  </div>
+</div>
+<div class="w">
+  <div class="sec on" id="s-overview">
+    <div class="g4" id="kpi"></div>
+    <div class="c"><h3>收入趋势</h3><div class="bar" id="chart"></div></div>
+  </div>
+  <div class="sec" id="s-products">
+    <div class="c"><h3>19品类产品追踪</h3>
+    <table><thead><tr><th>产品</th><th>品类</th><th>价格</th><th>订单</th><th>收入</th><th>利润</th><th>操作</th></tr></thead>
+    <tbody id="pt"></tbody></table></div>
+  </div>
+  <div class="sec" id="s-revenue">
+    <div class="g4" id="rkpi"></div>
+    <div class="g3">
+      <div class="c" style="grid-column:span 2"><h3>品类收入排行</h3><div id="rby"></div></div>
+      <div class="c"><h3>快速录单</h3><div id="qo"></div></div>
+    </div>
+  </div>
+</div>
+<script>
+var D={};
+async function load(){
+  D=await fetch('/api/platform/dashboard').then(function(r){return r.json()});
+  render();
+}
+function sw(id,el){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on')});
+  document.getElementById('s-'+id).classList.add('on');
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  if(el)el.classList.add('on');
+}
+function render(){
+  var r=D.revenue||{};
+  var kpi=document.getElementById('kpi');
+  kpi.innerHTML='<div class="c"><div class="su">今日收入</div><div class="bn">\u00a5'+(r.today||0)+'</div></div>'
+    +'<div class="c"><div class="su">总订单</div><div class="bn">'+(D.overview?D.overview.orders:0)+'</div></div>'
+    +'<div class="c"><div class="su">转化率</div><div class="bn">'+(D.overview?D.overview.conversion:0)+'%</div></div>'
+    +'<div class="c"><div class="su">MRR</div><div class="bn">\u00a5'+(r.mrr||0)+'</div></div>';
+  var d=Object.entries(r.daily||{});
+  var mx=1; d.forEach(function(x){if(x[1]>mx)mx=x[1]});
+  var ch=document.getElementById('chart');
+  ch.innerHTML=d.map(function(x){return '<div style="height:'+x[1]/mx*100+'%" title="'+x[0]+':\u00a5'+x[1]+'"></div>'}).join('')||'<div style="color:#999;padding:20px">暂无数据，录单后显示</div>';
+  var ps=D.products||[];
+  var pt=document.getElementById('pt');
+  pt.innerHTML=ps.map(function(p){
+    var cc=p.cat=='prescription'?'br':p.cat=='tcm'?'by':'bg';
+    return '<tr><td>'+p.icon+' '+p.name+'</td><td><span class="b '+cc+'">'+p.circle+'</span></td><td>\u00a5'+p.price+'</td><td>'+p.orders+'</td><td>\u00a5'+p.revenue+'</td><td>\u00a5'+p.profit+'</td><td><button class="bt" onclick="qo(\''+p.id+'\')">录单</button></td></tr>';
+  }).join('');
+  var rkpi=document.getElementById('rkpi');
+  rkpi.innerHTML='<div class="c"><div class="su">总收入</div><div class="bn">\u00a5'+(r.total||0)+'</div></div>'
+    +'<div class="c"><div class="su">本月收入</div><div class="bn">\u00a5'+(r.month||0)+'</div></div>'
+    +'<div class="c"><div class="su">今日收入</div><div class="bn">\u00a5'+(r.today||0)+'</div></div>'
+    +'<div class="c"><div class="su">总利润(估)</div><div class="bn">\u00a5'+Math.round((r.total||0)*0.35)+'</div></div>';
+  var bp=r.by_product||{};
+  var entries=Object.entries(bp).sort(function(a,b){return b[1]-a[1]});
+  document.getElementById('rby').innerHTML=entries.map(function(e){
+    return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0"><span>'+e[0]+'</span><b style="color:#07C160">\u00a5'+e[1]+'</b></div>';
+  }).join('')||'<div style="color:#999">暂无数据</div>';
+  document.getElementById('qo').innerHTML=ps.slice(0,10).map(function(p){
+    return '<button class="bt" onclick="qo(\''+p.id+'\')">'+p.icon+' '+p.name+' +\u00a5'+p.price+'</button>';
+  }).join('');
+}
+async function qo(pid){
+  var n=prompt('客户姓名:');if(!n)return;
+  var ph=prompt('手机号:');if(!ph)return;
+  var ch=prompt('渠道(direct/wechat/xiaohongshu/douyin):')||'direct';
+  await fetch('/api/platform/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:pid,customer_name:n,phone:ph,channel:ch})});
+  load();
+}
+load();
+setInterval(load,15000);
+</script>
+</body>
+</html>
