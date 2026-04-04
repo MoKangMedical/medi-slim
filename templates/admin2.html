@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediSlim 管理中心</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#2d5a27;--gl:#4a8c3f;--bg:#f0f2f5;--w:#fff}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:#333}
+.hdr{background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.hdr h1{font-size:20px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.7);transition:.15s;white-space:nowrap}
+.tab:hover,.tab.on{background:rgba(255,255,255,.2);color:#fff}
+.wrap{max-width:1200px;margin:20px auto;padding:0 16px}
+.sec{display:none}.sec.on{display:block}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.card{background:var(--w);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card h3{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.bn{font-size:32px;font-weight:700;color:var(--g)}
+.sub{font-size:12px;color:#999;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #f0f0f0;font-size:13px}
+th{color:#999;font-weight:500;font-size:12px}
+.bdg{padding:3px 8px;border-radius:10px;font-size:11px;font-weight:500;display:inline-block}
+.bg{background:#D1FAE5;color:#065F46}.by{background:#FEF3C7;color:#92400E}.br{background:#FEE2E2;color:#991B1B}.bgr{background:#F3F4F6;color:#6B7280}
+.btn{padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:500}
+.bp{background:var(--g);color:#fff}.bo{background:#fff;border:1px solid var(--g);color:var(--g)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.fg input,.fg select{padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--g)}
+.ch-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ch-c{border:2px solid #E5E7EB;border-radius:10px;padding:14px;text-align:center;transition:.15s}
+.ch-c.ok{border-color:var(--g);background:#F0FFF4}
+@media(max-width:768px){.g4{grid-template-columns:repeat(2,1fr)}.g3,.ch-g{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>MediSlim 管理中心</h1>
+  <div class="tabs">
+    <div class="tab on" onclick="sw('overview')">总览</div>
+    <div class="tab" onclick="sw('orders')">订单</div>
+    <div class="tab" onclick="sw('crm')">客户</div>
+    <div class="tab" onclick="sw('channels')">渠道</div>
+    <div class="tab" onclick="sw('content')">内容</div>
+  </div>
+</div>
+<div class="wrap">
+<div class="sec on" id="s-overview">
+  <div class="g4" id="kpi"></div>
+  <div class="g3">
+    <div class="card" style="grid-column:span 2"><h3>收入趋势</h3><div id="revChart" style="display:flex;align-items:end;gap:3px;height:80px;margin-top:12px"></div></div>
+    <div class="card"><h3>品类分布</h3><div id="catDist"></div></div>
+  </div>
+</div>
+<div class="sec" id="s-orders">
+  <div class="card" style="margin-bottom:16px">
+    <h3>快速录单</h3>
+    <div class="fg">
+      <input id="oName" placeholder="客户姓名">
+      <input id="oPhone" placeholder="手机号">
+      <select id="oProduct"><option value="">选择产品</option></select>
+      <select id="oChannel"><option value="wechat">微信</option><option value="xiaohongshu">小红书</option><option value="douyin">抖音</option><option value="wecom">企微</option><option value="direct">直接</option><option value="referral">推荐</option></select>
+      <button class="btn bp" onclick="createOrder()" style="height:40px">提交订单</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>订单列表</h3>
+    <table><thead><tr><th>订单号</th><th>客户</th><th>产品</th><th>金额</th><th>渠道</th><th>状态</th><th>时间</th></tr></thead>
+    <tbody id="orderTable"></tbody></table>
+  </div>
+</div>
+<div class="sec" id="s-crm">
+  <div class="card" style="margin-bottom:16px">
+    <h3>添加客户</h3>
+    <div class="fg">
+      <input id="cName" placeholder="姓名">
+      <input id="cPhone" placeholder="手机号">
+      <select id="cSource"><option value="wechat">微信</option><option value="xiaohongshu">小红书</option><option value="douyin">抖音</option><option value="wecom">企微</option><option value="direct">直接</option><option value="referral">推荐</option></select>
+      <button class="btn bp" onclick="createCustomer()" style="height:40px">添加</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>客户列表</h3>
+    <table><thead><tr><th>姓名</th><th>电话</th><th>来源</th><th>生命周期</th><th>价值评分</th><th>最后互动</th></tr></thead>
+    <tbody id="crmTable"></tbody></table>
+  </div>
+</div>
+<div class="sec" id="s-channels">
+  <div class="ch-g" id="chGrid"></div>
+  <div class="card" style="margin-top:16px">
+    <h3>渠道效能</h3>
+    <table><thead><tr><th>渠道</th><th>线索</th><th>订单</th><th>转化率</th><th>收入</th><th>状态</th></tr></thead>
+    <tbody id="chTable"></tbody></table>
+  </div>
+</div>
+<div class="sec" id="s-content">
+  <div class="card">
+    <h3>内容管理</h3>
+    <table><thead><tr><th>标题</th><th>平台</th><th>类型</th><th>状态</th><th>日期</th></tr></thead>
+    <tbody id="ctTable"></tbody></table>
+    <div style="text-align:center;padding:20px;color:#999">内容管理需配置API后启用</div>
+  </div>
+</div>
+</div>
+<script>
+const PRODUCTS=[
+{id:'damp',name:'祛湿轻体',price:168,cat:'tcm'},{id:'blood',name:'气血调养',price:198,cat:'tcm'},
+{id:'liver',name:'护肝养生',price:168,cat:'tcm'},{id:'warm',name:'暖宫驱寒',price:158,cat:'tcm'},
+{id:'spleen',name:'健脾养胃',price:148,cat:'tcm'},{id:'lung',name:'润肺清燥',price:138,cat:'tcm'},
+{id:'probiotic',name:'益生菌',price:198,cat:'supplement'},{id:'collagen',name:'胶原蛋白',price:228,cat:'supplement'},
+{id:'vd',name:'维生素D',price:98,cat:'supplement'},{id:'omega',name:'Omega-3',price:168,cat:'supplement'},
+{id:'q10',name:'辅酶Q10',price:188,cat:'supplement'},{id:'lutein',name:'叶黄素',price:128,cat:'supplement'},
+{id:'protein',name:'蛋白粉',price:188,cat:'supplement'},{id:'multiv',name:'综合维生素',price:128,cat:'supplement'}
+];
+const CHANNELS=[
+{id:'wechat',name:'微信',icon:'OK',status:'active'},{id:'xiaohongshu',name:'小红书',icon:'SH',status:'active'},
+{id:'douyin',name:'抖音',icon:'DY',status:'ready'},{id:'wecom',name:'企微',icon:'WQ',status:'active'},
+{id:'direct',name:'直接',icon:'->',status:'active'},{id:'referral',name:'推荐',icon:'TJ',status:'active'}
+];
+function sw(id){document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.getElementById('s-'+id).classList.add('on');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));event.target.classList.add('on')}
+const sel=document.getElementById('oProduct');PRODUCTS.forEach(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name+' Y'+p.price;sel.appendChild(o)});
+function renderKPI(){
+  document.getElementById('kpi').innerHTML='<div class="card"><div class="sub">今日收入</div><div class="bn">Y0</div><div class="sub">本月 Y0</div></div><div class="card"><div class="sub">总订单</div><div class="bn">0</div><div class="sub">总线索 0</div></div><div class="card"><div class="sub">转化率</div><div class="bn">0%</div><div class="sub">线索转订单</div></div><div class="card"><div class="sub">MRR</div><div class="bn">Y0</div><div class="sub">月经常性收入</div></div>';
+  document.getElementById('revChart').innerHTML='<div style="color:#999;text-align:center;padding:20px;width:100%">录单后显示趋势图</div>';
+  document.getElementById('catDist').innerHTML='<div style="color:#999;text-align:center;padding:20px">药食同源6 / 保健品8 / 处方药5</div>';
+}
+renderKPI();
+document.getElementById('orderTable').innerHTML='<tr><td colspan="7" style="color:#999;text-align:center">暂无订单</td></tr>';
+function createOrder(){
+  const n=document.getElementById('oName').value,p=document.getElementById('oPhone').value,pid=document.getElementById('oProduct').value,ch=document.getElementById('oChannel').value;
+  if(!n||!p||!pid){alert('请填写完整');return}
+  fetch('/api/platform/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:pid,customer_name:n,phone:p,channel:ch})})
+  .then(r=>r.json()).then(d=>{alert('订单: '+d.order_id);document.getElementById('oName').value='';document.getElementById('oPhone').value=''});
+}
+document.getElementById('crmTable').innerHTML='<tr><td colspan="6" style="color:#999;text-align:center">暂无客户</td></tr>';
+function createCustomer(){
+  const n=document.getElementById('cName').value,p=document.getElementById('cPhone').value,s=document.getElementById('cSource').value;
+  if(!n||!p){alert('请填写完整');return}
+  fetch('/api/platform/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,phone:p,channel:s})})
+  .then(r=>r.json()).then(d=>{alert('客户添加成功');document.getElementById('cName').value='';document.getElementById('cPhone').value=''});
+}
+document.getElementById('chGrid').innerHTML=CHANNELS.map(c=>'<div class="ch-c '+(c.status==='active'?'ok':'')+'"><div style="font-size:20px;font-weight:700">'+c.icon+'</div><div style="font-size:14px;font-weight:600;margin:6px 0">'+c.name+'</div><span class="bdg '+(c.status==='active'?'bg':'by')+'">'+c.status+'</span></div>').join('');
+document.getElementById('chTable').innerHTML=CHANNELS.map(c=>'<tr><td>'+c.name+'</td><td>0</td><td>0</td><td>0%</td><td>Y0</td><td><span class="bdg '+(c.status==='active'?'bg':'by')+'">'+c.status+'</span></td></tr>').join('');
+</script>
+</body></html>

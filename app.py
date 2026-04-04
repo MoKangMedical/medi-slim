@@ -339,6 +339,12 @@ class MediSlimHandler(BaseHTTPRequestHandler):
 
         if path in ("/", "/index.html"):
             self._serve("templates/index.html", "text/html; charset=utf-8")
+        elif path == "/assess":
+            self._serve("templates/assess.html", "text/html; charset=utf-8")
+        elif path == "/flow":
+            self._serve("templates/flow.html", "text/html; charset=utf-8")
+        elif path == "/admin":
+            self._serve("templates/admin2.html", "text/html; charset=utf-8")
         elif path.startswith("/static/"):
             ct = "text/css" if path.endswith(".css") else "application/javascript"
             self._serve(path[1:], ct)

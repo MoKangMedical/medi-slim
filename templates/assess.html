@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>中医体质辨识 — MediSlim</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#2d5a27;--gl:#4a8c3f;--bg:#f8f5f0;--w:#fff}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:#333;min-height:100vh}
+.hero{background:linear-gradient(135deg,#1a3a17,var(--g),var(--gl));color:#fff;padding:48px 24px;text-align:center}
+.hero h1{font-size:28px;margin-bottom:8px}
+.hero p{opacity:.85;font-size:15px}
+.wrap{max-width:700px;margin:0 auto;padding:24px 16px}
+.progress{background:#e5e7eb;border-radius:10px;height:8px;margin:20px 0;overflow:hidden}
+.bar{background:var(--g);height:100%;border-radius:10px;transition:width .3s}
+.q-card{background:var(--w);border-radius:14px;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,.04);display:none}
+.q-card.on{display:block}
+.q-num{font-size:13px;color:var(--g);font-weight:700;margin-bottom:8px}
+.q-text{font-size:17px;font-weight:600;margin-bottom:16px;line-height:1.5}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.opt{padding:12px 8px;border:2px solid #e5e7eb;border-radius:10px;text-align:center;cursor:pointer;transition:.15s;font-size:14px}
+.opt:hover{border-color:var(--g)}
+.opt.sel{border-color:var(--g);background:#f0fff4}
+.nav{display:flex;justify-content:space-between;margin-top:20px}
+.btn{padding:12px 28px;border-radius:24px;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-p{background:var(--g);color:#fff}
+.btn-o{background:#fff;border:2px solid var(--g);color:var(--g)}
+.result{display:none;text-align:center}
+.result.on{display:block}
+.r-card{background:var(--w);border-radius:16px;padding:32px;margin:20px 0;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.r-type{font-size:48px;margin-bottom:8px}
+.r-name{font-size:24px;font-weight:800;color:var(--g)}
+.r-desc{font-size:14px;color:#666;margin:12px 0;line-height:1.8}
+.prod-rec{background:#f0fff4;border-radius:12px;padding:20px;margin:16px 0;text-align:left}
+.prod-rec h3{font-size:16px;color:var(--g);margin-bottom:12px}
+.pi{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e7eb}
+.pi:last-child{border:none}
+.pi .n{font-weight:600;font-size:15px}
+.pi .f{font-size:12px;color:#999}
+.pi .p{font-size:18px;font-weight:800;color:var(--g)}
+.cta{display:inline-block;margin-top:16px;padding:14px 36px;background:var(--g);color:#fff;border-radius:30px;font-size:16px;font-weight:700;text-decoration:none}
+.start{text-align:center;padding:60px 20px}
+.start h2{font-size:22px;margin-bottom:12px}
+.start p{color:#666;margin-bottom:24px}
+@media(max-width:600px){.opts{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hero"><h1>🌿 中医体质辨识</h1><p>根据《中医体质分类与判定》国家标准 · AI智能分析</p></div>
+<div class="wrap">
+<div class="start" id="S0"><h2>测测你是什么体质？</h2><p>中医九种体质，15道题，3分钟完成<br>AI帮你找到最适合你的养生方案</p>
+<button class="btn btn-p" onclick="go()" style="font-size:18px;padding:16px 48px">开始测试 →</button></div>
+<div class="progress" id="PB" style="display:none"><div class="bar" id="BAR"></div></div>
+<div id="QA"></div>
+<div class="nav" id="NV" style="display:none">
+<button class="btn btn-o" id="PB2" onclick="prev()">← 上一题</button>
+<span id="SI" style="line-height:44px;color:#999;font-size:14px"></span>
+<button class="btn btn-p" id="NB" onclick="next()">下一题 →</button>
+</div>
+<div class="result" id="RA"></div>
+</div>
+<script>
+const Q=[
+{q:"您容易疲乏吗？",c:"qi"},{q:"您容易气短（接不上气）吗？",c:"qi"},{q:"您容易心慌吗？",c:"qi"},
+{q:"您怕冷吗？手脚容易发凉？",c:"yang"},{q:"您胃脘部、背部或腰膝部怕冷吗？",c:"yang"},
+{q:"您感到手脚心发热吗？",c:"yin"},{q:"您感觉身体脸上发热吗？",c:"yin"},{q:"您皮肤或口唇干吗？",c:"yin"},
+{q:"您感到身体沉重不轻松吗？",c:"tanshi"},{q:"您腹部肥满松软吗？",c:"tanshi"},
+{q:"您面部鼻部有油腻感吗？",c:"shire"},{q:"您额部油脂分泌多吗？",c:"shire"},
+{q:"您面色晦暗或有褐斑吗？",c:"xueyu"},
+{q:"您情绪低沉、精神抑郁吗？",c:"qiyu"},
+{q:"您容易过敏吗？",c:"tebing"}
+];
+const TI={
+qi:{n:"气虚质",i:"😤",d:"元气不足，容易疲乏、气短、出虚汗。说话声音低弱，容易感冒。",p:[{n:"气血调养",f:"红枣+枸杞+阿胶+黄芪",pr:"¥198/月"},{n:"益生菌",f:"多菌株+益生元",pr:"¥198/月"}]},
+yang:{n:"阳虚质",i:"🥶",d:"阳气不足，畏寒怕冷，手脚冰凉，喜热饮食。",p:[{n:"暖宫驱寒",f:"姜+红糖+桂圆+当归",pr:"¥158/月"},{n:"护肝养生",f:"葛根+枳椇子+菊花",pr:"¥168/月"}]},
+yin:{n:"阴虚质",i:"🔥",d:"阴液亏少，口燥咽干，手足心热，喜冷饮。",p:[{n:"润肺清燥",f:"雪梨+百合+银耳+枇杷",pr:"¥138/月"},{n:"胶原蛋白肽",f:"鱼胶原蛋白+VC",pr:"¥228/月"}]},
+tanshi:{n:"痰湿质",i:"💧",d:"痰湿凝聚，形体肥胖，腹部松软，容易困倦。★中国最常见！",p:[{n:"祛湿轻体",f:"红豆薏米+茯苓+陈皮",pr:"¥168/月"},{n:"健脾养胃",f:"山药+莲子+芡实+薏米",pr:"¥148/月"}]},
+shire:{n:"湿热质",i:"🌡️",d:"湿热内蕴，面垢油光，易生痤疮，口苦口干。",p:[{n:"祛湿轻体",f:"红豆薏米+茯苓+陈皮",pr:"¥168/月"},{n:"护肝养生",f:"葛根+枳椇子+菊花",pr:"¥168/月"}]},
+xueyu:{n:"血瘀质",i:"🩸",d:"血行不畅，肤色晦暗，容易出现瘀斑。",p:[{n:"气血调养",f:"红枣+枸杞+阿胶+黄芪",pr:"¥198/月"},{n:"Omega-3鱼油",f:"Omega-3 80%+",pr:"¥168/月"}]},
+qiyu:{n:"气郁质",i:"😤",d:"气机郁滞，神情抑郁，烦闷不乐，容易紧张。",p:[{n:"护肝养生",f:"葛根+枳椇子+菊花",pr:"¥168/月"},{n:"综合维生素",f:"男士/女士多维",pr:"¥128/月"}]},
+tebing:{n:"特禀质",i:"🤧",d:"先天失常，容易过敏，常见哮喘、荨麻疹。",p:[{n:"益生菌",f:"多菌株+益生元",pr:"¥198/月"},{n:"综合维生素",f:"男士/女士多维",pr:"¥128/月"}]},
+pinghe:{n:"平和质",i:"😊",d:"阴阳气血调和，体态适中，面色红润，精力充沛。",p:[{n:"综合维生素",f:"男士/女士多维",pr:"¥128/月"},{n:"益生菌",f:"多菌株+益生元",pr:"¥198/月"}]}
+};
+let A=[],cu=0;
+function go(){document.getElementById('S0').style.display='none';document.getElementById('PB').style.display='block';document.getElementById('NV').style.display='flex';A=new Array(Q.length).fill(-1);rq(0)}
+function rq(i){cu=i;const a=document.getElementById('QA');a.innerHTML='<div class="q-card on"><div class="q-num">第'+(i+1)+'题 / '+Q.length+'</div><div class="q-text">'+Q[i].q+'</div><div class="opts"><div class="opt '+(A[i]===0?'sel':'')+'" onclick="pk('+i+',0)">从不</div><div class="opt '+(A[i]===1?'sel':'')+'" onclick="pk('+i+',1)">偶尔</div><div class="opt '+(A[i]===2?'sel':'')+'" onclick="pk('+i+',2)">经常</div><div class="opt '+(A[i]===3?'sel':'')+'" onclick="pk('+i+',3)">总是</div></div></div>';document.getElementById('BAR').style.width=((i+1)/Q.length*100)+'%';document.getElementById('SI').textContent=(i+1)+'/'+Q.length;document.getElementById('PB2').style.visibility=i===0?'hidden':'visible';document.getElementById('NB').textContent=i===Q.length-1?'查看结果 →':'下一题 →'}
+function pk(qi,v){A[qi]=v;rq(qi)}
+function prev(){if(cu>0)rq(cu-1)}
+function next(){if(A[cu]===-1){alert('请选择一个选项');return}if(cu<Q.length-1){rq(cu+1);return}sr()}
+function sr(){document.getElementById('QA').innerHTML='';document.getElementById('NV').style.display='none';document.getElementById('PB').style.display='none';const sc={};Q.forEach((q,i)=>{if(A[i]>0)sc[q.c]=(sc[q.c]||0)+A[i]});let b='pinghe',bs=0;Object.entries(sc).forEach(([k,v])=>{if(v>bs){bs=v;b=k}});const info=TI[b];const el=document.getElementById('RA');el.classList.add('on');el.innerHTML='<div class="r-card"><div class="r-type">'+info.i+'</div><div class="r-name">你是 '+info.n+'</div><div class="r-desc">'+info.d+'</div><canvas id="ch" width="280" height="280"></canvas></div><div class="r-card"><div class="prod-rec"><h3>🌿 推荐你的调养方案</h3>'+info.p.map(p=>'<div class="pi"><div><div class="n">'+p.n+'</div><div class="f">'+p.f+'</div></div><div class="p">'+p.pr+'</div></div>').join('')+'</div><a href="https://mokangmedical.github.io/medi-slim/" class="cta">查看全部产品 →</a></div>';dr(sc)}
+function dr(sc){const c=document.getElementById('ch');if(!c)return;const x=c.getContext('2d'),cx=140,cy=140,r=100;const cats=['qi','yang','yin','tanshi','shire','xueyu','qiyu','tebing'];const lb=['气虚','阳虚','阴虚','痰湿','湿热','血瘀','气郁','特禀'];const n=8;x.strokeStyle='#e5e7eb';x.lineWidth=1;for(let rg=1;rg<=4;rg++){x.beginPath();cats.forEach((_,i)=>{const a=Math.PI*2*i/n-Math.PI/2;x[i===0?'moveTo':'lineTo'](cx+Math.cos(a)*r*rg/4,cy+Math.sin(a)*r*rg/4)});x.closePath();x.stroke()}cats.forEach((_,i)=>{const a=Math.PI*2*i/n-Math.PI/2;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);x.stroke()});x.fillStyle='#666';x.font='12px sans-serif';x.textAlign='center';cats.forEach((_,i)=>{const a=Math.PI*2*i/n-Math.PI/2;x.fillText(lb[i],cx+Math.cos(a)*(r+18),cy+Math.sin(a)*(r+18)+4)});const ms=Math.max(...Object.values(sc),3);x.beginPath();x.fillStyle='rgba(45,90,39,0.2)';x.strokeStyle='rgba(45,90,39,0.8)';x.lineWidth=2;cats.forEach((cat,i)=>{const a=Math.PI*2*i/n-Math.PI/2,v=(sc[cat]||0)/ms*r;x[i===0?'moveTo':'lineTo'](cx+Math.cos(a)*v,cy+Math.sin(a)*v)});x.closePath();x.fill();x.stroke()}
+</script>
+</body></html>

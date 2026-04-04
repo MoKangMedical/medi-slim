@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>业务流程 — MediSlim</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--g:#2d5a27;--bg:#f8f5f0;--w:#fff}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:#333}
+.hero{background:linear-gradient(135deg,#1a3a17,var(--g));color:#fff;padding:48px 24px;text-align:center}
+.hero h1{font-size:28px;margin-bottom:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px}
+.sec{margin:32px 0}
+.sec h2{font-size:22px;color:var(--g);margin-bottom:16px;text-align:center}
+.flow-wrap{overflow-x:auto;padding:10px 0}
+.flow{display:flex;align-items:center;gap:0;min-width:1200px}
+.node{background:var(--w);border:2px solid #ddd;border-radius:12px;padding:12px 10px;text-align:center;min-width:72px;flex-shrink:0;transition:.2s;position:relative}
+.node:hover{border-color:var(--g);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.node .icon{font-size:24px}
+.node .name{font-size:11px;font-weight:700;margin-top:4px}
+.node .time{font-size:10px;color:#999;margin-top:2px}
+.arrow{color:var(--g);font-size:18px;margin:0 2px;flex-shrink:0}
+.node.cancelled{border-color:#e74c3c;background:#fef2f2}
+.node.cancelled .name{color:#e74c3c}
+.journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;text-align:center}
+.j-step{position:relative}
+.j-num{width:36px;height:36px;background:var(--g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;margin:0 auto 8px;font-size:14px}
+.j-title{font-size:14px;font-weight:700}
+.j-desc{font-size:12px;color:#999;margin-top:4px}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.path-card{background:var(--w);border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.path-card h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.path-step{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}
+.path-step:last-child{border:none}
+.path-step .ps-num{width:24px;height:24px;background:var(--g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.path-step .ps-time{margin-left:auto;font-size:11px;color:#999}
+@media(max-width:768px){.paths{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hero"><h1>📋 MediSlim 业务流程</h1><p>15状态机 · 9步用户旅程 · 3条履约路径</p></div>
+<div class="wrap">
+<div class="sec"><h2>🔄 订单状态机（15个状态）</h2>
+<div class="flow-wrap"><div class="flow">
+<div class="node"><div class="icon">📢</div><div class="name">新线索</div><div class="time">即刻</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">👋</div><div class="name">已联系</div><div class="time">5min</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🔍</div><div class="name">已评估</div><div class="time">10min</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">💰</div><div class="name">已付款</div><div class="time">即刻</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">📄</div><div class="name">已提交</div><div class="time">1h</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">👨‍⚕️</div><div class="name">医生审</div><div class="time">2-6h</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">✅</div><div class="name">已开方</div><div class="time">即刻</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🏥</div><div class="name">药房单</div><div class="time">1h</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">📦</div><div class="name">配药中</div><div class="time">4-8h</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🚚</div><div class="name">已发货</div><div class="time">1-3天</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">📬</div><div class="name">已签收</div><div class="time">即刻</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">💊</div><div class="name">使用中</div><div class="time">持续</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">🔔</div><div class="name">续费提醒</div><div class="time">Day21</div></div><div class="arrow">→</div>
+<div class="node"><div class="icon">💰</div><div class="name">续费付款</div><div class="time">即刻</div></div>
+<div class="arrow" style="color:#e74c3c">|</div>
+<div class="node cancelled"><div class="icon">❌</div><div class="name">已取消</div><div class="time">终态</div></div>
+</div></div>
+</div>
+<div class="sec"><h2>🚶 9步用户旅程</h2>
+<div class="journey">
+<div class="j-step"><div class="j-num">1</div><div class="j-title">触达</div><div class="j-desc">社交媒体/社群/口碑</div></div>
+<div class="j-step"><div class="j-num">2</div><div class="j-title">落地</div><div class="j-desc">H5页面/企微</div></div>
+<div class="j-step"><div class="j-num">3</div><div class="j-title">评估</div><div class="j-desc">AI体质测试5分钟</div></div>
+<div class="j-step"><div class="j-num">4</div><div class="j-title">方案</div><div class="j-desc">个性化推荐</div></div>
+<div class="j-step"><div class="j-num">5</div><div class="j-title">下单</div><div class="j-desc">微信/支付宝</div></div>
+<div class="j-step"><div class="j-num">6</div><div class="j-title">履约</div><div class="j-desc">顺丰到家</div></div>
+<div class="j-step"><div class="j-num">7</div><div class="j-title">随访</div><div class="j-desc">企微1对1</div></div>
+<div class="j-step"><div class="j-num">8</div><div class="j-title">复购</div><div class="j-desc">Day21自动提醒</div></div>
+<div class="j-step"><div class="j-num">9</div><div class="j-title">裂变</div><div class="j-desc">邀请好友</div></div>
+</div></div>
+<div class="sec"><h2>📦 三条履约路径</h2>
+<div class="paths">
+<div class="path-card"><h3>💉 处方药路径</h3>
+<div class="path-step"><div class="ps-num">1</div>AI评估+禁忌筛查<div class="ps-time">即时</div></div>
+<div class="path-step"><div class="ps-num">2</div>提交互联网医院<div class="ps-time">付款后1h</div></div>
+<div class="path-step"><div class="ps-num">3</div>医师在线审核<div class="ps-time">2-6h</div></div>
+<div class="path-step"><div class="ps-num">4</div>电子处方开具<div class="ps-time">即刻</div></div>
+<div class="path-step"><div class="ps-num">5</div>合作药房配药<div class="ps-time">4-8h</div></div>
+<div class="path-step"><div class="ps-num">6</div>顺丰冷链配送<div class="ps-time">1-3天</div></div>
+<div class="path-step"><div class="ps-num">7</div>企微随访+复购<div class="ps-time">持续</div></div>
+</div>
+<div class="path-card"><h3>🍵 药食同源路径</h3>
+<div class="path-step"><div class="ps-num">1</div>AI体质辨识<div class="ps-time">即时</div></div>
+<div class="path-step"><div class="ps-num">2</div>体质报告+推荐<div class="ps-time">即刻</div></div>
+<div class="path-step"><div class="ps-num">3</div>一键下单付款<div class="ps-time">即刻</div></div>
+<div class="path-step"><div class="ps-num">4</div>SC工厂生产/仓配<div class="ps-time">当日</div></div>
+<div class="path-step"><div class="ps-num">5</div>顺丰标准配送<div class="ps-time">1-3天</div></div>
+<div class="path-step"><div class="ps-num">6</div>企微1对1跟踪<div class="ps-time">持续</div></div>
+<div class="path-step"><div class="ps-num">7</div>每月自动续费<div class="ps-time">周期</div></div>
+</div>
+<div class="path-card"><h3>🔬 保健品路径</h3>
+<div class="path-step"><div class="ps-num">1</div>AI营养评估<div class="ps-time">即时</div></div>
+<div class="path-step"><div class="ps-num">2</div>营养方案推荐<div class="ps-time">即刻</div></div>
+<div class="path-step"><div class="ps-num">3</div>一键下单付款<div class="ps-time">即刻</div></div>
+<div class="path-step"><div class="ps-num">4</div>供应商直发/仓配<div class="ps-time">当日</div></div>
+<div class="path-step"><div class="ps-num">5</div>顺丰标准配送<div class="ps-time">1-3天</div></div>
+<div class="path-step"><div class="ps-num">6</div>效果跟踪打卡<div class="ps-time">持续</div></div>
+<div class="path-step"><div class="ps-num">7</div>每月自动续费<div class="ps-time">周期</div></div>
+</div>
+</div></div>
+</div>
+</body></html>
