@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediSlim — 中医体质调养 · 科学养生</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#f8f5f0;color:#333}
+.hero{background:linear-gradient(135deg,#2d5a27,#4a8c3f);color:#fff;padding:60px 20px;text-align:center}
+.hero h1{font-size:32px;margin-bottom:12px}
+.hero p{font-size:16px;opacity:.85;max-width:600px;margin:0 auto 24px}
+.hero .cta{display:inline-block;padding:14px 36px;background:#fff;color:#2d5a27;border-radius:30px;font-size:16px;font-weight:600;text-decoration:none}
+.section{max-width:900px;margin:0 auto;padding:40px 20px}
+.section h2{font-size:24px;text-align:center;margin-bottom:8px;color:#2d5a27}
+.section .sub{text-align:center;color:#999;margin-bottom:24px;font-size:14px}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.type-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);border:2px solid transparent;transition:.2s}
+.type-card:hover{border-color:#2d5a27}
+.type-icon{font-size:40px;margin-bottom:8px}
+.type-name{font-size:16px;font-weight:600}
+.type-desc{font-size:13px;color:#999;margin-top:4px}
+.type-price{font-size:20px;font-weight:700;color:#2d5a27;margin-top:8px}
+.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.prod-card{background:#fff;border-radius:10px;padding:16px;display:flex;gap:12px;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.prod-icon{font-size:32px}
+.prod-info{flex:1}
+.prod-name{font-size:15px;font-weight:600}
+.prod-formula{font-size:12px;color:#999;margin-top:2px}
+.prod-price{font-size:18px;font-weight:700;color:#2d5a27}
+.prod-tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;background:#E8F5E9;color:#2d5a27}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;text-align:center}
+.step{position:relative}
+.step-num{width:36px;height:36px;background:#2d5a27;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin:0 auto 8px}
+.step-title{font-size:14px;font-weight:600}
+.step-desc{font-size:12px;color:#999}
+.trust{text-align:center;padding:30px;background:#fff;border-radius:12px;margin-top:20px}
+.trust-items{display:flex;justify-content:center;gap:40px;margin-top:16px}
+.trust-item{font-size:13px;color:#666}
+.trust-item b{display:block;font-size:18px;color:#2d5a27}
+.footer{background:#333;color:#fff;text-align:center;padding:30px;font-size:13px}
+@media(max-width:768px){.type-grid,.prod-grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <h1>中医体质调养 · 科学养生</h1>
+  <p>AI帮你辨体质，老祖宗的智慧+现代营养科学，找到最适合你的养生方案</p>
+  <a href="#products" class="cta">测测你的体质 →</a>
+</div>
+
+<div class="section">
+  <h2>你属于哪种体质？</h2>
+  <p class="sub">中医九种体质，5分钟AI测试，找到你的调养方案</p>
+  <div class="type-grid">
+    <div class="type-card"><div class="type-icon">😤</div><div class="type-name">气虚质</div><div class="type-desc">容易疲乏、气短</div></div>
+    <div class="type-card"><div class="type-icon">🥶</div><div class="type-name">阳虚质</div><div class="type-desc">怕冷、手脚冰凉</div></div>
+    <div class="type-card"><div class="type-icon">🔥</div><div class="type-name">阴虚质</div><div class="type-desc">口干、手脚心热</div></div>
+    <div class="type-card"><div class="type-icon">💧</div><div class="type-name">痰湿质 ★</div><div class="type-desc">身体沉重、容易胖</div></div>
+    <div class="type-card"><div class="type-icon">🌡️</div><div class="type-name">湿热质</div><div class="type-desc">面油、口苦</div></div>
+    <div class="type-card"><div class="type-icon">🩸</div><div class="type-name">血瘀质</div><div class="type-desc">面色晦暗、易瘀</div></div>
+    <div class="type-card"><div class="type-icon">😤</div><div class="type-name">气郁质</div><div class="type-desc">情绪低落、胸闷</div></div>
+    <div class="type-card"><div class="type-icon">🤧</div><div class="type-name">特禀质</div><div class="type-desc">容易过敏</div></div>
+    <div class="type-card"><div class="type-icon">😊</div><div class="type-name">平和质</div><div class="type-desc">体质均衡、健康</div></div>
+  </div>
+</div>
+
+<div class="section" id="products">
+  <h2>药食同源 · 老祖宗的养生智慧</h2>
+  <p class="sub">SC食品级认证 · 药食同源配方 · 每月新鲜配送</p>
+  <div class="prod-grid">
+    <div class="prod-card"><div class="prod-icon">🍵</div><div class="prod-info"><div class="prod-name">祛湿轻体</div><div class="prod-formula">红豆薏米+茯苓+陈皮</div></div><div class="prod-price">¥168/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🩸</div><div class="prod-info"><div class="prod-name">气血调养</div><div class="prod-formula">红枣+枸杞+阿胶+黄芪</div></div><div class="prod-price">¥198/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🫁</div><div class="prod-info"><div class="prod-name">护肝养生</div><div class="prod-formula">葛根+枳椇子+菊花+决明子</div></div><div class="prod-price">¥168/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🔥</div><div class="prod-info"><div class="prod-name">暖宫驱寒</div><div class="prod-formula">姜+红糖+桂圆+当归</div></div><div class="prod-price">¥158/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🥣</div><div class="prod-info"><div class="prod-name">健脾养胃</div><div class="prod-formula">山药+莲子+芡实+薏米</div></div><div class="prod-price">¥148/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🍐</div><div class="prod-info"><div class="prod-name">润肺清燥</div><div class="prod-formula">雪梨+百合+银耳+枇杷</div></div><div class="prod-price">¥138/月</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>科学营养补充</h2>
+  <p class="sub">国际品质 · 精准配方 · 订阅制每月配送</p>
+  <div class="prod-grid">
+    <div class="prod-card"><div class="prod-icon">🦠</div><div class="prod-info"><div class="prod-name">复合益生菌</div><div class="prod-formula">多菌株+益生元</div></div><div class="prod-price">¥198/月</div></div>
+    <div class="prod-card"><div class="prod-icon">✨</div><div class="prod-info"><div class="prod-name">胶原蛋白肽</div><div class="prod-formula">鱼胶原蛋白+VC</div></div><div class="prod-price">¥228/月</div></div>
+    <div class="prod-card"><div class="prod-icon">☀️</div><div class="prod-info"><div class="prod-name">维生素D3+K2</div><div class="prod-formula">VD3+MK7复合</div></div><div class="prod-price">¥98/月</div></div>
+    <div class="prod-card"><div class="prod-icon">🐟</div><div class="prod-info"><div class="prod-name">高纯度鱼油</div><div class="prod-formula">Omega-3 80%+</div></div><div class="prod-price">¥168/月</div></div>
+    <div class="prod-card"><div class="prod-icon">👁️</div><div class="prod-info"><div class="prod-name">叶黄素酯</div><div class="prod-formula">叶黄素+玉米黄质</div></div><div class="prod-price">¥128/月</div></div>
+    <div class="prod-card"><div class="prod-icon">💊</div><div class="prod-info"><div class="prod-name">综合维生素</div><div class="prod-formula">男士/女士多维</div></div><div class="prod-price">¥128/月</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>5步开启你的养生之旅</h2>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-title">体质测试</div><div class="step-desc">5分钟AI问卷</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">方案推荐</div><div class="step-desc">AI个性化方案</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">一键下单</div><div class="step-desc">微信/支付宝</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-title">每月配送</div><div class="step-desc">顺丰新鲜到家</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-title">持续调养</div><div class="step-desc">AI跟踪+调方案</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="trust">
+    <h2>品质保障</h2>
+    <div class="trust-items">
+      <div class="trust-item"><b>SC认证</b>食品生产许可</div>
+      <div class="trust-item"><b>顺丰配送</b>全程冷链</div>
+      <div class="trust-item"><b>7天无忧</b>不满意退</div>
+      <div class="trust-item"><b>AI跟踪</b>全程调养</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>MediSlim — 中医体质调养 · 科学养生</p>
+  <p style="margin-top:8px;opacity:.6">联系我们：添加健康顾问微信</p>
+</div>
+</body>
+</html>
