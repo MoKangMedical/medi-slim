@@ -1,0 +1,16 @@
+# MediSlim - 中国版Medvi消费医疗平台
+# 零外部依赖！Python标准库即可运行
+# 以下为可选依赖（生产环境推荐）
+
+# WSGI服务器（生产环境）
+# gunicorn>=21.2.0
+
+# 数据库（规模化后迁移）
+# sqlalchemy>=2.0
+# psycopg2-binary>=2.9
+
+# 缓存
+# redis>=5.0
+
+# 监控
+# sentry-sdk>=1.40
