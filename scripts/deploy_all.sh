@@ -15,7 +15,7 @@ mkdir -p data content_engine/data content_engine/output
 
 # 停止旧进程
 echo "🔄 停止旧进程..."
-for port in 8090 8091 8092 8093 8096 8097 8098 8099; do
+for port in 8090 8091 8092 8093 8096 8097 8098 8099 8100; do
     pid=$(lsof -ti :$port 2>/dev/null || true)
     if [ -n "$pid" ]; then
         kill $pid 2>/dev/null || true
@@ -57,6 +57,7 @@ start_service "preview"      8096 content_engine/preview_server.py
 start_service "tracking"     8097 content_engine/tracking.py
 start_service "smart_landing" 8098 smart_landing.py
 start_service "xhs_queue"    8099 xhs_queue.py
+start_service "scheduler"    8100 content_engine/scheduler.py
 
 echo ""
 echo "╔══════════════════════════════════════════════╗"
@@ -71,6 +72,7 @@ echo "║   🎨 内容预览:    http://localhost:8096       ║"
 echo "║   📈 漏斗看板:    http://localhost:8097/api/dashboard ║"
 echo "║   🌐 智能落地页:  http://localhost:8098       ║"
 echo "║   📮 发布队列:    http://localhost:8099       ║"
+echo "║   📅 智能排期:    http://localhost:8100       ║"
 echo "║                                              ║"
 echo "╚══════════════════════════════════════════════╝"
 echo ""
