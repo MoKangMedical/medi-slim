@@ -1,14 +1,32 @@
-# 💊 MediSlim — 中国版Medvi消费医疗平台
+# 💊 MediSlim v5.0 — AI驱动消费医疗平台
 
-> AI驱动的轻量级消费医疗平台，完全复刻Medvi极简架构模式
+> **中国版Medvi × AI健康助手**
+> AI体质评估 + 个性化推荐 + 智能客服 + 多平台营销
+> 一个人 + AI工具 = 年收入3000万的消费医疗平台
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-5.0.0-brightgreen)](#)
 [![Deploy](https://img.shields.io/badge/Deploy-Production-brightgreen)](#部署)
 
-## 🚀 一句话
+---
 
-**只做流量层，医疗合规全外包。** 一个人 + AI工具 = 消费医疗平台。
+## 🎯 一句话
+
+**只做流量层，医疗合规全外包。** AI驱动全链路，从获客到复购。
+
+---
+
+## 🚀 v5.0 核心升级
+
+| 模块 | 功能 | 状态 |
+|------|------|------|
+| 🤖 AI健康助手 | 九种体质评估 + 个性化推荐 | ✅ 完成 |
+| 📱 智能营销 | 小红书/抖音/朋友圈内容生成 | ✅ 完成 |
+| 💬 AI客服 | 24小时智能问答 | ✅ 完成 |
+| 📊 数据分析 | 实时仪表盘 + 趋势预测 | ✅ 完成 |
+| 🎯 智能推荐 | 基于体质的产品匹配 | ✅ 完成 |
+
+---
 
 ## 📦 产品矩阵
 
@@ -20,57 +38,130 @@
 | 💪 男性健康 | 精力/睾酮管理 | ¥399 | ¥599 | 150亿+ |
 | 😴 助眠调理 | 失眠/褪黑素 | ¥199 | ¥299 | 100亿+ |
 
+---
+
 ## 🏗️ 架构
 
 ```
-MediSlim (我们)              合作伙伴 (全外包)
-┌─────────────────┐         ┌──────────────────┐
-│ 品牌/流量        │  ←→    │ 互联网医院        │
-│ AI健康评估       │  ←→    │ 合规药房          │
-│ 用户运营/复购    │  ←→    │ 物流配送          │
-│ 微信小程序       │  ←→    │ 支付通道          │
-└─────────────────┘         └──────────────────┘
+MediSlim v5.0 (我们)              合作伙伴 (全外包)
+┌─────────────────────┐         ┌──────────────────┐
+│ 品牌/流量            │  ←→    │ 互联网医院        │
+│ AI健康助手 🆕        │  ←→    │ 合规药房          │
+│ 智能营销 🆕          │  ←→    │ 物流配送          │
+│ 用户运营/复购        │  ←→    │ 支付结算          │
+└─────────────────────┘         └──────────────────┘
 ```
 
-## ⚡ 快速启动
+---
+
+## 🤖 AI健康助手
+
+### 九种体质评估
+- 气虚、阳虚、阴虚、痰湿、湿热、血瘀、气郁、特禀、平和
+- 3分钟完成评估
+- 自动匹配最适合的产品
+
+### 个性化推荐
+- 基于体质 + 健康目标
+- AI评分系统
+- 智能客服24小时响应
+
+---
+
+## 📱 智能营销
+
+### 内容模板
+- 小红书：用户故事、产品测评、经验分享
+- 抖音：科普视频、专家访谈、产品展示
+- 朋友圈：早安分享、干货内容、促销活动
+
+### 内容日历
+- 7天自动排期
+- 多平台分发
+- 效果追踪分析
+
+---
+
+## 📊 数据分析
+
+### 实时仪表盘
+- 用户增长趋势
+- 收入分析
+- 产品销售排名
+- 体质分布统计
+
+---
+
+## 🏥 合规架构
+
+```
+OPC公司 (我们)                   合作伙伴
+┌─────────────────┐           ┌─────────────────┐
+│ 品牌/流量        │  ←→      │ 互联网医院牌照   │
+│ AI技术/数据      │  ←→      │ 处方审核/医疗    │
+│ 用户运营         │  ←→      │ 药房/物流/支付   │
+└─────────────────┘           └─────────────────┘
+```
+
+---
+
+## 💰 财务模型
+
+| 年份 | GMV | 净利润率 | 净利润 |
+|------|-----|---------|--------|
+| Y1 | ¥3,000万 | 35% | ¥1,050万 |
+| Y2 | ¥1亿 | 40% | ¥4,000万 |
+| Y3 | ¥3亿 | 45% | ¥1.35亿 |
+
+---
+
+## 🚀 部署
 
 ```bash
-# 直接运行（零依赖）
-python3 app.py
+# 克隆项目
+git clone https://github.com/MoKangMedical/medi-slim.git
+cd medi-slim
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 启动所有服务
+bash scripts/deploy.sh 8090
 
 # 访问
-# 前端：http://localhost:8090
-# API：http://localhost:8090/api/stats
+# 主应用: http://localhost:8090
+# 落地页: http://localhost:8091
+# 业务流: http://localhost:8092
+# 管理后台: http://localhost:8093
 ```
 
-## 🔌 API
+---
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/products` | GET | 产品列表 |
-| `/api/hospitals` | GET | 合作医院 |
-| `/api/user/register` | POST | 用户注册 |
-| `/api/assessment/start` | POST | 开始评估 |
-| `/api/assessment/analyze` | POST | AI分析 |
-| `/api/order/create` | POST | 创建订单 |
-| `/api/order/status` | POST | 订单状态 |
-| `/api/stats` | GET | 平台统计 |
+## 📁 项目结构
 
-## 💰 商业模型
+```
+medi-slim/
+├── app.py                 # 主应用 (端口8090)
+├── landing.py             # 获客落地页 (端口8091)
+├── flow_engine.py         # 业务流引擎 (端口8092)
+├── admin.py               # 管理后台 (端口8093)
+├── ai_assistant.py        # AI健康助手 🆕
+├── smart_marketing.py     # 智能营销 🆕
+├── content_engine/        # 内容工厂
+├── docs/                  # 文档
+├── templates/             # 模板
+└── scripts/               # 脚本
+```
 
-详见 [docs/BUSINESS-MODEL.md](docs/BUSINESS-MODEL.md)
+---
 
-**财务预测（对标Medvi）：**
-- 月1-2：冷启动 ¥50万/月
-- 月3-6：增长期 ¥500万/月
-- 月7-12：规模化 ¥3000万/月
-- 净利率：28%（Medvi为16.2%）
+## 🔗 相关链接
 
-## 🔗 关联项目
+- **GitHub**: https://github.com/MoKangMedical/medi-slim
+- **GitHub Pages**: https://mokangmedical.github.io/medi-slim/
+- **MediChat-RD**: https://github.com/MoKangMedical/medichat-rd
 
-- **MediChat-RD** — 罕见病AI诊断平台（技术品牌）
-- **MediSlim** — 消费医疗平台（本项目，印钞机）
+---
 
-## 📄 License
-
-MIT
+*MediSlim v5.0 | 2026年4月*
+*AI驱动的消费医疗平台*
