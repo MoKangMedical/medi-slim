@@ -60,7 +60,7 @@ install -m 644 "${TMP_APP_SERVICE}" /etc/systemd/system/medislim-app.service
 install -m 644 "${TMP_ADMIN_SERVICE}" /etc/systemd/system/medislim-admin.service
 
 echo "[5/9] 写入 nginx 站点"
-envsubst < "${ROOT_DIR}/scripts/server/nginx-medislim.conf.template" > "${TMP_NGINX}"
+envsubst '${DOMAIN} ${WWW_DOMAIN} ${ADMIN_DOMAIN}' < "${ROOT_DIR}/scripts/server/nginx-medislim.conf.template" > "${TMP_NGINX}"
 install -m 644 "${TMP_NGINX}" /etc/nginx/conf.d/medislim.conf
 nginx -t
 
