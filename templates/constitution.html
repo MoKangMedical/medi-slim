@@ -111,10 +111,14 @@
 
     function renderResult(result) {
       const primary = result.primary || {};
+      const providerLabel = result.ai_provider === 'mimo'
+        ? `MiMo 实时解读 · ${result.ai_model || 'mimo'}`
+        : '本地规则解读';
       document.getElementById('resultPanel').style.display = 'block';
       document.getElementById('resultPanel').innerHTML = `
         <section class="result-card">
           <div class="pill">${primary.label || '体质结果'}</div>
+          <div class="tags" style="margin-top:12px"><span class="tag">${providerLabel}</span></div>
           <h3>${primary.summary || ''}</h3>
           <p>${primary.focus || ''}</p>
           <div class="result-grid">

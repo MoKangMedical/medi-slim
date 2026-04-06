@@ -213,14 +213,20 @@
       const plan = result.plan || result.recommendation || '暂无建议';
       const includes = Array.isArray(result.includes) ? result.includes : [];
       const contraindications = Array.isArray(result.contraindications) ? result.contraindications : [];
+      const aiCautions = Array.isArray(result.ai_cautions) ? result.ai_cautions : [];
+      const aiFollowups = Array.isArray(result.ai_followups) ? result.ai_followups : [];
       const isEligible = Boolean(result.eligible);
+      const providerLabel = result.ai_provider === 'mimo'
+        ? `MiMo 实时建议 · ${result.ai_model || 'mimo'}`
+        : '本地规则建议';
 
       resultPanel.style.display = 'block';
       resultPanel.innerHTML = `
         <section class="result-card">
           <div class="pill">${product ? `${product.emoji} ${product.name}` : '评估结果'}</div>
+          <div class="tags" style="margin-top:12px"><span class="tag">${providerLabel}</span></div>
           <h3>${isEligible ? '可进入方案与下单演示' : '当前不建议直接下单'}</h3>
-          <p>${result.reason || plan}</p>
+          <p>${result.ai_summary || result.reason || plan}</p>
           <div class="result-grid">
             <div class="stat"><strong>${result.bmi || result.score || '-'}</strong><span>${result.bmi ? 'BMI' : '评估强度'}</span></div>
             <div class="stat"><strong>${result.estimated_months || '-'}</strong><span>预计周期（月）</span></div>
@@ -232,6 +238,8 @@
             <p>${plan}</p>
             ${includes.length ? `<div class="tags">${includes.map((item) => `<span class="tag">${item}</span>`).join('')}</div>` : ''}
             ${contraindications.length ? `<div class="note" style="margin-top:16px">${contraindications.join('；')}</div>` : ''}
+            ${aiCautions.length ? `<div class="note" style="margin-top:16px"><strong>注意事项：</strong>${aiCautions.join('；')}</div>` : ''}
+            ${aiFollowups.length ? `<div class="tags" style="margin-top:16px">${aiFollowups.map((item) => `<span class="tag">${item}</span>`).join('')}</div>` : ''}
           </div>
           ${isEligible ? orderTemplate() : '<div class="note" style="margin-top:16px">当前结果不适合直接进入下单演示，可返回修改答案再试。</div>'}
         </section>

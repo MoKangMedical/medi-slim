@@ -10,6 +10,7 @@ from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 from constitution_engine import get_questionnaire, analyze_constitution
+from mimo_client import enrich_assessment_result, enrich_constitution_result
 from order_flow import create_order_record, apply_order_action, decorate_order
 from partner_hub import (
     PARTNERS,
@@ -43,6 +44,7 @@ from wecom_handoff import (
     add_thread_message,
     queue_summary,
 )
+from runtime_env import load_env_file
 
 try:
     from content_engine.tracking import track_event, get_funnel, get_content_performance
@@ -50,6 +52,8 @@ except Exception:  # pragma: no cover - optional integration
     track_event = None
     get_funnel = None
     get_content_performance = None
+
+load_env_file()
 
 # ========== 配置 ==========
 class Config:
@@ -589,11 +593,13 @@ class SlimAIEngine:
             }
 
         if product_id == "glp1":
-            return SlimAIEngine._analyze_glp1(product, answers, questions)
+            local_result = SlimAIEngine._analyze_glp1(product, answers, questions)
         elif product_id == "hair":
-            return SlimAIEngine._analyze_hair(product, answers, questions)
+            local_result = SlimAIEngine._analyze_hair(product, answers, questions)
         else:
-            return SlimAIEngine._analyze_generic(product, product_id, answers, questions)
+            local_result = SlimAIEngine._analyze_generic(product, product_id, answers, questions)
+
+        return enrich_assessment_result(product, answers, local_result)
 
     @staticmethod
     def _analyze_glp1(product, answers, questions):
@@ -989,6 +995,7 @@ class MediSlimHandler(BaseHTTPRequestHandler):
 
         elif path == "/api/constitution/analyze":
             result = analyze_constitution(data.get("answers", {}))
+            result = enrich_constitution_result(data.get("answers", {}), result)
             track_attribution_event(extract_attribution(data), "assess_done", {
                 "assessment_type": "constitution",
                 "primary": result.get("primary", {}).get("id", ""),

@@ -10,8 +10,10 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+from mimo_client import provider_status
 from order_flow import decorate_order
 from partner_hub import partner_dashboard
+from runtime_env import load_env_file
 from storage import BASE_DIR, load_json, save_json, load_orders, migrate_legacy_orders, now_iso, short_id
 from subscription_engine import list_subscriptions, due_subscriptions
 from wecom_handoff import queue_summary
@@ -25,6 +27,8 @@ except Exception:  # pragma: no cover - optional integration
     get_content_performance = None
     analyze_ab = None
     generate_schedule = None
+
+load_env_file()
 
 APP_ORIGIN = os.environ.get("MEDISLIM_APP_ORIGIN", "http://127.0.0.1:8090")
 CONTENT_CATALOG_PATH = BASE_DIR / "content_engine" / "output" / "catalog.json"
@@ -132,6 +136,7 @@ def forward_app_post(path, payload):
 
 
 def system_status():
+    mimo = provider_status()
     return [
         {
             "name": "主站前台",
@@ -180,6 +185,18 @@ def system_status():
             "health_url": "http://127.0.0.1:8101/api/ab/analysis",
             "description": "内容排名、品类对比和转化洞察",
             "status": check_service("http://127.0.0.1:8101/api/ab/analysis"),
+        },
+        {
+            "name": "小米 MiMo API",
+            "entry": mimo["model"],
+            "port": None,
+            "health_url": "https://platform.xiaomimimo.com/#/console/api-keys" if mimo["configured"] else "",
+            "description": (
+                f"已启用 {mimo['model']}，用于评估说明与体质解读"
+                if mimo["configured"]
+                else "未配置 MIMO_API_KEY，当前仍使用本地规则引擎"
+            ),
+            "status": "ready" if mimo["configured"] else "pending",
         },
     ]
 

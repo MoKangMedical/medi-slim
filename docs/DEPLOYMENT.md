@@ -58,6 +58,36 @@ bash ./scripts/server/install_ubuntu.sh medislim.cloud www.medislim.cloud admin.
 
 如果代码已经合并到主分支，把上面的 `codex/upload-medi-slim-code` 替换为目标分支名。
 
+## 3.3 配置 Xiaomi MiMo API
+
+安装脚本会保留服务器上的 `/opt/medi-slim/.env`，不会在更新时被覆盖。
+
+首次启用 MiMo：
+
+```bash
+cd /opt/medi-slim
+cp .env.example .env
+vi .env
+```
+
+至少填写：
+
+```bash
+MIMO_ENABLED=1
+MIMO_API_KEY=你的 MiMo API Key
+MIMO_CHAT_MODEL=mimo-v2-flash
+MIMO_API_BASE_URL=https://api.xiaomimimo.com/v1
+MIMO_TIMEOUT_SECONDS=20
+```
+
+保存后重启：
+
+```bash
+systemctl restart medislim-app medislim-admin
+```
+
+后台 `https://admin.medislim.cloud` 的系统状态页会显示 “小米 MiMo API” 是否已配置成功。
+
 ## 4. 验证清单
 
 ```bash

@@ -57,6 +57,42 @@ python3 admin.py
 - 主站健康检查：`http://localhost:8090/api/health`
 - 后台健康检查：`http://localhost:8093/api/admin/health`
 
+## 🤖 小米 MiMo API
+
+主链路里的两类交互现在支持调用 Xiaomi MiMo：
+
+- `/api/assessment/analyze`：保留本地规则判定，再由 MiMo 生成用户可见的说明、注意事项和下一步建议
+- `/api/constitution/analyze`：保留体质分型和分数，再由 MiMo 生成更自然的体质解读
+
+本地或服务器配置方式：
+
+```bash
+cp .env.example .env
+```
+
+然后填写：
+
+```bash
+MIMO_ENABLED=1
+MIMO_API_KEY=你的小米 MiMo API Key
+MIMO_CHAT_MODEL=mimo-v2-flash
+MIMO_API_BASE_URL=https://api.xiaomimimo.com/v1
+MIMO_TIMEOUT_SECONDS=20
+```
+
+重启服务后生效：
+
+```bash
+python3 app.py
+python3 admin.py
+```
+
+或在线上环境执行：
+
+```bash
+systemctl restart medislim-app medislim-admin
+```
+
 ## 🎬 纯前端成片 Demo
 
 现在有一套纯前端动画成片页，包含中文旁白、中文字幕、半真实人物视觉和数据可视化：

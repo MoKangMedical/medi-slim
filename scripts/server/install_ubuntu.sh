@@ -39,6 +39,9 @@ echo "[3/8] 准备应用目录"
 mkdir -p "${APP_DIR}"
 rsync -a --delete \
   --exclude '.git' \
+  --exclude '.env' \
+  --exclude '.env.local' \
+  --exclude '.env.production' \
   --exclude '__pycache__' \
   --exclude 'logs' \
   --exclude 'run' \
@@ -46,6 +49,9 @@ rsync -a --delete \
   "${ROOT_DIR}/" "${APP_DIR}/"
 mkdir -p "${APP_DIR}/logs" "${APP_DIR}/run" "${APP_DIR}/data"
 chown -R "${APP_USER}:${APP_USER}" "${APP_DIR}"
+if [[ -f "${APP_DIR}/.env" ]]; then
+  chmod 600 "${APP_DIR}/.env"
+fi
 
 echo "[4/8] 写入 systemd 服务"
 envsubst < "${ROOT_DIR}/scripts/server/medislim-app.service.template" > "${TMP_APP_SERVICE}"
@@ -83,3 +89,8 @@ echo "检查命令："
 echo "  systemctl status medislim-app medislim-admin nginx"
 echo "  journalctl -u medislim-app -n 80 --no-pager"
 echo "  journalctl -u medislim-admin -n 80 --no-pager"
+echo
+echo "MiMo 配置："
+echo "  cp ${APP_DIR}/.env.example ${APP_DIR}/.env"
+echo "  vi ${APP_DIR}/.env   # 填写 MIMO_API_KEY"
+echo "  systemctl restart medislim-app medislim-admin"
