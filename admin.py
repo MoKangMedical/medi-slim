@@ -689,6 +689,9 @@ class AdminHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Max-Age", "86400")
         self.end_headers()
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         path = self.path.split("?")[0]
 
@@ -808,10 +811,7 @@ class AdminHandler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
     
     def _html(self, html):
-        self.send_response(200)
-        self._send_common_headers("text/html; charset=utf-8")
-        self.end_headers()
-        self.wfile.write(html.encode("utf-8"))
+        self._write_response(200, "text/html; charset=utf-8", html.encode("utf-8"))
 
     def _serve(self, relative_path, content_type):
         full = BASE_DIR / relative_path
@@ -821,14 +821,22 @@ class AdminHandler(BaseHTTPRequestHandler):
 
         self.send_response(200)
         self._send_common_headers(content_type)
+        self.send_header("Content-Length", str(full.stat().st_size))
         self.end_headers()
-        self.wfile.write(full.read_bytes())
+        if self.command != "HEAD":
+            self.wfile.write(full.read_bytes())
     
     def _json(self, data, status=200):
+        payload = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+        self._write_response(status, "application/json; charset=utf-8", payload)
+
+    def _write_response(self, status, content_type, payload):
         self.send_response(status)
-        self._send_common_headers("application/json; charset=utf-8")
+        self._send_common_headers(content_type)
+        self.send_header("Content-Length", str(len(payload)))
         self.end_headers()
-        self.wfile.write(json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"))
+        if self.command != "HEAD":
+            self.wfile.write(payload)
 
     def _send_common_headers(self, content_type):
         self.send_header("Content-Type", content_type)

@@ -818,6 +818,9 @@ class MediSlimHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Max-Age", "86400")
         self.end_headers()
 
+    def do_HEAD(self):
+        self.do_GET()
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
@@ -1360,20 +1363,28 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
 
     def _json(self, data, status=200):
-        self.send_response(status)
-        self._send_common_headers("application/json; charset=utf-8")
-        self.end_headers()
-        self.wfile.write(json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"))
+        payload = json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")
+        self._write_response(status, "application/json; charset=utf-8", payload)
 
     def _serve(self, filepath, content_type):
         full = BASE_DIR / filepath
         if full.exists():
             self.send_response(200)
             self._send_common_headers(content_type)
+            self.send_header("Content-Length", str(full.stat().st_size))
             self.end_headers()
-            self.wfile.write(full.read_bytes())
+            if self.command != "HEAD":
+                self.wfile.write(full.read_bytes())
         else:
             self._json({"error": "Not found"}, 404)
+
+    def _write_response(self, status, content_type, payload):
+        self.send_response(status)
+        self._send_common_headers(content_type)
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(payload)
 
     def _send_common_headers(self, content_type):
         self.send_header("Content-Type", content_type)

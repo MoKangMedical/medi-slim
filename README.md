@@ -89,19 +89,9 @@ ADMIN_DOMAIN=admin.medislim.cloud \
 
 ## ☁️ 腾讯云轻量服务器部署
 
-如果域名已经直接解析到腾讯云轻量服务器 IP，例如 `43.134.3.158`，不要再走 tunnel，直接在服务器上执行：
+如果域名已经直接解析到腾讯云轻量服务器 IP，例如 `43.134.3.158`，不要再走 tunnel，直接看部署手册：
 
-```bash
-cd /opt/medi-slim
-sudo bash ./scripts/server/install_ubuntu.sh medislim.cloud www.medislim.cloud admin.medislim.cloud
-```
-
-这个脚本会自动：
-
-- 安装 `python3`、`nginx`、`certbot`
-- 把前台和后台注册成 `systemd` 服务
-- 生成 `nginx` 反向代理
-- 申请 HTTPS 证书
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
 部署模板在这里：
 
