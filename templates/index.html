@@ -84,7 +84,7 @@
             <h2>把一次真实变化，拍成一分钟。</h2>
             <p>从状态失衡，到 AI 评估、合作医院履约，再到重新回到自己的节奏。</p>
           </div>
-          <div class="demo-note">自动播放 · 静音循环 · Demo</div>
+          <div class="demo-note">MP4 / WebM · 自动播放 · 静音循环</div>
         </div>
         <div class="demo-film">
           <div class="demo-player">
@@ -92,111 +92,63 @@
               <div class="demo-player-dots">
                 <span></span><span></span><span></span>
               </div>
-              <div class="demo-player-label">MediSlim Story Reel</div>
+              <div class="demo-player-label">MediSlim Story Film</div>
+              <a class="demo-audio-link" href="/static/media/demo/medislim-demo-voiceover.mp4" target="_blank" rel="noopener">打开配音版</a>
             </div>
-            <div class="demo-stage">
-              <article class="demo-scene is-active" data-demo-scene>
-                <div class="demo-scene-copy">
-                  <div class="eyebrow">Scene 01</div>
-                  <h3>她不是想变得更狠，她只是想把生活重新过顺。</h3>
-                  <p>体重、睡眠和皮肤状态一起失控，连照镜子和出门都开始变得费劲。</p>
-                </div>
-                <div class="scene-portrait">
-                  <div class="portrait-halo"></div>
-                  <div class="portrait-card">
-                    <span>睡不好</span>
-                    <span>总在反弹</span>
-                    <span>没力气</span>
-                  </div>
-                </div>
-              </article>
-
-              <article class="demo-scene" data-demo-scene>
-                <div class="demo-scene-copy">
-                  <div class="eyebrow">Scene 02</div>
-                  <h3>先问身体状态，再判断适合哪条路。</h3>
-                  <p>AI 评估和九种体质辨识先把情况看清，再决定先减重、助眠、皮肤还是男性健康。</p>
-                </div>
-                <div class="scene-phone">
-                  <div class="scene-phone-top"></div>
-                  <div class="scene-phone-card">
-                    <strong>AI 评估中</strong>
-                    <span>BMI、睡眠、皮肤状态、体质偏向</span>
-                  </div>
-                  <div class="scene-phone-list">
-                    <span>气郁倾向</span>
-                    <span>湿热偏高</span>
-                    <span>建议先做轻评估</span>
-                  </div>
-                </div>
-              </article>
-
-              <article class="demo-scene" data-demo-scene>
-                <div class="demo-scene-copy">
-                  <div class="eyebrow">Scene 03</div>
-                  <h3>不是一刀切，而是进入对应产品方案。</h3>
-                  <p>评估后直接进入适合的方案入口，价格、履约方式和后续复购节奏都一并看清。</p>
-                </div>
-                <div class="scene-product-wall" id="demoProductShowcase"></div>
-              </article>
-
-              <article class="demo-scene" data-demo-scene>
-                <div class="demo-scene-copy">
-                  <div class="eyebrow">Scene 04</div>
-                  <h3>前台轻，医院和药房把后面的事接住。</h3>
-                  <p>评估后进入医生审核、药房履约和配送链路，产品供应与复购提醒持续跟进。</p>
-                </div>
-                <div class="scene-fulfillment">
-                  <div class="scene-logos" id="demoPartnerLogos"></div>
-                  <div class="scene-timeline">
-                    <span>AI 评估</span>
-                    <span>医生审核</span>
-                    <span>药房发货</span>
-                    <span>订阅跟踪</span>
-                  </div>
-                </div>
-              </article>
-
-              <article class="demo-scene" data-demo-scene>
-                <div class="demo-scene-copy">
-                  <div class="eyebrow">Scene 05</div>
-                  <h3>不是更激进，而是终于回到自己的节奏。</h3>
-                  <p>体重更稳，睡得更沉，状态更轻一点，用户愿意把这套服务继续留在生活里。</p>
-                </div>
-                <div class="scene-outcome">
-                  <div class="scene-outcome-quote">“我不是被推着走，而是终于又能照顾自己了。”</div>
-                  <div class="scene-outcome-metrics">
-                    <div><strong>5</strong><span>核心品类</span></div>
-                    <div><strong>9</strong><span>体质辨识</span></div>
-                    <div><strong>1</strong><span>统一前台</span></div>
-                  </div>
-                </div>
-              </article>
+            <div class="demo-video-shell">
+              <video
+                class="demo-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="/static/media/demo/medislim-demo-poster.png"
+              >
+                <source src="/static/media/demo/medislim-demo-loop.webm" type="video/webm">
+                <source src="/static/media/demo/medislim-demo-loop.mp4" type="video/mp4">
+              </video>
+              <div class="demo-video-overlay">
+                <div class="demo-video-kicker">60 秒剧情成片</div>
+                <strong>从 AI 评估，到医院履约，再回到生活节奏。</strong>
+                <span>静音版用于首页自动播放，配音版可单独打开。</span>
+                <button class="demo-video-toggle" id="demoVideoToggle" type="button">播放预览</button>
+              </div>
             </div>
-            <div class="demo-progress" id="demoProgress"></div>
+            <div class="demo-action-row">
+              <a class="button button-secondary" href="/static/media/demo/medislim-demo-voiceover.mp4" target="_blank" rel="noopener">观看配音版</a>
+              <a class="button button-primary" href="/assess">进入真实评估</a>
+            </div>
           </div>
 
-          <div class="demo-script" id="demoScript">
-            <button class="demo-beat is-current" type="button" data-demo-beat>
+          <div class="demo-script">
+            <div class="demo-script-head">
+              <div>
+                <div class="eyebrow">镜头节奏</div>
+                <h3>让用户先被理解，再自然进入产品。</h3>
+              </div>
+              <p>这支片子不是介绍功能，而是先讲她为什么愿意留下来。</p>
+            </div>
+            <div class="demo-beat is-current">
               <strong>01 情绪低谷</strong>
               <span>先让用户感到“被理解”，不是直接推销产品。</span>
-            </button>
-            <button class="demo-beat" type="button" data-demo-beat>
+            </div>
+            <div class="demo-beat">
               <strong>02 AI 评估</strong>
               <span>把九种体质和健康评估做成第一入口。</span>
-            </button>
-            <button class="demo-beat" type="button" data-demo-beat>
+            </div>
+            <div class="demo-beat">
               <strong>03 进入方案</strong>
               <span>产品选择来自评估结果，不是先卖货。</span>
-            </button>
-            <button class="demo-beat" type="button" data-demo-beat>
+            </div>
+            <div class="demo-beat">
               <strong>04 履约承接</strong>
               <span>合作医院、药房和供应链把服务真正落下去。</span>
-            </button>
-            <button class="demo-beat" type="button" data-demo-beat>
+            </div>
+            <div class="demo-beat">
               <strong>05 回到生活</strong>
               <span>最后卖的不是药，而是更稳的节奏和复购关系。</span>
-            </button>
+            </div>
           </div>
         </div>
       </div>
@@ -395,31 +347,6 @@
       document.getElementById('stat-leads').textContent = stats.total_leads;
       document.getElementById('stat-subscriptions').textContent = stats.total_subscriptions || 0;
 
-      const featuredProductIds = ['glp1', 'sleep', 'skin'];
-      document.getElementById('demoProductShowcase').innerHTML = featuredProductIds
-        .filter((id) => products[id])
-        .map((id) => {
-          const product = products[id];
-          return `
-            <article class="demo-product">
-              <img src="${product.image}" alt="${product.image_alt || product.name}" loading="lazy">
-              <div>
-                <strong>${product.name}</strong>
-                <span>¥${product.first_price} 起</span>
-              </div>
-            </article>
-          `;
-        }).join('');
-
-      document.getElementById('demoPartnerLogos').innerHTML = [
-        ...hospitals.slice(0, 2).map((item) => ({ name: item.name, logo: item.logo })),
-        ...pharmacies.slice(0, 2).map((item) => ({ name: item.name, logo: item.logo })),
-      ].map((partner) => `
-        <div class="demo-logo">
-          <img src="${partner.logo}" alt="${partner.name}" loading="lazy">
-        </div>
-      `).join('');
-
       document.getElementById('product-grid').innerHTML = Object.entries(products).map(([id, product]) => {
         const supportLabel = product.requires_prescription ? '处方协作方案' : '轻干预调理方案';
         const facts = (product.includes || []).slice(0, 2);
@@ -523,51 +450,49 @@
         document.getElementById('leadSource').value = attribution.utm_source;
       }
 
-      initDemoPlayer();
+      initDemoVideo();
     }
 
-    function initDemoPlayer() {
-      const scenes = Array.from(document.querySelectorAll('[data-demo-scene]'));
-      const beats = Array.from(document.querySelectorAll('[data-demo-beat]'));
-      const progress = document.getElementById('demoProgress');
-      if (!scenes.length || !beats.length || !progress || progress.dataset.ready === '1') {
+    function initDemoVideo() {
+      const video = document.querySelector('.demo-video');
+      const toggle = document.getElementById('demoVideoToggle');
+      if (!video || !toggle || toggle.dataset.ready === '1') {
         return;
       }
 
-      progress.dataset.ready = '1';
-      progress.innerHTML = scenes.map(() => '<span></span>').join('');
-      const bars = Array.from(progress.querySelectorAll('span'));
-      let activeIndex = 0;
-      let timer = null;
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      toggle.dataset.ready = '1';
 
-      function activate(index) {
-        activeIndex = index;
-        scenes.forEach((scene, sceneIndex) => {
-          scene.classList.toggle('is-active', sceneIndex === index);
-        });
-        beats.forEach((beat, beatIndex) => {
-          beat.classList.toggle('is-current', beatIndex === index);
-        });
-        bars.forEach((bar, barIndex) => {
-          bar.classList.toggle('is-current', barIndex === index);
-        });
+      function sync() {
+        const playing = !video.paused && !video.ended;
+        toggle.textContent = playing ? '暂停预览' : '播放预览';
+        toggle.classList.toggle('is-playing', playing);
       }
 
-      beats.forEach((beat, index) => {
-        beat.addEventListener('click', () => {
-          activate(index);
-          if (!reduceMotion) {
-            window.clearInterval(timer);
-            timer = window.setInterval(() => activate((activeIndex + 1) % scenes.length), 3800);
-          }
-        });
+      async function tryPlay() {
+        try {
+          video.muted = true;
+          await video.play();
+        } catch (error) {
+          sync();
+        }
+      }
+
+      toggle.addEventListener('click', async () => {
+        if (video.paused) {
+          await tryPlay();
+        } else {
+          video.pause();
+        }
+        sync();
       });
 
-      activate(0);
-      if (!reduceMotion) {
-        timer = window.setInterval(() => activate((activeIndex + 1) % scenes.length), 3800);
-      }
+      video.addEventListener('play', sync);
+      video.addEventListener('pause', sync);
+      video.addEventListener('ended', sync);
+      sync();
+      window.requestAnimationFrame(() => {
+        tryPlay().finally(sync);
+      });
     }
 
     async function submitLead() {

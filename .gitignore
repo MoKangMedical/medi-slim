@@ -32,6 +32,7 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+.playwright-cli/
 
 # 日志
 *.log
@@ -45,3 +46,4 @@ nohup.out
 
 # 素材构建缓存
 output/slides/**/node_modules/
+output/video_demo/

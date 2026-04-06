@@ -56,6 +56,23 @@ python3 admin.py
 - 主站健康检查：`http://localhost:8090/api/health`
 - 后台健康检查：`http://localhost:8093/api/admin/health`
 
+## 🎬 剧情 Demo 导出
+
+首页剧情 Demo 现在有可直接发布的静音版、配音版和海报图，生成命令：
+
+```bash
+python3 scripts/generate_demo_video.py
+```
+
+导出文件：
+
+- `static/media/demo/medislim-demo-loop.mp4`
+- `static/media/demo/medislim-demo-loop.webm`
+- `static/media/demo/medislim-demo-voiceover.mp4`
+- `static/media/demo/medislim-demo-poster.png`
+
+首页会默认使用静音循环版，配音版保留给手动打开或对外演示。
+
 ## 🌐 公网访问与自定义域名
 
 匿名公网隧道：

@@ -336,10 +336,18 @@ button.secondary {
   border-radius: 34px;
 }
 
+.demo-audio-link {
+  margin-left: auto;
+  color: var(--brand-strong);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .demo-player-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 14px;
   margin-bottom: 16px;
 }
@@ -368,7 +376,7 @@ button.secondary {
   text-transform: uppercase;
 }
 
-.demo-stage {
+.demo-video-shell {
   position: relative;
   min-height: 540px;
   overflow: hidden;
@@ -379,42 +387,94 @@ button.secondary {
     linear-gradient(180deg, #fffaf3 0%, #f8efe2 100%);
 }
 
-.demo-scene {
+.demo-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #102420;
+}
+
+.demo-video-overlay {
   position: absolute;
-  inset: 0;
+  inset: auto 20px 20px 20px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.9fr);
-  gap: 20px;
-  padding: 28px;
-  opacity: 0;
-  transform: translateY(14px) scale(0.985);
-  transition: opacity 0.55s ease, transform 0.55s ease;
+  gap: 8px;
+  padding: 18px 20px;
+  border-radius: 24px;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(18, 33, 29, 0.12), rgba(18, 33, 29, 0.82));
   pointer-events: none;
 }
 
-.demo-scene.is-active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.demo-scene-copy {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-}
-
-.demo-scene-copy h3 {
-  margin: 0;
+.demo-video-overlay strong {
   font-family: "Iowan Old Style", "Georgia", "STSong", serif;
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(22px, 3vw, 32px);
   line-height: 1.08;
 }
 
-.demo-scene-copy p {
+.demo-video-overlay span {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.demo-video-kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.demo-video-toggle {
+  pointer-events: auto;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.demo-video-toggle:hover,
+.demo-video-toggle.is-playing {
+  background: rgba(255, 255, 255, 0.22);
+  transform: none;
+}
+
+.demo-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.demo-script-head {
+  display: grid;
+  gap: 10px;
+  padding: 4px 4px 10px;
+}
+
+.demo-script-head h3 {
+  margin: 10px 0 0;
+  font-family: "Iowan Old Style", "Georgia", "STSong", serif;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.08;
+}
+
+.demo-script-head p {
   margin: 0;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .scene-portrait,
@@ -641,25 +701,6 @@ button.secondary {
   color: var(--muted);
   font-size: 13px;
   font-weight: 600;
-}
-
-.demo-progress {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.demo-progress span {
-  display: block;
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(24, 52, 47, 0.12);
-  overflow: hidden;
-}
-
-.demo-progress span.is-current {
-  background: linear-gradient(90deg, var(--brand), var(--accent));
 }
 
 .demo-script {
@@ -1213,15 +1254,16 @@ textarea {
     border-radius: 26px;
   }
 
-  .demo-stage {
+  .demo-video-shell {
     min-height: 620px;
   }
 
-  .demo-scene {
-    padding: 20px;
+  .demo-video-overlay {
+    inset: auto 16px 16px 16px;
+    padding: 16px 18px;
   }
 
-  .demo-scene-copy h3 {
+  .demo-script-head h3 {
     font-size: clamp(28px, 8vw, 40px);
   }
 
@@ -1528,8 +1570,8 @@ textarea {
     border-radius: 22px;
   }
 
-  .demo-stage {
-    min-height: 560px;
+  .demo-video-shell {
+    min-height: auto;
     border-radius: 22px;
   }
 
@@ -1537,22 +1579,38 @@ textarea {
     margin-bottom: 12px;
   }
 
-  .demo-scene {
-    padding: 16px;
-    gap: 14px;
-  }
-
-  .demo-scene-copy {
-    gap: 10px;
-  }
-
-  .demo-scene-copy h3 {
+  .demo-script-head h3 {
     font-size: clamp(24px, 8.4vw, 34px);
     line-height: 1.12;
   }
 
-  .demo-scene-copy p {
+  .demo-script-head p,
+  .demo-video-overlay span {
     font-size: 14px;
+  }
+
+  .demo-video-overlay {
+    inset: auto 12px 12px 12px;
+    gap: 6px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .demo-video-overlay strong {
+    font-size: clamp(20px, 7vw, 26px);
+  }
+
+  .demo-audio-link {
+    font-size: 12px;
+  }
+
+  .demo-video-toggle {
+    width: fit-content;
+  }
+
+  .demo-action-row {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .portrait-card {
@@ -1740,6 +1798,16 @@ textarea {
   body.page-home .product-matrix,
   body.page-home .supplier-matrix {
     grid-auto-columns: minmax(76vw, 1fr);
+  }
+
+  .demo-video-overlay {
+    grid-template-columns: 1fr;
+    align-items: end;
+  }
+
+  .demo-video-overlay strong,
+  .demo-video-overlay span {
+    display: none;
   }
 
   body.page-admin .hero-card {
