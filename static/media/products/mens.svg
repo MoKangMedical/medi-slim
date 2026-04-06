@@ -1,0 +1,26 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="520" rx="40" fill="#F2EEE8"/>
+  <rect x="36" y="36" width="648" height="448" rx="34" fill="url(#bg)"/>
+  <circle cx="590" cy="118" r="92" fill="#DDEFE8"/>
+  <circle cx="112" cy="412" r="88" fill="#F7DEC8"/>
+  <rect x="94" y="120" width="230" height="264" rx="30" fill="#FFF9F3"/>
+  <rect x="118" y="96" width="182" height="52" rx="18" fill="#18342F"/>
+  <text x="209" y="130" text-anchor="middle" fill="white" font-size="26" font-family="Avenir Next, Arial, sans-serif" font-weight="700">MEN</text>
+  <text x="209" y="188" text-anchor="middle" fill="#18342F" font-size="24" font-family="Avenir Next, Arial, sans-serif" font-weight="700">CORE HEALTH</text>
+  <text x="209" y="222" text-anchor="middle" fill="#5E746D" font-size="18" font-family="Avenir Next, Arial, sans-serif">Privacy delivery and guided care</text>
+  <path d="M492 134L586 176V254C586 314 544 360 492 378C440 360 398 314 398 254V176L492 134Z" fill="#18342F"/>
+  <path d="M492 164L558 194V252C558 294 531 326 492 342C453 326 426 294 426 252V194L492 164Z" fill="#D9F0E8"/>
+  <path d="M490 218L490 286" stroke="#F57B42" stroke-width="18" stroke-linecap="round"/>
+  <path d="M456 252H524" stroke="#F57B42" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="614" cy="308" r="20" fill="#F57B42"/>
+  <circle cx="650" cy="308" r="20" fill="#18342F"/>
+  <rect x="594" y="292" width="56" height="32" rx="16" fill="#FFF9F3"/>
+  <text x="112" y="430" fill="#18342F" font-size="17" font-family="Avenir Next, Arial, sans-serif" font-weight="600">energy and privacy</text>
+  <text x="112" y="454" fill="#5E746D" font-size="15" font-family="Avenir Next, Arial, sans-serif">screening  meds  discreet shipping</text>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="68" x2="640" y2="434" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8F1"/>
+      <stop offset="1" stop-color="#F4EFE8"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 业务流</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>业务流总览</strong>
+          <span>从流量到履约的完整闭环</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">首页</a>
+        <a href="/assess">评估中心</a>
+        <a href="/constitution">体质辨识</a>
+        <a class="active" href="/flow">业务流</a>
+        <a href="/admin">运营导航</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell hero-card">
+        <div>
+          <div class="eyebrow">增长结构</div>
+          <h1>把复杂医疗链路拆成可控的前台动作。</h1>
+          <p class="lead">
+            MediSlim 不试图把医院、药房、物流和客服都塞进一个大而全系统，而是把真正需要自控的环节压缩成
+            “内容获客 → AI 评估 → 医师审核 → 履约交付 → CRM 复购”。
+          </p>
+        </div>
+        <div class="grid-4">
+          <div class="metric-card">
+            <strong>获客</strong>
+            <div>内容触达</div>
+            <div class="muted">小红书 / 公众号 / 短视频</div>
+          </div>
+          <div class="metric-card">
+            <strong>评估</strong>
+            <div>AI 问卷</div>
+            <div class="muted">品类化问题集</div>
+          </div>
+          <div class="metric-card">
+            <strong>审核</strong>
+            <div>合作医师</div>
+            <div class="muted">处方与合规承接</div>
+          </div>
+          <div class="metric-card">
+            <strong>复购</strong>
+            <div>持续运营</div>
+            <div class="muted">跟踪与再营销</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">核心闭环</div>
+            <h2>五步完成一次业务交付。</h2>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="story-card">
+              <h3>1. 内容触达</h3>
+              <p>用统一的产品矩阵和品类钩子承接减重、防脱、皮肤、男性健康与助眠人群。</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="story-card">
+              <h3>2. AI 预评估</h3>
+              <p>通过 `app.py` 中的动态问题集做分品类筛查，快速判断适应证、禁忌和购买意愿。</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="story-card">
+              <h3>3. 医师审核承接</h3>
+              <p>将预评估结果交给合作互联网医院，由医师完成最终审核和处方决定。</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="story-card">
+              <h3>4. 药房与配送</h3>
+              <p>通过合作药房和物流系统完成发货，并把状态回流给前台订单与用户通知。</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="story-card">
+              <h3>5. CRM 与复购</h3>
+              <p>基于用户生命周期、企微承接和订阅计划，做复购提醒、效果追踪和跨品类推荐。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">运行指标</div>
+            <h2>当前原型状态</h2>
+            <p>这些数据直接读取现有服务端统计接口。</p>
+          </div>
+        </div>
+        <div class="grid-4" id="statsGrid">
+          <div class="loading">正在加载...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell grid-3">
+        <article class="story-card" id="glp1">
+          <h3>GLP-1 减重</h3>
+          <p>高意向、高客单、高复购，是最适合做前台流程打磨的核心赛道。</p>
+        </article>
+        <article class="story-card" id="hair">
+          <h3>防脱生发</h3>
+          <p>疗程长、复购强，对内容信任和阶段性反馈非常敏感。</p>
+        </article>
+        <article class="story-card" id="skin">
+          <h3>皮肤管理</h3>
+          <p>人群广、表达丰富，适合教育型内容与个性化推荐。</p>
+        </article>
+        <article class="story-card" id="mens">
+          <h3>男性健康</h3>
+          <p>隐私需求强，前台体验与客服语气必须稳、克制、可信。</p>
+        </article>
+        <article class="story-card" id="sleep">
+          <h3>助眠调理</h3>
+          <p>可以承接焦虑、睡眠和轻心理类流量，适合长期追踪。</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">如果需要继续扩展，可把后台数据源、内容工厂和履约回调逐步拆成独立服务。</div>
+  </footer>
+
+  <script>
+    fetch('/api/stats')
+      .then((response) => response.json())
+      .then((stats) => {
+        document.getElementById('statsGrid').innerHTML = `
+          <div class="metric-card"><strong>${stats.total_users}</strong><div>累计用户</div></div>
+          <div class="metric-card"><strong>${stats.total_orders}</strong><div>累计订单</div></div>
+          <div class="metric-card"><strong>${stats.products}</strong><div>在售品类</div></div>
+          <div class="metric-card"><strong>${stats.hospitals}</strong><div>合作医院</div></div>
+        `;
+      })
+      .catch(() => {
+        document.getElementById('statsGrid').innerHTML = '<div class="empty">统计信息读取失败。</div>';
+      });
+  </script>
+</body>
+</html>

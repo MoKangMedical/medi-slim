@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 运营导航</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>运营导航</strong>
+          <span>主站入口与独立后台的连接页</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">首页</a>
+        <a href="/assess">评估中心</a>
+        <a href="/flow">业务流</a>
+        <a class="active" href="/admin">运营导航</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="shell">
+      <div class="hero-card">
+        <div>
+          <div class="eyebrow">后台分层</div>
+          <h1>主站和独立管理后台已经拆开。</h1>
+          <p class="lead">
+            当前 `app.py` 负责前台获客、评估和下单演示；`admin.py` 负责 CRM、内容与平台配置。
+            这个页面只做导航和状态检查，避免前台服务因为缺模板而直接报错。
+          </p>
+          <div class="button-row">
+            <a class="button button-primary" id="adminLink" href="http://localhost:8093" target="_blank" rel="noreferrer">打开管理后台</a>
+            <a class="button button-secondary" href="/api/stats" target="_blank" rel="noreferrer">查看主站统计 JSON</a>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="metric-card">
+            <strong>8090</strong>
+            <div>主站入口</div>
+            <div class="muted">产品、评估、订单模拟</div>
+          </div>
+          <div class="metric-card">
+            <strong>8093</strong>
+            <div>后台入口</div>
+            <div class="muted">内容、CRM、平台配置</div>
+          </div>
+          <div class="metric-card">
+            <strong>/api/health</strong>
+            <div>健康检查</div>
+            <div class="muted">用于部署探针与自检</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="grid-3">
+          <article class="story-card">
+            <h3>前台做什么</h3>
+            <p>承接流量、展示产品、做 AI 预评估，并把用户引导到可履约的下一步。</p>
+          </article>
+          <article class="story-card">
+            <h3>后台做什么</h3>
+            <p>管理内容模板、线索用户、平台接入配置和基础分析看板。</p>
+          </article>
+          <article class="story-card">
+            <h3>下一步建议</h3>
+            <p>把订单回调、支付和物流同步从演示接口升级成正式集成，再接入真实 CRM 数据源。</p>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const adminUrl = `${location.protocol}//${location.hostname}:8093`;
+    document.getElementById('adminLink').href = adminUrl;
+  </script>
+</body>
+</html>

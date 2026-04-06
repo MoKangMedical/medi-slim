@@ -1,0 +1,26 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="520" rx="40" fill="#F3EFE8"/>
+  <rect x="36" y="36" width="648" height="448" rx="34" fill="url(#bg)"/>
+  <circle cx="592" cy="108" r="86" fill="#DCEBDD"/>
+  <circle cx="112" cy="408" r="92" fill="#EADBCF"/>
+  <rect x="90" y="126" width="228" height="252" rx="32" fill="#FEFBF7"/>
+  <rect x="110" y="98" width="188" height="52" rx="18" fill="#0D8A6D"/>
+  <text x="204" y="132" text-anchor="middle" fill="white" font-size="28" font-family="Avenir Next, Arial, sans-serif" font-weight="700">HAIR</text>
+  <text x="204" y="190" text-anchor="middle" fill="#18342F" font-size="24" font-family="Avenir Next, Arial, sans-serif" font-weight="700">ROOT RECOVERY</text>
+  <text x="204" y="224" text-anchor="middle" fill="#5E746D" font-size="18" font-family="Avenir Next, Arial, sans-serif">Minoxidil and long-term follow-up</text>
+  <rect x="420" y="128" width="104" height="228" rx="28" fill="#173830"/>
+  <rect x="438" y="104" width="68" height="54" rx="18" fill="#F57B42"/>
+  <rect x="443" y="166" width="58" height="122" rx="18" fill="#F8F1E7"/>
+  <circle cx="472" cy="226" r="26" fill="#D6EFE5"/>
+  <path d="M578 162C612 172 634 202 634 240C634 300 584 348 522 348C478 348 440 324 420 288" stroke="#18342F" stroke-width="12" stroke-linecap="round"/>
+  <path d="M548 172C566 196 570 230 562 270" stroke="#F57B42" stroke-width="12" stroke-linecap="round"/>
+  <path d="M510 178C520 198 522 224 518 248" stroke="#F2B38F" stroke-width="12" stroke-linecap="round"/>
+  <text x="112" y="430" fill="#18342F" font-size="17" font-family="Avenir Next, Arial, sans-serif" font-weight="600">follicle care</text>
+  <text x="112" y="454" fill="#5E746D" font-size="15" font-family="Avenir Next, Arial, sans-serif">hairline  crown  monthly review</text>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="70" x2="638" y2="440" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7F0"/>
+      <stop offset="1" stop-color="#F4EFE7"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 轻健康</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>MediSlim 轻健康</strong>
+          <span>AI 体质评估 + 消费医疗转化层</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="active" href="/">产品矩阵</a>
+        <a href="/assess">开始评估</a>
+        <a href="/constitution">体质辨识</a>
+        <a href="/flow">业务流</a>
+        <a href="/admin">运营导航</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="shell">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <div class="eyebrow">消费医疗前台 · 轻运营模型</div>
+            <h1>把评估、转化、复购，压进一个更舒展的统一入口。</h1>
+            <p class="lead">
+              MediSlim 聚焦流量层与用户体验，把 AI 健康评估、线上咨询前置和订单转化收敛到一套轻量工作流，
+              医疗合规与履约环节交给合作医院、药房和物流系统。
+            </p>
+            <div class="cta-row">
+              <a class="button button-primary" href="/assess">立即做 AI 评估</a>
+              <a class="button button-secondary" href="/constitution">先做体质辨识</a>
+              <a class="button button-secondary" href="/flow">查看业务闭环</a>
+            </div>
+            <div class="tags" style="margin-top:24px">
+              <span class="tag">GLP-1 减重</span>
+              <span class="tag">防脱生发</span>
+              <span class="tag">皮肤管理</span>
+              <span class="tag">男性健康</span>
+              <span class="tag">助眠调理</span>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="metric-card">
+              <strong id="stat-users">-</strong>
+              <div>累计用户</div>
+              <div class="muted">体验转化池</div>
+            </div>
+            <div class="metric-card">
+              <strong id="stat-orders">-</strong>
+              <div>累计订单</div>
+              <div class="muted">试运行数据</div>
+            </div>
+            <div class="metric-card">
+              <strong id="stat-leads">-</strong>
+              <div>累计线索</div>
+              <div class="muted">待转化用户池</div>
+            </div>
+            <div class="metric-card">
+              <strong id="stat-subscriptions">-</strong>
+              <div>订阅用户</div>
+              <div class="muted">复购与提醒</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">产品矩阵</div>
+            <h2>5 条高潜赛道，一套统一评估入口。</h2>
+            <p>用同一套轻前台承接不同人群，再通过评估结果把用户送进对应履约链路。</p>
+          </div>
+          <a class="button button-secondary" href="/assess">选择产品开始体验</a>
+        </div>
+        <div class="products product-matrix" id="product-grid">
+          <div class="loading">正在加载产品信息...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell story-grid">
+        <article class="story-card">
+          <h3>九种体质</h3>
+          <p>把中医体质辨识做成独立入口，先判断偏向，再决定适合先做减重、助眠、皮肤还是男性健康方案。</p>
+          <div class="button-row">
+            <a class="button button-secondary" href="/constitution">打开体质辨识</a>
+          </div>
+        </article>
+        <article class="story-card">
+          <h3>极轻架构</h3>
+          <p>前台只负责获客、评估、转化和复购信号收集。复杂的合规诊疗和配送，不放在自建系统里硬扛。</p>
+        </article>
+        <article class="story-card">
+          <h3>高频复购</h3>
+          <p>每个品类都围绕“首单体验 + 续费跟踪 + 个性化建议”设计，天然适合用内容和 CRM 做长周期运营。</p>
+        </article>
+        <article class="story-card">
+          <h3>快速试投放</h3>
+          <p>首页、评估页和后台入口都在一个零依赖 Python 服务里，适合快速起盘、跑渠道素材和验证漏斗。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <section class="panel">
+          <div class="section-title" style="margin-bottom:10px">
+            <div>
+              <div class="eyebrow">线索采集</div>
+              <h2>先留资，再进入咨询或评估。</h2>
+              <p>适合从内容页、社群或私域入口先收集高意向用户，再由运营或顾问继续推进。</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="leadName">姓名</label>
+              <input id="leadName" placeholder="例如：李女士">
+            </div>
+            <div class="field">
+              <label for="leadPhone">手机号</label>
+              <input id="leadPhone" placeholder="用于创建线索">
+            </div>
+            <div class="field">
+              <label for="leadProduct">关注品类</label>
+              <select id="leadProduct">
+                <option value="">暂未确定</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="leadSource">来源渠道</label>
+              <select id="leadSource">
+                <option value="homepage">官网首页</option>
+                <option value="xiaohongshu">小红书</option>
+                <option value="wechat">微信私域</option>
+                <option value="douyin">抖音</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="leadNote">补充信息</label>
+              <textarea id="leadNote" placeholder="例如：想先了解价格、已有处方、希望顾问联系时间段"></textarea>
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="primary" id="leadSubmitButton" type="button">提交线索</button>
+            <a class="button button-secondary" href="/assess">直接开始评估</a>
+          </div>
+          <div id="leadFeedback" style="margin-top:16px"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">合作承接</div>
+            <h2>前台轻，后端重。</h2>
+            <p>把合作医院、药房和产品方都摆到前台，清楚说明谁负责问诊、谁负责履约、谁负责产品供应。</p>
+          </div>
+        </div>
+        <div class="partner-stack">
+          <section class="partner-group">
+            <div class="partner-heading">
+              <div class="eyebrow">合作医院</div>
+              <p class="muted">负责处方、审核和互联网问诊。</p>
+            </div>
+            <div class="metrics" id="hospital-grid">
+              <div class="loading">正在加载合作医院...</div>
+            </div>
+          </section>
+          <section class="partner-group">
+            <div class="partner-heading">
+              <div class="eyebrow">合作药房</div>
+              <p class="muted">负责药品配发、质检和末端配送。</p>
+            </div>
+            <div class="metrics" id="pharmacy-grid">
+              <div class="loading">正在加载合作药房...</div>
+            </div>
+          </section>
+          <section class="partner-group">
+            <div class="partner-heading">
+              <div class="eyebrow">合作产品方</div>
+              <p class="muted">展示处方药、药食同源和保健品侧的产品方与供应链伙伴。</p>
+            </div>
+            <div class="products supplier-matrix" id="supplier-grid">
+              <div class="loading">正在加载合作产品方...</div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">MediSlim 轻健康 · 零依赖原型前台 · 当前服务端口默认为 8090。</div>
+  </footer>
+
+  <script>
+    const attributionKeys = ['ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'source'];
+
+    function getAttribution() {
+      const params = new URLSearchParams(location.search);
+      const stored = JSON.parse(sessionStorage.getItem('medislimAttribution') || '{}');
+      const queryData = {};
+
+      attributionKeys.forEach((key) => {
+        const value = params.get(key);
+        if (value) {
+          queryData[key] = value;
+        }
+      });
+
+      queryData.landing_path = location.pathname;
+      const merged = { ...stored, ...queryData };
+      sessionStorage.setItem('medislimAttribution', JSON.stringify(merged));
+      return merged;
+    }
+
+    function inferProduct(attribution) {
+      const params = new URLSearchParams(location.search);
+      if (params.get('product')) {
+        return params.get('product');
+      }
+      const campaign = attribution.utm_campaign || '';
+      const match = campaign.match(/medislim_(\w+)/);
+      return match ? match[1] : '';
+    }
+
+    async function api(path, method = 'GET', body = null) {
+      const response = await fetch(path, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : null,
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+      return payload;
+    }
+
+    async function loadHome() {
+      const attribution = getAttribution();
+      const [products, stats, hospitals, pharmacies, suppliers] = await Promise.all([
+        api('/api/products'),
+        api('/api/stats'),
+        api('/api/hospitals'),
+        api('/api/pharmacies'),
+        api('/api/product-partners'),
+      ]);
+
+      document.getElementById('stat-users').textContent = stats.total_users;
+      document.getElementById('stat-orders').textContent = stats.total_orders;
+      document.getElementById('stat-leads').textContent = stats.total_leads;
+      document.getElementById('stat-subscriptions').textContent = stats.total_subscriptions || 0;
+
+      document.getElementById('product-grid').innerHTML = Object.entries(products).map(([id, product]) => `
+        <article class="product-card">
+          <div class="product-art">
+            <img src="${product.image}" alt="${product.image_alt || product.name}" loading="lazy">
+            <div class="pill" style="position:absolute; left:16px; top:16px">${product.emoji} ${product.category}</div>
+          </div>
+          <div class="product-copy">
+            <div>
+              <h3>${product.name}</h3>
+              <p>${product.description}</p>
+            </div>
+            <div class="price">
+              <strong>¥${product.first_price}</strong>
+              <span class="muted">首月 · 续费 ¥${product.renew_price}/${product.unit}</span>
+            </div>
+            <div class="tags">
+              ${product.includes.map((item) => `<span class="tag">${item}</span>`).join('')}
+            </div>
+            <div class="button-row">
+              <a class="button button-primary" href="/assess?product=${id}">开始评估</a>
+              <a class="button button-secondary" href="/flow#${id}">看业务流</a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('hospital-grid').innerHTML = hospitals.map((hospital) => `
+        <article class="story-card partner-card">
+          <div class="partner-brand">
+            <div class="partner-logo-shell">
+              <img class="partner-logo" src="${hospital.logo}" alt="${hospital.logo_alt || hospital.name}" loading="lazy">
+            </div>
+            <span class="badge badge-green">合作医院</span>
+          </div>
+          <div>
+            <h3>${hospital.name}</h3>
+            <p>${hospital.type}</p>
+          </div>
+          <div class="tags">
+            ${hospital.specialties.map((item) => `<span class="tag">${item}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('pharmacy-grid').innerHTML = pharmacies.map((pharmacy) => `
+        <article class="story-card partner-card">
+          <div class="partner-brand">
+            <div class="partner-logo-shell">
+              <img class="partner-logo" src="${pharmacy.logo}" alt="${pharmacy.logo_alt || pharmacy.name}" loading="lazy">
+            </div>
+            <span class="badge badge-yellow">合作药房</span>
+          </div>
+          <div>
+            <h3>${pharmacy.name}</h3>
+            <p>${pharmacy.type}</p>
+          </div>
+          <div class="tags">
+            <span class="tag">${pharmacy.delivery}</span>
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('supplier-grid').innerHTML = suppliers.map((supplier) => `
+        <article class="product-card partner-card">
+          <div class="partner-brand">
+            <div class="partner-logo-shell">
+              <img class="partner-logo" src="${supplier.logo}" alt="${supplier.logo_alt || supplier.name}" loading="lazy">
+            </div>
+            <span class="badge badge-gray">产品方</span>
+          </div>
+          <div>
+            <h3>${supplier.name}</h3>
+            <p>${supplier.type}</p>
+          </div>
+          <div class="tags">
+            ${(supplier.supports || []).map((item) => `<span class="tag">${item}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('leadProduct').innerHTML = '<option value="">暂未确定</option>' + Object.entries(products).map(([id, product]) => {
+        return `<option value="${id}">${product.emoji} ${product.name}</option>`;
+      }).join('');
+
+      const inferredProduct = inferProduct(attribution);
+      if (inferredProduct && products[inferredProduct]) {
+        document.getElementById('leadProduct').value = inferredProduct;
+      }
+      if (attribution.utm_source) {
+        document.getElementById('leadSource').value = attribution.utm_source;
+      }
+    }
+
+    async function submitLead() {
+      const attribution = getAttribution();
+      const payload = {
+        name: document.getElementById('leadName').value.trim(),
+        phone: document.getElementById('leadPhone').value.trim(),
+        product_id: document.getElementById('leadProduct').value,
+        source: document.getElementById('leadSource').value,
+        note: document.getElementById('leadNote').value.trim(),
+        ...attribution,
+      };
+
+      const lead = await api('/api/lead/create', 'POST', payload);
+      document.getElementById('leadFeedback').innerHTML = `
+        <div class="note">
+          线索已创建：${lead.name} · ${lead.phone} · 状态 ${lead.status}
+        </div>
+      `;
+      document.getElementById('leadPhone').value = '';
+      document.getElementById('leadNote').value = '';
+      await loadHome();
+    }
+
+    document.getElementById('leadSubmitButton').addEventListener('click', () => {
+      submitLead().catch((error) => {
+        document.getElementById('leadFeedback').innerHTML = `<div class="note">${error.message}</div>`;
+      });
+    });
+
+    loadHome().catch(() => {
+      document.getElementById('product-grid').innerHTML = '<div class="empty">产品加载失败，请确认服务端已启动。</div>';
+      document.getElementById('hospital-grid').innerHTML = '<div class="empty">合作医院加载失败。</div>';
+      document.getElementById('pharmacy-grid').innerHTML = '<div class="empty">合作药房加载失败。</div>';
+      document.getElementById('supplier-grid').innerHTML = '<div class="empty">合作产品方加载失败。</div>';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 九型体质辨识</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>九型体质辨识</strong>
+          <span>15 题识别当前偏向体质，再跳转对应健康方案</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">首页</a>
+        <a href="/assess">评估中心</a>
+        <a class="active" href="/constitution">体质辨识</a>
+        <a href="/flow">业务流</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="shell">
+      <section class="hero-card">
+        <div>
+          <div class="eyebrow">AI 中医特色</div>
+          <h1>不是先卖产品，而是先看你更像哪一类体质。</h1>
+          <p class="lead">体质辨识用于健康管理分层，不替代诊断。结果会给出偏向体质、日常建议和更适合优先评估的产品方向。</p>
+        </div>
+        <div class="grid-4" id="introGrid">
+          <div class="metric-card"><strong>9</strong><div>体质类型</div><div class="muted">平和 / 偏颇体质</div></div>
+          <div class="metric-card"><strong>15</strong><div>核心问题</div><div class="muted">疲劳 / 睡眠 / 代谢 / 过敏</div></div>
+          <div class="metric-card"><strong>3</strong><div>推荐方向</div><div class="muted">产品优先级</div></div>
+          <div class="metric-card"><strong>1</strong><div>目标</div><div class="muted">先分层，再转化</div></div>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 24px;">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">辨识问卷</div>
+            <h2 id="titleText">正在加载...</h2>
+            <p id="descText">请稍候。</p>
+          </div>
+        </div>
+        <form id="questionForm" class="question-list"></form>
+        <div class="button-row">
+          <button class="primary" type="button" id="analyzeButton">生成体质结果</button>
+        </div>
+      </section>
+
+      <section id="resultPanel" style="display:none; margin-top: 24px;"></section>
+    </div>
+  </main>
+
+  <script>
+    const attributionKeys = ['ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'source'];
+    let products = {};
+
+    function getAttribution() {
+      const params = new URLSearchParams(location.search);
+      const stored = JSON.parse(sessionStorage.getItem('medislimAttribution') || '{}');
+      const queryData = {};
+      attributionKeys.forEach((key) => {
+        const value = params.get(key);
+        if (value) queryData[key] = value;
+      });
+      queryData.landing_path = location.pathname;
+      const merged = { ...stored, ...queryData };
+      sessionStorage.setItem('medislimAttribution', JSON.stringify(merged));
+      return merged;
+    }
+
+    async function api(path, method = 'GET', body = null) {
+      const response = await fetch(path, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : null,
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+      return payload;
+    }
+
+    async function loadQuestions() {
+      const [payload, productPayload] = await Promise.all([
+        api('/api/constitution/questions'),
+        api('/api/products'),
+      ]);
+      products = productPayload;
+      document.getElementById('titleText').textContent = payload.title;
+      document.getElementById('descText').textContent = payload.description;
+      document.getElementById('questionForm').innerHTML = payload.questions.map((question, index) => `
+        <div class="question">
+          <label for="${question.id}">${index + 1}. ${question.text}</label>
+          <select id="${question.id}" name="${question.id}">
+            ${question.options.map((option) => `<option value="${option.value}" ${option.value === 2 ? 'selected' : ''}>${option.label}</option>`).join('')}
+          </select>
+        </div>
+      `).join('');
+    }
+
+    function renderResult(result) {
+      const primary = result.primary || {};
+      document.getElementById('resultPanel').style.display = 'block';
+      document.getElementById('resultPanel').innerHTML = `
+        <section class="result-card">
+          <div class="pill">${primary.label || '体质结果'}</div>
+          <h3>${primary.summary || ''}</h3>
+          <p>${primary.focus || ''}</p>
+          <div class="result-grid">
+            ${(result.scores || []).slice(0, 4).map((item) => `
+              <div class="stat">
+                <strong>${item.normalized_score}%</strong>
+                <span>${item.label}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <h3>饮食与生活建议</h3>
+            <div class="tags">
+              ${(result.diet_tips || []).map((item) => `<span class="tag">${item}</span>`).join('')}
+              ${(result.lifestyle_tips || []).map((item) => `<span class="tag">${item}</span>`).join('')}
+            </div>
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <h3>优先评估方向</h3>
+            <div class="product-picker">
+              ${(result.recommended_products || []).map((item) => {
+                const product = products[item.product_id] || {};
+                return `
+                  <a class="product-choice" href="/assess?product=${item.product_id}">
+                    <img src="${product.image || ''}" alt="${product.image_alt || item.product_id}" loading="lazy">
+                    <div class="product-choice-copy">
+                      <div class="pill">${product.emoji || '•'} ${product.category || item.product_id}</div>
+                      <h4>${product.name || item.product_id}</h4>
+                      <p>${item.reason}</p>
+                    </div>
+                  </a>
+                `;
+              }).join('')}
+            </div>
+          </div>
+          <div class="note" style="margin-top:16px">${result.disclaimer || ''}</div>
+        </section>
+      `;
+      document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function analyze() {
+      const answers = {};
+      new FormData(document.getElementById('questionForm')).forEach((value, key) => {
+        answers[key] = value;
+      });
+      const result = await api('/api/constitution/analyze', 'POST', {
+        answers,
+        ...getAttribution(),
+      });
+      renderResult(result);
+    }
+
+    document.getElementById('analyzeButton').addEventListener('click', () => {
+      analyze().catch((error) => alert(error.message));
+    });
+
+    loadQuestions().catch((error) => {
+      document.getElementById('questionForm').innerHTML = `<div class="empty">${error.message}</div>`;
+    });
+  </script>
+</body>
+</html>

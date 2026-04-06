@@ -1,0 +1,26 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="520" rx="40" fill="#F4F0EA"/>
+  <rect x="36" y="36" width="648" height="448" rx="34" fill="url(#bg)"/>
+  <circle cx="586" cy="122" r="90" fill="#FFE3D4"/>
+  <circle cx="124" cy="406" r="82" fill="#D7F0E5"/>
+  <rect x="94" y="118" width="226" height="266" rx="28" fill="#FFF9F4"/>
+  <rect x="116" y="94" width="182" height="52" rx="18" fill="#F57B42"/>
+  <text x="207" y="128" text-anchor="middle" fill="white" font-size="28" font-family="Avenir Next, Arial, sans-serif" font-weight="700">SKIN</text>
+  <text x="207" y="188" text-anchor="middle" fill="#18342F" font-size="24" font-family="Avenir Next, Arial, sans-serif" font-weight="700">GLOW ROUTINE</text>
+  <text x="207" y="222" text-anchor="middle" fill="#5E746D" font-size="18" font-family="Avenir Next, Arial, sans-serif">Dermatology and care delivery</text>
+  <rect x="436" y="108" width="116" height="250" rx="30" fill="#FFF9F4"/>
+  <rect x="458" y="96" width="72" height="40" rx="14" fill="#18342F"/>
+  <path d="M494 172C522 212 540 238 540 268C540 305 519 332 494 332C469 332 448 305 448 268C448 238 466 212 494 172Z" fill="#CFEFE3"/>
+  <circle cx="600" cy="280" r="42" fill="#18342F"/>
+  <circle cx="600" cy="280" r="24" fill="#FFF9F4"/>
+  <circle cx="600" cy="280" r="10" fill="#F57B42"/>
+  <path d="M564 220C588 206 616 204 644 212" stroke="#18342F" stroke-width="10" stroke-linecap="round"/>
+  <text x="112" y="430" fill="#18342F" font-size="17" font-family="Avenir Next, Arial, sans-serif" font-weight="600">clarity and texture</text>
+  <text x="112" y="454" fill="#5E746D" font-size="15" font-family="Avenir Next, Arial, sans-serif">acne  pigment  aging support</text>
+  <defs>
+    <linearGradient id="bg" x1="72" y1="70" x2="642" y2="432" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF8F2"/>
+      <stop offset="1" stop-color="#FFF1E8"/>
+    </linearGradient>
+  </defs>
+</svg>

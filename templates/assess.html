@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim AI 评估</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>AI 健康评估</strong>
+          <span>根据品类动态生成问题与初步建议</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">首页</a>
+        <a class="active" href="/assess">评估中心</a>
+        <a href="/constitution">体质辨识</a>
+        <a href="/flow">业务流</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="shell">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">评估入口</div>
+          <h2>先确认产品，再开始 1 对 1 评估。</h2>
+          <p>这套原型会直接调用现有 API，生成建议、模拟注册用户、创建订单，并接入支付、医审、药房与续费链路。</p>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h3>1. 选择产品</h3>
+        <div class="product-picker" id="productGallery"></div>
+        <div class="form-grid">
+          <div class="field full">
+            <label class="visually-hidden" for="productSelect">目标方案</label>
+            <select id="productSelect">
+              <option value="">请选择产品</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="customerName">姓名</label>
+            <input id="customerName" placeholder="例如：王女士">
+          </div>
+          <div class="field">
+            <label for="customerPhone">手机号</label>
+            <input id="customerPhone" placeholder="用于模拟注册">
+          </div>
+          <div class="field full">
+            <label for="customerAddress">收货地址</label>
+            <textarea id="customerAddress" placeholder="用于模拟订单创建，可填写任意地址"></textarea>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="primary" id="startButton">加载评估问题</button>
+          <a class="button button-secondary" href="/constitution">先做体质辨识</a>
+        </div>
+      </section>
+
+      <section class="panel" id="questionPanel" style="display:none; margin-top:20px">
+        <h3>2. 完成评估问卷</h3>
+        <p class="muted" id="questionHint"></p>
+        <form id="questionForm" class="question-list"></form>
+        <div class="button-row">
+          <button class="primary" id="analyzeButton" type="button">生成 AI 建议</button>
+        </div>
+      </section>
+
+      <section id="resultPanel" style="display:none; margin-top:20px"></section>
+    </div>
+  </main>
+
+  <script>
+    const attributionKeys = ['ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'source'];
+    const state = {
+      products: {},
+      selectedProductId: '',
+      assessment: null,
+    };
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    async function api(path, method = 'GET', body = null) {
+      const response = await fetch(path, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : null,
+      });
+
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+
+      return payload;
+    }
+
+    function getAttribution() {
+      const params = new URLSearchParams(location.search);
+      const stored = JSON.parse(sessionStorage.getItem('medislimAttribution') || '{}');
+      const queryData = {};
+
+      attributionKeys.forEach((key) => {
+        const value = params.get(key);
+        if (value) {
+          queryData[key] = value;
+        }
+      });
+
+      queryData.landing_path = location.pathname;
+      const merged = { ...stored, ...queryData };
+      sessionStorage.setItem('medislimAttribution', JSON.stringify(merged));
+      return merged;
+    }
+
+    function renderProductGallery(selectedId = '') {
+      const gallery = byId('productGallery');
+      gallery.innerHTML = Object.entries(state.products).map(([id, product]) => `
+        <article class="product-choice ${selectedId === id ? 'selected' : ''}" data-product-id="${id}">
+          <img src="${product.image}" alt="${product.image_alt || product.name}" loading="lazy">
+          <div class="product-choice-copy">
+            <div class="pill">${product.emoji} ${product.category}</div>
+            <h4>${product.name}</h4>
+            <p>${product.description}</p>
+          </div>
+        </article>
+      `).join('');
+
+      gallery.querySelectorAll('[data-product-id]').forEach((node) => {
+        node.addEventListener('click', () => {
+          const productId = node.getAttribute('data-product-id');
+          byId('productSelect').value = productId;
+          state.selectedProductId = productId;
+          renderProductGallery(productId);
+        });
+      });
+    }
+
+    function inferProduct(attribution) {
+      const params = new URLSearchParams(location.search);
+      if (params.get('product')) {
+        return params.get('product');
+      }
+      const campaign = attribution.utm_campaign || '';
+      const match = campaign.match(/medislim_(\w+)/);
+      return match ? match[1] : '';
+    }
+
+    async function loadProducts() {
+      const attribution = getAttribution();
+      state.products = await api('/api/products');
+      const select = byId('productSelect');
+      select.innerHTML = '<option value="">请选择产品</option>' + Object.entries(state.products).map(([id, product]) => {
+        return `<option value="${id}">${product.emoji} ${product.name}</option>`;
+      }).join('');
+
+      const queryProduct = inferProduct(attribution);
+      if (queryProduct && state.products[queryProduct]) {
+        select.value = queryProduct;
+        state.selectedProductId = queryProduct;
+      }
+      renderProductGallery(select.value);
+    }
+
+    function renderQuestions(payload) {
+      const form = byId('questionForm');
+      byId('questionPanel').style.display = 'block';
+      byId('questionHint').textContent = `${payload.product_name} · 共 ${payload.total} 题`;
+      form.innerHTML = payload.questions.map((question) => {
+        if (question.type === 'choice') {
+          const options = question.options.map((option) => `<option value="${option}">${option}</option>`).join('');
+          return `
+            <div class="question">
+              <label for="q-${question.id}">${question.id}. ${question.text}</label>
+              <select id="q-${question.id}" name="${question.id}">
+                <option value="">请选择</option>
+                ${options}
+              </select>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="question">
+            <label for="q-${question.id}">${question.id}. ${question.text}</label>
+            <input id="q-${question.id}" name="${question.id}" placeholder="请输入">
+          </div>
+        `;
+      }).join('');
+    }
+
+    function collectAnswers() {
+      const answers = {};
+      new FormData(byId('questionForm')).forEach((value, key) => {
+        answers[key] = String(value).trim();
+      });
+      return answers;
+    }
+
+    function renderResult(result) {
+      const product = state.products[state.selectedProductId];
+      const resultPanel = byId('resultPanel');
+      const plan = result.plan || result.recommendation || '暂无建议';
+      const includes = Array.isArray(result.includes) ? result.includes : [];
+      const contraindications = Array.isArray(result.contraindications) ? result.contraindications : [];
+      const isEligible = Boolean(result.eligible);
+
+      resultPanel.style.display = 'block';
+      resultPanel.innerHTML = `
+        <section class="result-card">
+          <div class="pill">${product ? `${product.emoji} ${product.name}` : '评估结果'}</div>
+          <h3>${isEligible ? '可进入方案与下单演示' : '当前不建议直接下单'}</h3>
+          <p>${result.reason || plan}</p>
+          <div class="result-grid">
+            <div class="stat"><strong>${result.bmi || result.score || '-'}</strong><span>${result.bmi ? 'BMI' : '评估强度'}</span></div>
+            <div class="stat"><strong>${result.estimated_months || '-'}</strong><span>预计周期（月）</span></div>
+            <div class="stat"><strong>¥${result.first_month_price || 0}</strong><span>首月价格</span></div>
+            <div class="stat"><strong>¥${result.estimated_total_cost || 0}</strong><span>预计总成本</span></div>
+          </div>
+          <div class="panel" style="margin-top:16px; padding:20px">
+            <h3>AI 建议</h3>
+            <p>${plan}</p>
+            ${includes.length ? `<div class="tags">${includes.map((item) => `<span class="tag">${item}</span>`).join('')}</div>` : ''}
+            ${contraindications.length ? `<div class="note" style="margin-top:16px">${contraindications.join('；')}</div>` : ''}
+          </div>
+          ${isEligible ? orderTemplate() : '<div class="note" style="margin-top:16px">当前结果不适合直接进入下单演示，可返回修改答案再试。</div>'}
+        </section>
+      `;
+
+      if (isEligible) {
+        byId('submitOrderButton').addEventListener('click', submitOrder);
+      }
+    }
+
+    function orderTemplate() {
+      return `
+        <div class="panel" style="margin-top:16px">
+          <h3>3. 模拟创建订单</h3>
+          <p class="muted">点击后会先调用用户注册接口，再调用订单创建接口。订单会先进入“待支付”，再通过支付回调进入医审。</p>
+          <div class="button-row">
+            <button class="primary" id="submitOrderButton" type="button">注册用户并创建订单</button>
+          </div>
+          <div id="orderResult" style="margin-top:16px"></div>
+        </div>
+      `;
+    }
+
+    async function startAssessment() {
+      const productId = byId('productSelect').value;
+      if (!productId) {
+        alert('请先选择产品');
+        return;
+      }
+
+      state.selectedProductId = productId;
+      const attribution = getAttribution();
+      const payload = await api('/api/assessment/start', 'POST', { product_id: productId, ...attribution });
+      renderQuestions(payload);
+    }
+
+    async function analyzeAssessment() {
+      if (!state.selectedProductId) {
+        alert('请先选择产品并加载问题');
+        return;
+      }
+
+      const answers = collectAnswers();
+      const attribution = getAttribution();
+      const result = await api('/api/assessment/analyze', 'POST', {
+        product_id: state.selectedProductId,
+        answers,
+        ...attribution,
+      });
+      state.assessment = result;
+      renderResult(result);
+      byId('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function submitOrder() {
+      const attribution = getAttribution();
+      const name = byId('customerName').value.trim() || '体验用户';
+      const phone = byId('customerPhone').value.trim() || `138${Date.now().toString().slice(-8)}`;
+      const address = byId('customerAddress').value.trim() || '上海市静安区体验路 88 号';
+
+      const user = await api('/api/user/register', 'POST', { name, phone });
+      const order = await api('/api/order/create', 'POST', {
+        user_id: user.id,
+        product_id: state.selectedProductId,
+        assessment: state.assessment,
+        name,
+        phone,
+        address,
+        ...attribution,
+      });
+
+      renderOrderResult(order);
+    }
+
+    function renderOrderResult(order) {
+      const hasPayAction = (order.available_actions || []).some((item) => item.action === 'mark_paid');
+      byId('orderResult').innerHTML = `
+        <div class="result-card" style="padding:20px">
+          <h3>订单已创建</h3>
+          <p>订单号：<strong>${order.id}</strong></p>
+          <p>${order.status_label || order.status} · ${order.status_description || ''}</p>
+          <div class="timeline">
+            ${order.timeline.map((item) => `
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div>
+                  <strong>${item.desc}</strong>
+                  <div class="muted">${item.time} · ${item.status}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="button-row" style="margin-top:16px">
+            ${hasPayAction ? `<button class="primary" type="button" onclick="simulatePayment('${order.id}')">模拟支付回调</button>` : ''}
+            <button class="secondary" type="button" onclick="refreshOrder('${order.id}')">刷新订单状态</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function simulatePayment(orderId) {
+      const order = await api('/api/callback/payment', 'POST', {
+        order_id: orderId,
+        trade_no: `web_${orderId}`,
+        channel: 'web_demo',
+      });
+      renderOrderResult(order);
+    }
+
+    async function refreshOrder(orderId) {
+      const order = await api('/api/order/status', 'POST', { order_id: orderId });
+      renderOrderResult(order);
+    }
+
+    byId('startButton').addEventListener('click', () => {
+      startAssessment().catch((error) => alert(error.message));
+    });
+
+    byId('productSelect').addEventListener('change', (event) => {
+      state.selectedProductId = event.target.value;
+      renderProductGallery(event.target.value);
+    });
+
+    byId('analyzeButton').addEventListener('click', () => {
+      analyzeAssessment().catch((error) => alert(error.message));
+    });
+
+    loadProducts().catch(() => {
+      alert('产品加载失败，请确认服务已启动');
+    });
+  </script>
+</body>
+</html>

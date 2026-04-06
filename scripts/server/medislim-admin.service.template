@@ -1,0 +1,20 @@
+[Unit]
+Description=MediSlim Admin App
+After=network.target
+
+[Service]
+Type=simple
+User=${APP_USER}
+Group=${APP_USER}
+WorkingDirectory=${APP_DIR}
+Environment=HOST=127.0.0.1
+Environment=PORT=8093
+Environment=MEDISLIM_APP_ORIGIN=http://127.0.0.1:8090
+ExecStart=/usr/bin/env python3 ${APP_DIR}/admin.py
+Restart=always
+RestartSec=3
+StandardOutput=append:${APP_DIR}/logs/admin.log
+StandardError=append:${APP_DIR}/logs/admin.log
+
+[Install]
+WantedBy=multi-user.target

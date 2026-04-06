@@ -1,0 +1,19 @@
+[Unit]
+Description=MediSlim Frontend App
+After=network.target
+
+[Service]
+Type=simple
+User=${APP_USER}
+Group=${APP_USER}
+WorkingDirectory=${APP_DIR}
+Environment=HOST=127.0.0.1
+Environment=PORT=8090
+ExecStart=/usr/bin/env python3 ${APP_DIR}/app.py
+Restart=always
+RestartSec=3
+StandardOutput=append:${APP_DIR}/logs/app.log
+StandardError=append:${APP_DIR}/logs/app.log
+
+[Install]
+WantedBy=multi-user.target

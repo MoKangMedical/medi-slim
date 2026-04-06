@@ -1,0 +1,26 @@
+<svg width="720" height="520" viewBox="0 0 720 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="520" rx="40" fill="#F5F0E8"/>
+  <rect x="36" y="36" width="648" height="448" rx="34" fill="url(#bg)"/>
+  <circle cx="575" cy="130" r="92" fill="#FFE4D5" fill-opacity="0.9"/>
+  <circle cx="112" cy="418" r="88" fill="#CFEFE3" fill-opacity="0.8"/>
+  <rect x="94" y="120" width="212" height="262" rx="28" fill="#FFF9F3"/>
+  <rect x="118" y="94" width="164" height="54" rx="18" fill="#1B8D72"/>
+  <text x="200" y="128" text-anchor="middle" fill="white" font-size="30" font-family="Avenir Next, Arial, sans-serif" font-weight="700">GLP-1</text>
+  <text x="200" y="186" text-anchor="middle" fill="#173830" font-size="22" font-family="Avenir Next, Arial, sans-serif" font-weight="700">WEIGHT PLAN</text>
+  <text x="200" y="220" text-anchor="middle" fill="#5F766E" font-size="18" font-family="Avenir Next, Arial, sans-serif">Clinician-guided monthly care</text>
+  <rect x="392" y="128" width="196" height="42" rx="21" fill="#173830" fill-opacity="0.08"/>
+  <text x="490" y="155" text-anchor="middle" fill="#173830" font-size="18" font-family="Avenir Next, Arial, sans-serif" font-weight="700">MediSlim Signature</text>
+  <path d="M432 344L538 184C548 169 569 165 584 175C599 185 604 205 594 220L488 380C478 395 457 399 442 389C427 379 422 359 432 344Z" fill="#173830"/>
+  <path d="M585 171L626 211L597 234L557 193L585 171Z" fill="#F57B42"/>
+  <rect x="446" y="290" width="118" height="26" rx="13" transform="rotate(-57 446 290)" fill="#CFEFE3"/>
+  <circle cx="471" cy="364" r="18" fill="#F57B42"/>
+  <circle cx="522" cy="287" r="10" fill="#CFEFE3"/>
+  <text x="112" y="430" fill="#173830" font-size="17" font-family="Avenir Next, Arial, sans-serif" font-weight="600">medical intake</text>
+  <text x="112" y="454" fill="#5F766E" font-size="15" font-family="Avenir Next, Arial, sans-serif">assessment  payment  shipment</text>
+  <defs>
+    <linearGradient id="bg" x1="86" y1="72" x2="622" y2="438" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF9F4"/>
+      <stop offset="1" stop-color="#FFF0E4"/>
+    </linearGradient>
+  </defs>
+</svg>

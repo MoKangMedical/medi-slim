@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# 数据
+data/*.json
+!data/.gitkeep
+!data/samples/
+!data/samples/**
+data/vector_memory/
+content_engine/data/*.json
+content_engine/output/catalog.json
+content/*.json
+
+# 环境
+.env
+.env.local
+.env.production
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+logs/
+run/
+
+# 临时
+tmp/
+temp/
+nohup.out
+
+# 素材构建缓存
+output/slides/**/node_modules/

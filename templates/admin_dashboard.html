@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 管理后台</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>MediSlim 经营控制台</strong>
+          <span>订单、伙伴、订阅、企微和内容增长的统一视图</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="active" href="/">后台首页</a>
+        <a id="frontendLink" href="http://127.0.0.1:8090" target="_blank" rel="noreferrer">打开主站</a>
+        <a id="constitutionLink" href="http://127.0.0.1:8090/constitution" target="_blank" rel="noreferrer">体质辨识</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="shell">
+      <section class="hero-card">
+        <div>
+          <div class="eyebrow">经营总览</div>
+          <h1>从线索获客到伙伴履约，再到续费复购，放进一个控制平面。</h1>
+          <p class="lead">这不是静态演示页，所有数据都直接读取当前运行中的 API 和本地数据存储。</p>
+        </div>
+        <div class="grid-4" id="overviewGrid">
+          <div class="loading">正在加载总览...</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">系统状态</div>
+            <h2>当前服务</h2>
+          </div>
+        </div>
+        <div class="grid-3" id="systemGrid"><div class="loading">正在检查服务...</div></div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">订单链路</div>
+            <h2>最新订单与动作</h2>
+          </div>
+        </div>
+        <div class="grid-3" id="orderGrid"><div class="loading">正在加载订单...</div></div>
+      </section>
+
+      <section class="section">
+        <div class="grid-3">
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">线索池</div>
+                <h2>最新线索</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="leadGrid"><div class="loading">正在加载线索...</div></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">企微承接</div>
+                <h2>顾问队列</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="wecomGrid"><div class="loading">正在加载企微队列...</div></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">订阅中心</div>
+                <h2>续费与提醒</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="subscriptionGrid"><div class="loading">正在加载订阅...</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">伙伴抽象层</div>
+            <h2>支付、互联网医院、药房和物流</h2>
+          </div>
+        </div>
+        <div class="grid-3" id="partnerGrid"><div class="loading">正在加载伙伴数据...</div></div>
+      </section>
+
+      <section class="section">
+        <div class="grid-3">
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">CRM 用户池</div>
+                <h2>最近活跃用户</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="crmGrid"><div class="loading">正在加载 CRM...</div></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">渠道归因</div>
+                <h2>来源表现</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="attributionGrid"><div class="loading">正在加载归因...</div></div>
+          </div>
+          <div>
+            <div class="section-title">
+              <div>
+                <div class="eyebrow">内容模板</div>
+                <h2>当前模板库</h2>
+              </div>
+            </div>
+            <div class="grid-3" id="templateGrid"><div class="loading">正在加载模板...</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">内容增长中心</div>
+            <h2>目录、漏斗、A/B 和排期</h2>
+          </div>
+        </div>
+        <div class="grid-3" id="contentGrid"><div class="loading">正在加载内容中心...</div></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const frontendOrigin = `${location.protocol}//${location.hostname}:8090`;
+    document.getElementById('frontendLink').href = frontendOrigin;
+    document.getElementById('constitutionLink').href = `${frontendOrigin}/constitution`;
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+      return payload;
+    }
+
+    function badge(status) {
+      const map = {
+        running: 'badge-green',
+        active: 'badge-green',
+        completed: 'badge-green',
+        delivered: 'badge-green',
+        assigned: 'badge-green',
+        following_up: 'badge-green',
+        pending_activation: 'badge-yellow',
+        pending: 'badge-yellow',
+        doctor_review: 'badge-yellow',
+        paid: 'badge-yellow',
+        past_due: 'badge-yellow',
+        stopped: 'badge-red',
+        rejected: 'badge-red',
+        cancelled: 'badge-red',
+        closed: 'badge-gray',
+        paused: 'badge-gray',
+        script: 'badge-gray',
+      };
+      return map[status] || 'badge-gray';
+    }
+
+    function renderOverview(data, subscriptions, wecom) {
+      document.getElementById('overviewGrid').innerHTML = `
+        <div class="metric-card"><strong>${data.overview.total_users}</strong><div>总用户</div><div class="muted">今日新增 ${data.today.new_users}</div></div>
+        <div class="metric-card"><strong>${data.overview.total_leads}</strong><div>总线索</div><div class="muted">今日新增 ${data.today.new_leads}</div></div>
+        <div class="metric-card"><strong>${data.overview.total_orders}</strong><div>总订单</div><div class="muted">今日新增 ${data.today.new_orders}</div></div>
+        <div class="metric-card"><strong>${data.conversion.lead_to_order}%</strong><div>线索转订单</div><div class="muted">内容发布 ${data.conversion.content_published}</div></div>
+        <div class="metric-card"><strong>${subscriptions.items.length}</strong><div>订阅数</div><div class="muted">到期提醒 ${subscriptions.due.length}</div></div>
+        <div class="metric-card"><strong>${wecom.total || 0}</strong><div>企微任务</div><div class="muted">待处理 ${(wecom.by_status || {}).pending || 0}</div></div>
+        <div class="metric-card"><strong>${(wecom.by_status || {}).following_up || 0}</strong><div>跟进中</div><div class="muted">顾问承接</div></div>
+        <div class="metric-card"><strong>${data.overview.total_content}</strong><div>内容草稿</div><div class="muted">后台模板生成</div></div>
+      `;
+    }
+
+    function renderSystems(items) {
+      document.getElementById('systemGrid').innerHTML = items.map((item) => `
+        <article class="story-card">
+          <div class="pill">${item.entry}</div>
+          <h3>${item.name}</h3>
+          <p>${item.description}</p>
+          <div class="button-row">
+            <span class="badge ${badge(item.status)}">${item.status}</span>
+            ${item.port ? `<span class="tag">:${item.port}</span>` : ''}
+            ${item.health_url ? `<a class="button button-secondary" href="${item.health_url}" target="_blank" rel="noreferrer">打开</a>` : ''}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderLeads(items) {
+      document.getElementById('leadGrid').innerHTML = items.length ? items.slice(0, 6).map((lead) => `
+        <article class="story-card">
+          <div class="pill">${lead.source || 'direct'}</div>
+          <h3>${lead.name || '未命名线索'}</h3>
+          <p>${lead.phone}</p>
+          <div class="tags">
+            ${lead.product_id ? `<span class="tag">${lead.product_id}</span>` : ''}
+            <span class="badge ${badge(lead.status)}">${lead.status}</span>
+          </div>
+          ${lead.attribution?.ref ? `<p class="muted">追踪码 ${lead.attribution.ref}</p>` : ''}
+        </article>
+      `).join('') : '<div class="empty">暂无线索</div>';
+    }
+
+    function renderOrders(items) {
+      document.getElementById('orderGrid').innerHTML = items.length ? items.slice(0, 6).map((order) => `
+        <article class="story-card">
+          <div class="pill">${order.product_name}</div>
+          <h3>${order.name}</h3>
+          <p>订单号 ${order.id}</p>
+          <div class="tags">
+            <span class="tag">¥${order.price}</span>
+            <span class="badge ${badge(order.status)}">${order.status_label || order.status}</span>
+            ${order.order_kind === 'renewal' ? '<span class="tag">续费单</span>' : ''}
+          </div>
+          <p class="muted">${order.status_description || ''}</p>
+          <div class="button-row">
+            ${(order.available_actions || []).map((item) => `
+              <button class="secondary" type="button" onclick="runOrderAction('${order.id}','${item.action}','${item.label}')">${item.label}</button>
+            `).join('')}
+          </div>
+        </article>
+      `).join('') : '<div class="empty">暂无订单</div>';
+    }
+
+    function renderSubscriptions(data) {
+      document.getElementById('subscriptionGrid').innerHTML = data.items.length ? data.items.slice(0, 6).map((item) => `
+        <article class="story-card">
+          <div class="pill">${item.product_name}</div>
+          <h3>${item.name || item.phone}</h3>
+          <div class="tags">
+            <span class="badge ${badge(item.status)}">${item.status_label || item.status}</span>
+            ${item.days_until_billing !== null ? `<span class="tag">距续费 ${item.days_until_billing} 天</span>` : ''}
+          </div>
+          <p class="muted">续费价 ¥${item.renew_price} / ${item.cycle_days} 天</p>
+          <div class="button-row">
+            ${(item.available_actions || []).map((action) => `
+              <button class="secondary" type="button" onclick="runSubscriptionAction('${item.id}','${action.action}','${action.label}')">${action.label}</button>
+            `).join('')}
+          </div>
+        </article>
+      `).join('') : '<div class="empty">暂无订阅</div>';
+    }
+
+    function renderWecom(data) {
+      const items = data.items || [];
+      document.getElementById('wecomGrid').innerHTML = items.length ? items.slice(0, 6).map((item) => `
+        <article class="story-card">
+          <div class="pill">${item.scenario}</div>
+          <h3>${item.name || item.phone}</h3>
+          <p>${item.phone}</p>
+          <div class="tags">
+            <span class="badge ${badge(item.status)}">${item.status}</span>
+            ${item.consultant_name ? `<span class="tag">${item.consultant_name}</span>` : ''}
+            ${item.product_id ? `<span class="tag">${item.product_id}</span>` : ''}
+          </div>
+          <div class="button-row">
+            ${(item.available_actions || []).map((action) => `
+              <button class="secondary" type="button" onclick="runWecomAction('${item.id}','${action.action}','${action.label}')">${action.label}</button>
+            `).join('')}
+          </div>
+        </article>
+      `).join('') : '<div class="empty">暂无企微任务</div>';
+    }
+
+    function renderPartners(data) {
+      const latest = data.latest || {};
+      document.getElementById('partnerGrid').innerHTML = `
+        <article class="story-card">
+          <div class="pill">支付</div>
+          <h3>${data.totals.payments} 笔支付意图</h3>
+          ${(latest.payments || []).slice(0, 3).map((item) => `<p class="muted">${item.order_id} · ${item.channel_name} · ${item.status}</p>`).join('') || '<p class="muted">暂无记录</p>'}
+        </article>
+        <article class="story-card">
+          <div class="pill">互联网医院</div>
+          <h3>${data.totals.consultations} 个问诊单</h3>
+          ${(latest.consultations || []).slice(0, 3).map((item) => `<p class="muted">${item.order_id} · ${item.hospital_name} · ${item.status}</p>`).join('') || '<p class="muted">暂无记录</p>'}
+        </article>
+        <article class="story-card">
+          <div class="pill">药房物流</div>
+          <h3>${data.totals.pharmacy_orders} 个药房单</h3>
+          ${(latest.pharmacy_orders || []).slice(0, 3).map((item) => `<p class="muted">${item.order_id} · ${item.pharmacy_name} · ${item.status}</p>`).join('') || '<p class="muted">暂无记录</p>'}
+        </article>
+      `;
+    }
+
+    function renderCrm(items) {
+      const values = Object.values(items);
+      document.getElementById('crmGrid').innerHTML = values.length ? values.slice(0, 6).map((user) => `
+        <article class="story-card">
+          <div class="pill">${user.channel || 'direct'}</div>
+          <h3>${user.name || '未命名用户'}</h3>
+          <p>${user.phone || '无手机号'}</p>
+          <div class="tags">
+            <span class="badge ${badge(user.lifecycle)}">${user.lifecycle || 'lead'}</span>
+            <span class="tag">订单 ${(user.orders || []).length}</span>
+          </div>
+        </article>
+      `).join('') : '<div class="empty">暂无 CRM 用户</div>';
+    }
+
+    function renderAttribution(items) {
+      document.getElementById('attributionGrid').innerHTML = items.length ? items.slice(0, 6).map((item) => `
+        <article class="story-card">
+          <div class="pill">${item.source}</div>
+          <h3>${item.campaign}</h3>
+          <div class="tags">
+            <span class="tag">线索 ${item.leads}</span>
+            <span class="tag">订单 ${item.orders}</span>
+            <span class="tag">转化 ${item.lead_to_order}%</span>
+          </div>
+          <p class="muted">营收 ¥${item.revenue}</p>
+          ${item.ref ? `<p class="muted">追踪码 ${item.ref}</p>` : ''}
+        </article>
+      `).join('') : '<div class="empty">暂无归因数据</div>';
+    }
+
+    function renderTemplates(templates) {
+      document.getElementById('templateGrid').innerHTML = Object.entries(templates).map(([platform, items]) => `
+        <article class="story-card">
+          <div class="pill">${platform}</div>
+          <h3>${Object.keys(items).length} 个模板</h3>
+          <div class="tags">${Object.keys(items).map((name) => `<span class="tag">${name}</span>`).join('')}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderContent(summary) {
+      const funnel = summary.funnel?.funnel || {};
+      const schedule = summary.schedule?.schedule || [];
+      document.getElementById('contentGrid').innerHTML = `
+        <article class="story-card">
+          <div class="pill">目录</div>
+          <h3>${summary.catalog.total} 套内容</h3>
+          <p class="muted">品类 ${summary.catalog.products} · 风格 ${summary.catalog.styles} · 配色 ${summary.catalog.palettes}</p>
+          <div class="button-row">
+            <a class="button button-secondary" href="${summary.links.preview}" target="_blank" rel="noreferrer">打开内容预览库</a>
+          </div>
+        </article>
+        <article class="story-card">
+          <div class="pill">漏斗</div>
+          <h3>${funnel.order_pay || 0} 笔支付</h3>
+          <p class="muted">曝光 ${funnel.impression || 0} → 落地 ${funnel.landing || 0} → 评估 ${funnel.assess_done || 0}</p>
+          <div class="button-row">
+            <a class="button button-secondary" href="${summary.links.tracking}" target="_blank" rel="noreferrer">打开漏斗看板</a>
+          </div>
+        </article>
+        <article class="story-card">
+          <div class="pill">A/B 与排期</div>
+          <h3>${schedule.length || 0} 条今日排期</h3>
+          ${(summary.ab.insights || []).slice(0, 2).map((item) => `<p class="muted">${item}</p>`).join('') || '<p class="muted">暂无洞察</p>'}
+          <div class="button-row">
+            <a class="button button-secondary" href="${summary.links.scheduler}" target="_blank" rel="noreferrer">打开智能排期</a>
+            <a class="button button-secondary" href="${summary.links.ab}" target="_blank" rel="noreferrer">打开 A/B 看板</a>
+          </div>
+        </article>
+      `;
+    }
+
+    async function runOrderAction(orderId, action, label) {
+      const note = ['reject', 'cancel'].includes(action)
+        ? (window.prompt(`为“${label}”填写备注`, '') || '')
+        : '';
+      const extra = {};
+      if (action === 'mark_paid') {
+        extra.channel = 'admin_manual';
+        extra.trade_no = `manual_${orderId}`;
+      }
+      if (action === 'approve' || action === 'reject') {
+        extra.doctor_name = '后台模拟医师';
+      }
+      if (action === 'start_fulfillment') {
+        extra.pharmacy_name = '大参林大药房';
+      }
+      if (action === 'ship') {
+        extra.carrier = '顺丰';
+        extra.tracking_no = `SF${orderId.toUpperCase()}`;
+      }
+
+      await api('/api/admin/orders/action', {
+        method: 'POST',
+        body: JSON.stringify({
+          order_id: orderId,
+          action,
+          operator: 'admin_console',
+          note,
+          extra,
+        }),
+      });
+      await boot();
+    }
+
+    async function runSubscriptionAction(subscriptionId, action, label) {
+      const note = ['cancel', 'remind'].includes(action)
+        ? (window.prompt(`为“${label}”填写备注（可留空）`, '') || '')
+        : '';
+      await api('/api/admin/subscriptions/action', {
+        method: 'POST',
+        body: JSON.stringify({
+          subscription_id: subscriptionId,
+          action,
+          operator: 'admin_console',
+          note,
+        }),
+      });
+      await boot();
+    }
+
+    async function runWecomAction(threadId, action, label) {
+      const note = ['close', 'reopen', 'start_followup'].includes(action)
+        ? (window.prompt(`为“${label}”填写备注（可留空）`, '') || '')
+        : '';
+      await api('/api/admin/wecom/action', {
+        method: 'POST',
+        body: JSON.stringify({
+          thread_id: threadId,
+          action,
+          operator: 'admin_console',
+          note,
+        }),
+      });
+      await boot();
+    }
+
+    async function boot() {
+      const [overview, systems, leads, orders, crm, attribution, templates, subscriptions, partners, wecom, content] = await Promise.all([
+        api('/api/admin/overview'),
+        api('/api/admin/system'),
+        api('/api/admin/leads'),
+        api('/api/admin/orders'),
+        api('/api/admin/crm'),
+        api('/api/admin/attribution'),
+        api('/api/admin/content/templates'),
+        api('/api/admin/subscriptions'),
+        api('/api/admin/partners'),
+        api('/api/admin/wecom'),
+        api('/api/admin/content/summary'),
+      ]);
+
+      renderOverview(overview, subscriptions, wecom);
+      renderSystems(systems);
+      renderLeads(leads);
+      renderOrders(orders);
+      renderSubscriptions(subscriptions);
+      renderWecom(wecom);
+      renderPartners(partners);
+      renderCrm(crm);
+      renderAttribution(attribution);
+      renderTemplates(templates);
+      renderContent(content);
+    }
+
+    boot().catch((error) => {
+      [
+        'overviewGrid', 'systemGrid', 'leadGrid', 'orderGrid', 'subscriptionGrid',
+        'wecomGrid', 'partnerGrid', 'crmGrid', 'attributionGrid', 'templateGrid', 'contentGrid',
+      ].forEach((id) => {
+        document.getElementById(id).innerHTML = `<div class="empty">${error.message}</div>`;
+      });
+    });
+  </script>
+</body>
+</html>
