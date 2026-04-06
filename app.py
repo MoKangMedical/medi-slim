@@ -287,10 +287,12 @@ CONTENT_CATALOG_PATH = BASE_DIR / "content_engine" / "output" / "catalog.json"
 STATIC_CONTENT_TYPES = {
     ".css": "text/css; charset=utf-8",
     ".js": "application/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
+    ".wav": "audio/wav",
     ".webp": "image/webp",
     ".mp4": "video/mp4",
     ".webm": "video/webm",
@@ -836,6 +838,8 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._serve("templates/constitution.html", "text/html; charset=utf-8")
         elif path == "/flow":
             self._serve("templates/flow.html", "text/html; charset=utf-8")
+        elif path == "/demo-film":
+            self._serve("templates/demo_film.html", "text/html; charset=utf-8")
         elif path == "/admin":
             self._serve("templates/admin2.html", "text/html; charset=utf-8")
         elif path.startswith("/static/"):

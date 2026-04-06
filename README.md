@@ -46,6 +46,7 @@ python3 admin.py
 - 前台首页：`http://localhost:8090/`
 - 评估中心：`http://localhost:8090/assess`
 - 体质辨识：`http://localhost:8090/constitution`
+- 成片 Demo：`http://localhost:8090/demo-film`
 - 业务流：`http://localhost:8090/flow`
 - 运营导航：`http://localhost:8090/admin`
 - 管理后台：`http://localhost:8093/`
@@ -56,12 +57,18 @@ python3 admin.py
 - 主站健康检查：`http://localhost:8090/api/health`
 - 后台健康检查：`http://localhost:8093/api/admin/health`
 
-## 🎬 剧情 Demo 导出
+## 🎬 纯前端成片 Demo
 
-首页剧情 Demo 现在有可直接发布的静音版、配音版和海报图，生成命令：
+现在有一套纯前端动画成片页，包含中文旁白、中文字幕、半真实人物视觉和数据可视化：
+
+- 成片页：`/demo-film`
+- 首页默认使用静音循环版
+- 配音版保留给手动打开或对外演示
+
+重新导出命令：
 
 ```bash
-python3 scripts/generate_demo_video.py
+python3 scripts/export_frontend_demo.py
 ```
 
 导出文件：
@@ -69,9 +76,10 @@ python3 scripts/generate_demo_video.py
 - `static/media/demo/medislim-demo-loop.mp4`
 - `static/media/demo/medislim-demo-loop.webm`
 - `static/media/demo/medislim-demo-voiceover.mp4`
+- `static/media/demo/medislim-demo-voiceover.webm`
 - `static/media/demo/medislim-demo-poster.png`
-
-首页会默认使用静音循环版，配音版保留给手动打开或对外演示。
+- `static/media/demo/medislim-film-manifest.json`
+- `static/media/demo/medislim-film-voiceover.wav`
 
 ## 🌐 公网访问与自定义域名
 

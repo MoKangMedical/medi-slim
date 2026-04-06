@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MediSlim">
+  <defs>
+    <linearGradient id="ms-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f8f6f"/>
+      <stop offset="1" stop-color="#f57b42"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#ms-grad)"/>
+  <path d="M17 42V22h6.4l8.6 10.8L40.6 22H47v20h-5.8V30.7l-7.8 9.5-7.8-9.5V42H17Z" fill="#fff"/>
+  <path d="M51.5 13.5c0 2.5-2 4.5-4.5 4.5s-4.5-2-4.5-4.5S44.5 9 47 9s4.5 2 4.5 4.5Z" fill="rgba(255,255,255,0.72)"/>
+</svg>

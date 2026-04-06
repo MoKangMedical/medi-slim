@@ -31,10 +31,12 @@ CONTENT_CATALOG_PATH = BASE_DIR / "content_engine" / "output" / "catalog.json"
 STATIC_CONTENT_TYPES = {
     ".css": "text/css; charset=utf-8",
     ".js": "application/javascript; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
+    ".wav": "audio/wav",
     ".webp": "image/webp",
     ".mp4": "video/mp4",
     ".webm": "video/webm",

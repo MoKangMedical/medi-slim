@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 成片 Demo</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/demo_film.css">
+</head>
+<body class="page-demo-film">
+  <header class="film-topbar">
+    <a class="film-brand" href="/">
+      <span class="film-brand-mark">MS</span>
+      <span class="film-brand-copy">
+        <strong>MediSlim 成片 Demo</strong>
+        <span>纯前端动画 · 中文旁白 · 中文字幕</span>
+      </span>
+    </a>
+    <nav class="film-nav">
+      <a href="/">返回首页</a>
+      <a href="/assess">开始评估</a>
+      <a href="/flow">业务流</a>
+      <a href="/static/media/demo/medislim-demo-voiceover.mp4" target="_blank" rel="noopener">打开 MP4</a>
+    </nav>
+  </header>
+
+  <main class="film-layout">
+    <section class="film-stage-panel">
+      <div class="film-stage-shell">
+        <canvas id="filmCanvas" width="1280" height="720" aria-label="MediSlim 前端动画成片"></canvas>
+      </div>
+      <div class="film-toolbar">
+        <button class="button button-primary" id="filmPlayButton" type="button">播放成片</button>
+        <button class="button button-secondary" id="filmAudioButton" type="button">开启中文旁白</button>
+        <button class="button button-secondary" id="filmRestartButton" type="button">重新播放</button>
+        <a class="button button-secondary" href="/static/media/demo/medislim-demo-voiceover.webm" target="_blank" rel="noopener">下载 WebM</a>
+      </div>
+    </section>
+
+    <aside class="film-side-panel">
+      <div class="film-copy">
+        <div class="eyebrow">Pure Frontend Film</div>
+        <h1>半真实叙事和数据可视化，被做成一支前端成片。</h1>
+        <p>
+          这一版不再是静态分镜拼接。场景、转场、字幕、图表和音画节奏都在浏览器里实时生成，再导出成 MP4 / WebM。
+        </p>
+      </div>
+
+      <div class="film-meta-grid">
+        <div class="film-meta-card">
+          <strong id="filmTime">00:00</strong>
+          <span>当前时间</span>
+        </div>
+        <div class="film-meta-card">
+          <strong id="filmSceneIndex">01</strong>
+          <span>当前镜头</span>
+        </div>
+        <div class="film-meta-card">
+          <strong>6</strong>
+          <span>剧情段落</span>
+        </div>
+      </div>
+
+      <section class="film-caption-card">
+        <div class="eyebrow">当前字幕</div>
+        <p id="filmCurrentSubtitle">正在加载成片脚本…</p>
+      </section>
+
+      <section class="film-outline">
+        <div class="film-outline-head">
+          <div class="eyebrow">镜头脚本</div>
+          <p>从状态失衡，到 AI 评估、方案进入、履约协作，再回到稳定节奏。</p>
+        </div>
+        <div class="film-scene-list" id="filmSceneList"></div>
+      </section>
+    </aside>
+  </main>
+
+  <audio id="filmVoiceover" preload="auto" src="/static/media/demo/medislim-film-voiceover.wav"></audio>
+  <script src="/static/demo_film.js"></script>
+</body>
+</html>
