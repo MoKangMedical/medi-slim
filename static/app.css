@@ -897,6 +897,12 @@ textarea {
     width: min(100vw - 14px, 100%);
   }
 
+  .hero h1,
+  .hero-card h1 {
+    font-size: clamp(24px, 9.2vw, 36px);
+    line-height: 1.14;
+  }
+
   .hero-card {
     padding: 24px 14px 18px;
     border-radius: 24px;
@@ -906,10 +912,6 @@ textarea {
     width: 220px;
     height: 220px;
     inset: auto -60px -72px auto;
-  }
-
-  .hero h1 {
-    font-size: clamp(28px, 11vw, 38px);
   }
 
   .hero-stats {
@@ -945,6 +947,116 @@ textarea {
 
   .product-choice img {
     min-height: 148px;
+  }
+
+  body.page-home .story-grid,
+  body.page-home .product-matrix,
+  body.page-home #hospital-grid,
+  body.page-home #pharmacy-grid,
+  body.page-home .supplier-matrix,
+  body.page-assess .product-picker {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(82vw, 1fr);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  body.page-home .story-grid::-webkit-scrollbar,
+  body.page-home .product-matrix::-webkit-scrollbar,
+  body.page-home #hospital-grid::-webkit-scrollbar,
+  body.page-home #pharmacy-grid::-webkit-scrollbar,
+  body.page-home .supplier-matrix::-webkit-scrollbar,
+  body.page-assess .product-picker::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.page-home .story-grid > *,
+  body.page-home .product-matrix > *,
+  body.page-home #hospital-grid > *,
+  body.page-home #pharmacy-grid > *,
+  body.page-home .supplier-matrix > *,
+  body.page-assess .product-picker > * {
+    scroll-snap-align: start;
+  }
+
+  body.page-assess .product-picker {
+    grid-auto-columns: minmax(74vw, 1fr);
+  }
+
+  body.page-home .product-matrix,
+  body.page-home .supplier-matrix {
+    grid-auto-columns: minmax(76vw, 1fr);
+  }
+
+  body.page-admin .hero-card {
+    gap: 18px;
+  }
+
+  body.page-admin #systemGrid,
+  body.page-admin #orderGrid,
+  body.page-admin #leadGrid,
+  body.page-admin #wecomGrid,
+  body.page-admin #subscriptionGrid,
+  body.page-admin #partnerGrid,
+  body.page-admin #crmGrid,
+  body.page-admin #attributionGrid,
+  body.page-admin #templateGrid,
+  body.page-admin #contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  body.page-admin #overviewGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  body.page-admin .pill {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+  }
+
+  body.page-admin #overviewGrid .metric-card {
+    min-height: 112px;
+    padding: 14px;
+  }
+
+  body.page-admin #overviewGrid .metric-card strong {
+    font-size: 24px;
+  }
+
+  body.page-admin #orderGrid .button-row,
+  body.page-admin #wecomGrid .button-row,
+  body.page-admin #subscriptionGrid .button-row,
+  body.page-admin #contentGrid .button-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  body.page-admin #orderGrid .button-row > *,
+  body.page-admin #wecomGrid .button-row > *,
+  body.page-admin #subscriptionGrid .button-row > *,
+  body.page-admin #contentGrid .button-row > * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.page-admin .story-card p,
+  body.page-home .product-card p,
+  body.page-home .story-card p,
+  body.page-assess .product-choice-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
 
   .tag,
