@@ -81,8 +81,8 @@
         <div class="section-title">
           <div>
             <div class="eyebrow">产品矩阵</div>
-            <h2>5 条高潜赛道，一套统一评估入口。</h2>
-            <p>用同一套轻前台承接不同人群，再通过评估结果把用户送进对应履约链路。</p>
+            <h2>按你的目标，直接进入对应方案。</h2>
+            <p>每个入口都先做评估，再连接对应的医院、药房和后续复购链路。</p>
           </div>
           <a class="button button-secondary" href="/assess">选择产品开始体验</a>
         </div>
@@ -269,31 +269,42 @@
       document.getElementById('stat-leads').textContent = stats.total_leads;
       document.getElementById('stat-subscriptions').textContent = stats.total_subscriptions || 0;
 
-      document.getElementById('product-grid').innerHTML = Object.entries(products).map(([id, product]) => `
-        <article class="product-card">
+      document.getElementById('product-grid').innerHTML = Object.entries(products).map(([id, product]) => {
+        const supportLabel = product.requires_prescription ? '处方协作方案' : '轻干预调理方案';
+        const facts = (product.includes || []).slice(0, 2);
+        return `
+        <article class="product-card product-card-feature">
           <div class="product-art">
             <img src="${product.image}" alt="${product.image_alt || product.name}" loading="lazy">
-            <div class="pill" style="position:absolute; left:16px; top:16px">${product.emoji} ${product.category}</div>
+            <div class="product-overlay">
+              <div class="pill">${product.emoji} ${product.category}</div>
+              <div class="product-price-chip">¥${product.first_price} 起</div>
+            </div>
           </div>
           <div class="product-copy">
-            <div>
+            <div class="product-copy-head">
+              <div class="product-support">${supportLabel}</div>
               <h3>${product.name}</h3>
               <p>${product.description}</p>
             </div>
-            <div class="price">
-              <strong>¥${product.first_price}</strong>
-              <span class="muted">首月 · 续费 ¥${product.renew_price}/${product.unit}</span>
+            <div class="product-meta">
+              <div class="price">
+                <strong>¥${product.first_price}</strong>
+                <span class="muted">首月体验</span>
+              </div>
+              <div class="product-renew">续费 ¥${product.renew_price}/${product.unit}</div>
             </div>
-            <div class="tags">
-              ${product.includes.map((item) => `<span class="tag">${item}</span>`).join('')}
+            <div class="product-facts">
+              ${facts.map((item) => `<span>${item}</span>`).join('')}
             </div>
-            <div class="button-row">
+            <div class="button-row product-actions">
               <a class="button button-primary" href="/assess?product=${id}">开始评估</a>
-              <a class="button button-secondary" href="/flow#${id}">看业务流</a>
             </div>
+            <a class="product-link" href="/flow#${id}">查看这条方案的履约链路</a>
           </div>
         </article>
-      `).join('');
+      `;
+      }).join('');
 
       document.getElementById('hospital-grid').innerHTML = hospitals.map((hospital) => `
         <article class="story-card partner-card">

@@ -379,6 +379,12 @@ button.secondary {
   gap: 14px;
 }
 
+.product-card-feature {
+  gap: 18px;
+  padding: 18px;
+  background: rgba(255, 252, 247, 0.94);
+}
+
 .product-art {
   position: relative;
   overflow: hidden;
@@ -397,9 +403,78 @@ button.secondary {
   object-fit: cover;
 }
 
+.product-overlay {
+  position: absolute;
+  inset: 14px 14px auto 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-price-chip {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(24, 52, 47, 0.72);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+}
+
 .product-copy {
   display: grid;
   gap: 14px;
+}
+
+.product-copy-head {
+  display: grid;
+  gap: 8px;
+}
+
+.product-support {
+  color: var(--brand-strong);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.product-meta {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.product-renew {
+  color: var(--muted);
+  font-size: 14px;
+  text-align: right;
+}
+
+.product-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-facts span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(15, 143, 111, 0.07);
+  color: var(--brand-strong);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.product-actions {
+  margin-top: 2px;
+}
+
+.product-link {
+  color: var(--brand-strong);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .partner-card {
@@ -865,13 +940,50 @@ textarea {
     gap: 12px;
   }
 
+  .product-card-feature {
+    gap: 14px;
+    padding: 16px;
+  }
+
   .product-art {
     min-height: 172px;
     border-radius: 20px;
   }
 
+  .product-overlay {
+    inset: 12px 12px auto 12px;
+  }
+
+  .product-price-chip {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
   .product-copy {
     gap: 12px;
+  }
+
+  .product-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .product-renew {
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .product-facts {
+    gap: 6px;
+  }
+
+  .product-facts span {
+    font-size: 12px;
+  }
+
+  .product-link {
+    font-size: 13px;
   }
 
   .price {
@@ -1045,6 +1157,15 @@ textarea {
 
   .product-art {
     min-height: 150px;
+  }
+
+  body.page-home .product-card-feature {
+    padding: 14px;
+  }
+
+  body.page-home .product-facts {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .product-choice {
