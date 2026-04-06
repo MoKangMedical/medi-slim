@@ -41,9 +41,17 @@
     hospitalWe: '/static/media/partners/wedoctor.svg',
     pharmacyDs: '/static/media/partners/dashenlin.svg',
     pharmacyYf: '/static/media/partners/yifeng.svg',
+    portraitPhone: '/static/media/demo/portraits/woman-phone.jpg',
+    portraitWindow: '/static/media/demo/portraits/woman-window.jpg',
   };
 
   const scenePalettes = {
+    intro: {
+      top: '#f3ede4',
+      bottom: '#cdbfb1',
+      accentA: 'rgba(15, 143, 111, 0.24)',
+      accentB: 'rgba(245, 123, 66, 0.22)',
+    },
     imbalance: {
       top: '#f6efe4',
       bottom: '#dbc9bd',
@@ -79,6 +87,12 @@
       bottom: '#e6ddcf',
       accentA: 'rgba(245, 123, 66, 0.2)',
       accentB: 'rgba(15, 143, 111, 0.18)',
+    },
+    outro: {
+      top: '#173630',
+      bottom: '#0f201c',
+      accentA: 'rgba(15, 143, 111, 0.3)',
+      accentB: 'rgba(245, 123, 66, 0.18)',
     },
   };
 
@@ -233,6 +247,67 @@
     strokeRoundRect(ctx, x, y, width, height, radius, 'rgba(255,255,255,0.44)', 1);
   }
 
+  function drawImageCover(image, x, y, width, height, options) {
+    if (!image) {
+      return;
+    }
+    const opts = options || {};
+    const focusX = typeof opts.focusX === 'number' ? opts.focusX : 0.5;
+    const focusY = typeof opts.focusY === 'number' ? opts.focusY : 0.5;
+    const zoom = typeof opts.zoom === 'number' ? opts.zoom : 1;
+    const scale = Math.max(width / image.width, height / image.height) * zoom;
+    const drawWidth = image.width * scale;
+    const drawHeight = image.height * scale;
+    const offsetX = x + (width - drawWidth) * focusX;
+    const offsetY = y + (height - drawHeight) * focusY;
+    ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+  }
+
+  function drawPhotoPanel(x, y, width, height, image, options) {
+    const opts = options || {};
+    const radius = typeof opts.radius === 'number' ? opts.radius : 36;
+    const border = opts.border || 'rgba(255,255,255,0.34)';
+    const shadow = opts.shadow || 'rgba(23,54,48,0.14)';
+    ctx.save();
+    ctx.shadowColor = shadow;
+    ctx.shadowBlur = 26;
+    ctx.shadowOffsetY = 18;
+    roundedRect(ctx, x, y, width, height, radius);
+    ctx.fillStyle = opts.background || '#e8dfd4';
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    roundedRect(ctx, x, y, width, height, radius);
+    ctx.clip();
+    drawImageCover(image, x, y, width, height, {
+      focusX: opts.focusX,
+      focusY: opts.focusY,
+      zoom: opts.zoom,
+    });
+
+    const overlay = ctx.createLinearGradient(x, y, x + width, y + height);
+    overlay.addColorStop(0, opts.overlayFrom || 'rgba(15, 32, 28, 0.08)');
+    overlay.addColorStop(1, opts.overlayTo || 'rgba(15, 32, 28, 0.42)');
+    ctx.fillStyle = overlay;
+    ctx.fillRect(x, y, width, height);
+
+    if (opts.highlight) {
+      const glow = ctx.createRadialGradient(x + width * 0.78, y + height * 0.16, 18, x + width * 0.78, y + height * 0.16, width * 0.44);
+      glow.addColorStop(0, opts.highlight);
+      glow.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(x, y, width, height);
+    }
+    ctx.restore();
+
+    strokeRoundRect(ctx, x, y, width, height, radius, border, 1);
+
+    if (opts.label) {
+      drawBadge(opts.label, x + 22, y + 20, opts.labelWidth || 104);
+    }
+  }
+
   function drawBadge(label, x, y, width) {
     fillRoundRect(ctx, x, y, width, 34, 18, 'rgba(255,255,255,0.78)');
     ctx.save();
@@ -298,6 +373,43 @@
     ctx.fillStyle = '#173630';
     ctx.font = '700 24px "Avenir Next", "PingFang SC", sans-serif';
     ctx.fillText(value, x + 18, y + 46);
+    ctx.restore();
+  }
+
+  function drawLogoMark(cx, cy, progress, options) {
+    const opts = options || {};
+    const accentA = opts.accentA || '#0f8f6f';
+    const accentB = opts.accentB || '#f57b42';
+    const scale = lerp(0.76, 1, easeOut(progress));
+    const glow = lerp(0.12, 0.38, ease(progress));
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(scale, scale);
+    ctx.globalAlpha = lerp(0.18, 1, easeOut(progress));
+
+    ctx.strokeStyle = `rgba(255,255,255,${glow})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 84, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+    ctx.beginPath();
+    ctx.arc(0, 0, 112, 0, Math.PI * 2);
+    ctx.stroke();
+
+    fillRoundRect(ctx, -38, -60, 28, 118, 16, accentA);
+    fillRoundRect(ctx, 12, -44, 28, 88, 16, accentB);
+    fillRoundRect(ctx, -4, -18, 28, 36, 14, 'rgba(255,255,255,0.94)');
+
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath();
+    ctx.arc(-60, -72, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(64, 72, 6, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -502,17 +614,73 @@
     ctx.restore();
   }
 
-  function drawSceneImbalance(progress) {
-    const slide = lerp(42, 0, ease(progress));
-    drawFigure(860, 404 - slide, 1.45, {
-      clothing: '#20463d',
-      posture: 12 - 12 * ease(progress),
-      faceGlow: 'rgba(255,255,255,0.24)',
+  function drawSceneIntro(progress) {
+    drawPhotoPanel(0, 0, WIDTH, HEIGHT, state.assets.get('portraitWindow'), {
+      radius: 0,
+      focusX: 0.12,
+      focusY: 0.46,
+      zoom: lerp(1.14, 1.04, ease(progress)),
+      overlayFrom: 'rgba(15, 28, 26, 0.78)',
+      overlayTo: 'rgba(15, 28, 26, 0.16)',
+      highlight: 'rgba(245,123,66,0.16)',
+      border: 'rgba(255,255,255,0.06)',
+      shadow: 'rgba(0,0,0,0)',
     });
 
-    drawSignalChip(740, 132, '睡眠评分', '49 / 100', '#f57b42');
-    drawSignalChip(994, 186, '体重波动', '+6.8 kg', '#0f8f6f');
-    drawSignalChip(760, 522, '皮肤状态', '敏感反复', '#173630');
+    drawLogoMark(170, 152, progress);
+
+    ctx.save();
+    ctx.globalAlpha = easeOut(progress);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 82px "Iowan Old Style", "Georgia", "STSong", serif';
+    ctx.fillText('MediSlim', 86, 294);
+    ctx.font = '600 22px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.76)';
+    ctx.fillText('AI 体质评估 · 医审承接 · 订阅复购', 90, 336);
+    ctx.font = '500 28px "Avenir Next", "PingFang SC", sans-serif';
+    drawTextBlock('把减重、睡眠和皮肤管理，放回一条可持续的生活轨道。', 88, 404, 460, ctx.font, 'rgba(255,255,255,0.94)', 40);
+    ctx.restore();
+
+    ['减重优先级', '睡眠修复度', '皮肤波动值'].forEach((label, index) => {
+      drawBadge(label, 88 + index * 136, 504, 118 + (index === 2 ? 16 : 0));
+    });
+
+    drawGlassCard(850, 420, 252, 108, 28);
+    ctx.save();
+    ctx.fillStyle = '#173630';
+    ctx.font = '700 20px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('成片 Demo', 878, 458);
+    ctx.fillStyle = 'rgba(23,54,48,0.68)';
+    ctx.font = '500 16px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('半真实镜头 + 数据可视化', 878, 490);
+    ctx.fillText('把评估、履约和复购讲成一条连续体验。', 878, 516);
+    ctx.restore();
+  }
+
+  function drawSceneImbalance(progress) {
+    drawPhotoPanel(664, 112, 486, 472, state.assets.get('portraitWindow'), {
+      radius: 42,
+      focusX: 0.14,
+      focusY: 0.46,
+      zoom: lerp(1.08, 1.02, ease(progress)),
+      overlayFrom: 'rgba(18, 32, 29, 0.22)',
+      overlayTo: 'rgba(18, 32, 29, 0.48)',
+      highlight: 'rgba(245,123,66,0.12)',
+      label: '真实生活切片',
+      labelWidth: 126,
+    });
+
+    drawSignalChip(694, 146, '睡眠评分', '49 / 100', '#f57b42');
+    drawSignalChip(970, 210, '体重波动', '+6.8 kg', '#0f8f6f');
+    drawSignalChip(716, 424, '皮肤状态', '敏感反复', '#173630');
+
+    drawGlassCard(878, 456, 244, 96, 24);
+    drawLineChart(900, 482, 196, 44, [63, 58, 52, 49], progress, '#f57b42', 'rgba(245,123,66,0.14)');
+    ctx.save();
+    ctx.fillStyle = '#173630';
+    ctx.font = '700 16px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('夜间修复指数', 900, 474);
+    ctx.restore();
   }
 
   function drawSceneScan(progress) {
@@ -643,18 +811,72 @@
   }
 
   function drawSceneOutcome(progress) {
-    drawFigure(852, 406, 1.42, {
-      clothing: '#f1b88f',
-      posture: -4,
-      faceGlow: 'rgba(255,255,255,0.28)',
+    drawPhotoPanel(640, 108, 520, 488, state.assets.get('portraitPhone'), {
+      radius: 46,
+      focusX: 0.56,
+      focusY: 0.24,
+      zoom: lerp(1.12, 1.03, ease(progress)),
+      overlayFrom: 'rgba(18, 32, 29, 0.18)',
+      overlayTo: 'rgba(18, 32, 29, 0.42)',
+      highlight: 'rgba(255,255,255,0.18)',
+      label: '完成第 2 月',
+      labelWidth: 118,
     });
-    drawRing(1060, 216, 76, lerp(0.2, 0.84, ease(progress)), '睡眠回升', '84');
-    drawGlassCard(696, 436, 430, 146, 28);
-    drawLineChart(718, 464, 388, 88, [72, 71.4, 70.9, 70.2, 69.8, 69.5, 69.2], progress, '#0f8f6f', 'rgba(15,143,111,0.14)');
+
+    drawRing(1044, 226, 76, lerp(0.2, 0.84, ease(progress)), '睡眠回升', '84');
+
+    drawGlassCard(680, 440, 444, 138, 28);
+    drawLineChart(706, 476, 316, 72, [72, 71.4, 70.9, 70.2, 69.8, 69.5, 69.2], progress, '#0f8f6f', 'rgba(15,143,111,0.14)');
+    fillRoundRect(ctx, 1036, 470, 64, 36, 18, 'rgba(15,143,111,0.12)');
     ctx.save();
     ctx.fillStyle = '#173630';
     ctx.font = '700 24px "Avenir Next", "PingFang SC", sans-serif';
-    ctx.fillText('不是更激进，而是重新稳定。', 718, 456);
+    ctx.fillText('不是更激进，而是重新稳定。', 706, 466);
+    ctx.fillStyle = '#0f8f6f';
+    ctx.font = '700 18px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('复购中', 1050, 494);
+    ctx.fillStyle = 'rgba(23,54,48,0.64)';
+    ctx.font = '500 16px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('体重、睡眠和执行力开始一起回到生活里。', 706, 566);
+    ctx.fillText('下一次提醒不是催促，而是更平顺的续接。', 706, 588);
+    ctx.restore();
+  }
+
+  function drawSceneOutro(progress) {
+    const outroProgress = easeOut(progress);
+    drawPhotoPanel(0, 0, WIDTH, HEIGHT, state.assets.get('portraitPhone'), {
+      radius: 0,
+      focusX: 0.64,
+      focusY: 0.3,
+      zoom: lerp(1.16, 1.06, outroProgress),
+      overlayFrom: 'rgba(12, 24, 22, 0.86)',
+      overlayTo: 'rgba(12, 24, 22, 0.72)',
+      highlight: 'rgba(15,143,111,0.12)',
+      border: 'rgba(255,255,255,0.05)',
+      shadow: 'rgba(0,0,0,0)',
+    });
+
+    ctx.save();
+    ctx.globalAlpha = lerp(0.2, 1, outroProgress);
+    ctx.translate(WIDTH / 2, HEIGHT / 2 - 86);
+    drawLogoMark(0, 0, outroProgress, {
+      accentA: '#17a37e',
+      accentB: '#f2a16f',
+    });
+    ctx.restore();
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = outroProgress;
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '700 84px "Iowan Old Style", "Georgia", "STSong", serif';
+    ctx.fillText('MediSlim', WIDTH / 2, HEIGHT / 2 + 72);
+    ctx.fillStyle = 'rgba(255,255,255,0.74)';
+    ctx.font = '600 24px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('从评估到履约，把健康管理做得更稳一点。', WIDTH / 2, HEIGHT / 2 + 116);
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '500 18px "Avenir Next", "PingFang SC", sans-serif';
+    ctx.fillText('medislim.cloud', WIDTH / 2, HEIGHT / 2 + 156);
     ctx.restore();
   }
 
@@ -671,12 +893,17 @@
     const localTime = time - scene.start;
     const progress = scene.duration ? clamp(localTime / scene.duration, 0, 1) : 0;
     const palette = scenePalettes[scene.id] || scenePalettes.imbalance;
+    const cinematicScene = scene.id === 'intro' || scene.id === 'outro';
 
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     drawGradientBackground(palette);
-    drawTopChrome(scene, activeIndex, time);
+    if (!cinematicScene) {
+      drawTopChrome(scene, activeIndex, time);
+    }
 
-    if (scene.id === 'imbalance') {
+    if (scene.id === 'intro') {
+      drawSceneIntro(progress);
+    } else if (scene.id === 'imbalance') {
       drawSceneImbalance(progress);
     } else if (scene.id === 'scan') {
       drawSceneScan(progress);
@@ -688,6 +915,8 @@
       drawSceneNetwork(progress);
     } else if (scene.id === 'outcome') {
       drawSceneOutcome(progress);
+    } else if (scene.id === 'outro') {
+      drawSceneOutro(progress);
     }
 
     drawSubtitle(scene);
@@ -945,7 +1174,8 @@
 
   async function exportPosterBase64(time) {
     await ensureReady();
-    const targetTime = typeof time === 'number' ? time : (state.manifest.scenes[2]?.start || 0) + 1.1;
+    const imbalanceScene = state.manifest.scenes.find((scene) => scene.id === 'imbalance');
+    const targetTime = typeof time === 'number' ? time : (imbalanceScene ? imbalanceScene.start : (state.manifest.scenes[1]?.start || 0)) + 1.1;
     renderAt(targetTime, { silent: true });
     return canvas.toDataURL('image/png').split(',')[1];
   }
