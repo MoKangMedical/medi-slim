@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 产品端</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="page-product-hub">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>MediSlim 产品端</strong>
+          <span>品牌、SKU、内容与履约协同工作台</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">主页</a>
+        <a href="/client">客户端</a>
+        <a class="active" href="/product-hub">产品端</a>
+        <a href="/assess">开始评估</a>
+        <a href="/admin">运营导航</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="experience-hero product-hero">
+      <div class="shell experience-grid">
+        <div class="experience-copy">
+          <div class="eyebrow">Product Hub</div>
+          <h1>让每一个品类，都拥有自己的上架、投放与复购工作台。</h1>
+          <p class="lead">
+            对产品方来说，MediSlim 不只是一个展示页，而是一张连接用户需求、合作医院、履约伙伴和复购节奏的协同面。
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="/assess">回到真实转化入口</a>
+            <a class="button button-secondary" href="/client">查看客户端承接效果</a>
+          </div>
+          <div class="experience-bullets">
+            <span>SKU 规划</span>
+            <span>供应协同</span>
+            <span>内容资产</span>
+            <span>复购洞察</span>
+          </div>
+        </div>
+
+        <div class="hub-stage">
+          <div class="hub-panel">
+            <div class="hub-panel-head">
+              <span>当前品类</span>
+              <strong id="hubProducts">-</strong>
+            </div>
+            <div class="hub-kpis">
+              <div><strong id="hubHospitals">-</strong><span>医院协作</span></div>
+              <div><strong id="hubSuppliers">-</strong><span>产品方</span></div>
+              <div><strong id="hubOrders">-</strong><span>订单流转</span></div>
+            </div>
+            <div class="hub-flow-preview">
+              <span>内容种草</span>
+              <span>评估进入</span>
+              <span>履约承接</span>
+              <span>订阅复购</span>
+            </div>
+          </div>
+          <div class="experience-float">
+            <strong>产品端看的不是页面流量，而是整个关系链条。</strong>
+            <span>什么内容带来高意向用户，什么 SKU 更适合长期关系，什么时间点最适合补货。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" id="product-shelf">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">品类上架</div>
+            <h2>先定义用户目标，再决定每个品类怎么被卖出去。</h2>
+            <p>产品端不是堆 SKU，而是围绕真实目标组织方案、素材、定价与续费节奏。</p>
+          </div>
+        </div>
+        <div class="products product-shelf" id="hubProductGrid">
+          <div class="loading">正在加载品类...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell narrative-grid">
+        <article class="narrative-panel">
+          <div class="eyebrow">产品方视角</div>
+          <h3>你需要看到的，不只是销量。</h3>
+          <ul class="plain-list">
+            <li>哪个渠道带来了更高意向的用户与更长的复购关系。</li>
+            <li>不同品类首单价格、续费价格和掉队节点的差异。</li>
+            <li>产品内容该怎么讲，才能让用户自然进入评估，而不是只看价格。</li>
+          </ul>
+        </article>
+        <article class="narrative-panel">
+          <div class="eyebrow">协同视角</div>
+          <h3>医院、药房和供应链不是分散系统，而是一条产品链。</h3>
+          <ul class="plain-list">
+            <li>问诊审核决定可卖边界。</li>
+            <li>药房配发决定履约效率和用户体验。</li>
+            <li>订阅提醒决定复购节奏和关系长度。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">合作产品方</div>
+            <h2>这张工作台，最终要为品牌和供应链服务。</h2>
+            <p>产品端应该能把上游产品方、合作医院与前台转化结果放到一个可读的面里。</p>
+          </div>
+        </div>
+        <div class="products supplier-matrix" id="hubSupplierGrid">
+          <div class="loading">正在加载合作产品方...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">下一步</div>
+            <h2>先把主页变成入口，再让产品端持续优化整个漏斗。</h2>
+            <p>主页负责被看见，客户端负责留住人，产品端负责把每一段关系做长。</p>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a class="button button-primary" href="/">回到主页</a>
+          <a class="button button-secondary" href="/client">查看客户端</a>
+          <a class="button button-secondary" href="/admin">打开运营后台</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">MediSlim 产品端概览 · 围绕品类、合作方和复购节奏的协同工作台。</div>
+  </footer>
+
+  <script>
+    async function api(path) {
+      const response = await fetch(path);
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+      return payload;
+    }
+
+    async function loadProductHub() {
+      const [stats, products, suppliers] = await Promise.all([
+        api('/api/stats'),
+        api('/api/products'),
+        api('/api/product-partners'),
+      ]);
+
+      document.getElementById('hubProducts').textContent = stats.products;
+      document.getElementById('hubHospitals').textContent = stats.hospitals;
+      document.getElementById('hubSuppliers').textContent = stats.product_partners;
+      document.getElementById('hubOrders').textContent = stats.total_orders;
+
+      document.getElementById('hubProductGrid').innerHTML = Object.entries(products).map(([id, product]) => `
+        <article class="product-card product-card-feature product-card-hub">
+          <div class="product-art">
+            <img src="${product.image}" alt="${product.image_alt || product.name}" loading="lazy">
+            <div class="product-overlay">
+              <div class="pill">${product.emoji} ${product.category}</div>
+              <div class="product-price-chip">¥${product.first_price} 起</div>
+            </div>
+          </div>
+          <div class="product-copy">
+            <div class="product-copy-head">
+              <div class="product-support">${product.requires_prescription ? '需要医院承接' : '可轻干预起盘'}</div>
+              <h3>${product.name}</h3>
+              <p>${product.description}</p>
+            </div>
+            <div class="product-facts">
+              ${(product.includes || []).slice(0, 3).map((item) => `<span>${item}</span>`).join('')}
+            </div>
+            <div class="button-row product-actions">
+              <a class="button button-primary" href="/assess?product=${id}">回到前台转化</a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      document.getElementById('hubSupplierGrid').innerHTML = suppliers.map((supplier) => `
+        <article class="product-card partner-card">
+          <div class="partner-brand">
+            <div class="partner-logo-shell">
+              <img class="partner-logo" src="${supplier.logo}" alt="${supplier.logo_alt || supplier.name}" loading="lazy">
+            </div>
+            <span class="badge badge-gray">合作产品方</span>
+          </div>
+          <div>
+            <h3>${supplier.name}</h3>
+            <p>${supplier.type}</p>
+          </div>
+          <div class="tags">
+            ${(supplier.supports || []).map((item) => `<span class="tag">${item}</span>`).join('')}
+          </div>
+        </article>
+      `).join('');
+    }
+
+    loadProductHub().catch(() => {
+      document.getElementById('hubProductGrid').innerHTML = '<div class="empty">品类加载失败。</div>';
+      document.getElementById('hubSupplierGrid').innerHTML = '<div class="empty">合作产品方加载失败。</div>';
+    });
+  </script>
+</body>
+</html>

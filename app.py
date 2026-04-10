@@ -838,6 +838,10 @@ class MediSlimHandler(BaseHTTPRequestHandler):
 
         if path in ("/", "/index.html"):
             self._serve("templates/index.html", "text/html; charset=utf-8")
+        elif path == "/client":
+            self._serve("templates/client.html", "text/html; charset=utf-8")
+        elif path == "/product-hub":
+            self._serve("templates/product_hub.html", "text/html; charset=utf-8")
         elif path == "/assess":
             self._serve("templates/assess.html", "text/html; charset=utf-8")
         elif path == "/constitution":

@@ -1234,6 +1234,388 @@ textarea {
   color: var(--muted);
 }
 
+.section-tight {
+  padding-top: 8px;
+}
+
+.portal-grid,
+.journey-grid,
+.narrative-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.portal-grid,
+.narrative-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.journey-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.portal-panel,
+.journey-step,
+.narrative-panel,
+.experience-float,
+.client-phone,
+.hub-panel {
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: var(--shadow);
+}
+
+.portal-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.88fr);
+  gap: 18px;
+  min-height: 360px;
+  padding: 28px;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.portal-panel-client {
+  background:
+    radial-gradient(circle at top right, rgba(15, 143, 111, 0.2), transparent 30%),
+    linear-gradient(180deg, rgba(255, 251, 245, 0.94), rgba(242, 248, 245, 0.92));
+}
+
+.portal-panel-product {
+  background:
+    radial-gradient(circle at top left, rgba(245, 123, 66, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(255, 251, 245, 0.94), rgba(247, 241, 232, 0.92));
+}
+
+.portal-copy {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.portal-copy h2,
+.experience-copy h1 {
+  margin: 0;
+  font-family: "Iowan Old Style", "Georgia", "STSong", serif;
+  line-height: 1.08;
+}
+
+.portal-copy h2 {
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.portal-copy p,
+.experience-copy p,
+.journey-step p,
+.narrative-panel p,
+.plain-list {
+  color: var(--muted);
+}
+
+.portal-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.portal-points span {
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(24, 52, 47, 0.08);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.portal-link {
+  margin-top: auto;
+  color: var(--brand-strong);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.portal-visual {
+  display: grid;
+  align-items: center;
+}
+
+.phone-showcase,
+.desk-showcase {
+  width: 100%;
+}
+
+.phone-showcase {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(24, 52, 47, 0.96), rgba(18, 34, 30, 0.92));
+  color: #fff;
+}
+
+.phone-showcase-top {
+  width: 84px;
+  height: 6px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.phone-showcase-card,
+.client-screen {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.phone-showcase-card strong {
+  font-size: 20px;
+}
+
+.phone-showcase-card span,
+.phone-showcase-list span,
+.client-screen p,
+.client-queue span {
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 14px;
+}
+
+.phone-showcase-list,
+.client-queue {
+  display: grid;
+  gap: 10px;
+}
+
+.phone-showcase-list span,
+.client-queue span {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.desk-showcase {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(249, 242, 232, 0.94));
+}
+
+.desk-kpis,
+.hub-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.desk-kpis div,
+.hub-kpis div {
+  display: grid;
+  gap: 4px;
+  padding: 14px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
+.desk-kpis strong,
+.hub-kpis strong,
+.journey-index {
+  font-family: "Iowan Old Style", "Georgia", "STSong", serif;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.desk-kpis span,
+.hub-kpis span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.desk-flow,
+.hub-flow-preview {
+  display: grid;
+  gap: 10px;
+}
+
+.desk-flow span,
+.hub-flow-preview span {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(24, 52, 47, 0.06);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.experience-hero {
+  padding: 26px 0 22px;
+}
+
+.experience-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.96fr) minmax(320px, 0.92fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.experience-copy {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  max-width: 680px;
+}
+
+.experience-copy h1 {
+  font-size: clamp(38px, 6vw, 64px);
+}
+
+.experience-bullets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.experience-bullets span,
+.client-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(24, 52, 47, 0.08);
+  color: var(--brand-strong);
+  font-size: 13px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.experience-stage,
+.hub-stage {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.client-phone {
+  padding: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(15, 143, 111, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(24, 52, 47, 0.98), rgba(18, 32, 29, 0.94));
+}
+
+.client-phone-top {
+  width: 92px;
+  height: 6px;
+  margin: 2px auto 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.client-screen {
+  min-height: 460px;
+}
+
+.client-screen h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 28px;
+}
+
+.client-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.client-kpis div {
+  padding: 14px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.client-kpis strong {
+  display: block;
+  color: #fff;
+  font-size: 28px;
+}
+
+.client-kpis span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.experience-float {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.experience-float strong {
+  font-size: 18px;
+}
+
+.journey-step,
+.narrative-panel,
+.hub-panel {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 22px;
+  background: rgba(255, 251, 245, 0.86);
+}
+
+.journey-step h3,
+.narrative-panel h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.journey-index {
+  color: var(--accent);
+}
+
+.plain-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.plain-list li + li {
+  margin-top: 10px;
+}
+
+.product-hero .hub-panel {
+  background:
+    radial-gradient(circle at top right, rgba(245, 123, 66, 0.18), transparent 24%),
+    rgba(255, 251, 245, 0.9);
+}
+
+.hub-panel-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hub-panel-head span {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hub-panel-head strong {
+  font-family: "Iowan Old Style", "Georgia", "STSong", serif;
+  font-size: 54px;
+  line-height: 0.92;
+}
+
 .footer {
   padding: 42px 0 60px;
   color: var(--muted);
@@ -1308,6 +1690,33 @@ textarea {
 
   .demo-script-head h3 {
     font-size: clamp(28px, 8vw, 40px);
+  }
+
+  .portal-grid,
+  .journey-grid,
+  .narrative-grid,
+  .experience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-panel {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding: 20px 18px;
+    border-radius: 24px;
+  }
+
+  .experience-hero {
+    padding: 16px 0 18px;
+  }
+
+  .experience-copy h1 {
+    font-size: clamp(30px, 9vw, 46px);
+    line-height: 1.08;
+  }
+
+  .client-screen {
+    min-height: 0;
   }
 
   .scene-product-wall,
@@ -1572,13 +1981,20 @@ textarea {
   }
 
   .story-grid,
-  .supplier-matrix {
+  .supplier-matrix,
+  .journey-grid,
+  .narrative-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .product-matrix,
-  .product-picker {
+  .product-picker,
+  .product-shelf {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .portal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1605,6 +2021,28 @@ textarea {
   }
 
   .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .portal-panel,
+  .journey-step,
+  .narrative-panel,
+  .client-phone,
+  .hub-panel,
+  .experience-float {
+    border-radius: 22px;
+  }
+
+  .portal-copy h2,
+  .journey-step h3,
+  .narrative-panel h3 {
+    font-size: 24px;
+    line-height: 1.12;
+  }
+
+  .client-kpis,
+  .desk-kpis,
+  .hub-kpis {
     grid-template-columns: 1fr;
   }
 

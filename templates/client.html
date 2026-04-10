@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MediSlim 客户端</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="page-client">
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">MS</div>
+        <div class="brand-copy">
+          <strong>MediSlim 客户端</strong>
+          <span>用户侧方案、履约与复购体验</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">主页</a>
+        <a class="active" href="/client">客户端</a>
+        <a href="/product-hub">产品端</a>
+        <a href="/assess">开始评估</a>
+        <a href="/demo-film">成片 Demo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="experience-hero">
+      <div class="shell experience-grid">
+        <div class="experience-copy">
+          <div class="eyebrow">Future Client</div>
+          <h1>把一段健康关系，做成每天都愿意打开的客户端。</h1>
+          <p class="lead">
+            用户不需要理解后台如何协同，只需要在一个清楚、安静的客户端里看到方案、物流、提醒和每一次变化。
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="/assess">先做一次 AI 评估</a>
+            <a class="button button-secondary" href="/product-hub">再看产品端如何承接</a>
+          </div>
+          <div class="experience-bullets">
+            <span>方案总览</span>
+            <span>订阅补货</span>
+            <span>履约追踪</span>
+            <span>顾问回访</span>
+          </div>
+        </div>
+
+        <div class="experience-stage">
+          <div class="client-phone">
+            <div class="client-phone-top"></div>
+            <div class="client-screen">
+              <div class="client-badge">我的方案</div>
+              <h3>GLP-1 科学减重</h3>
+              <p>第 2 周 · 当前节奏稳定，建议按计划补货并保持轻运动。</p>
+              <div class="client-kpis">
+                <div><strong id="clientUsers">-</strong><span>体验用户</span></div>
+                <div><strong id="clientOrders">-</strong><span>订单流转</span></div>
+                <div><strong id="clientSubs">-</strong><span>续费关系</span></div>
+              </div>
+              <div class="client-queue">
+                <span>明日 09:30 · 顾问随访提醒</span>
+                <span>后天 14:00 · 药房发货更新</span>
+                <span>本周日 · 阶段复盘报告生成</span>
+              </div>
+            </div>
+          </div>
+          <div class="experience-float">
+            <strong>用户感受到的是连续照顾，不是一次下单。</strong>
+            <span>从首次评估到补货提醒，整个周期都在一个入口完成。</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tight" id="client-live">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">客户端结构</div>
+            <h2>它不只是一个看订单的地方。</h2>
+            <p>客户端应该承接用户真正关心的 4 件事：我现在做什么、什么时候会到、何时需要补货、我有没有变好。</p>
+          </div>
+        </div>
+        <div class="journey-grid">
+          <article class="journey-step">
+            <div class="journey-index">01</div>
+            <h3>我的方案</h3>
+            <p>把体质辨识、评估结论、医生建议和当前方案汇总成一个稳定的首页。</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-index">02</div>
+            <h3>履约与物流</h3>
+            <p>处方审核、药房配货、快递节点不再分散在不同对话里，全部回到同一时间线。</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-index">03</div>
+            <h3>订阅与补货</h3>
+            <p>根据疗程节奏自动提醒续费、补货和阶段复查，减少掉队和复购流失。</p>
+          </article>
+          <article class="journey-step">
+            <div class="journey-index">04</div>
+            <h3>陪伴与反馈</h3>
+            <p>通过顾问消息、复盘报告和简短反馈，让用户感受到这是一段被持续跟进的关系。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell narrative-grid">
+        <article class="narrative-panel">
+          <div class="eyebrow">首页模块</div>
+          <h3>把复杂流程藏在后面，把当天最重要的事放在前面。</h3>
+          <ul class="plain-list">
+            <li>今日计划：今天要做什么、什么时候做。</li>
+            <li>方案状态：当前在第几周、是否已补货。</li>
+            <li>物流状态：药房是否已发货、预计送达时间。</li>
+            <li>顾问消息：需要回复的提醒与建议。</li>
+          </ul>
+        </article>
+        <article class="narrative-panel">
+          <div class="eyebrow">关系沉淀</div>
+          <h3>不是每次都重新沟通，而是把用户历史真正留在客户端里。</h3>
+          <ul class="plain-list">
+            <li>体重、睡眠、皮肤或用药反馈形成长期轨迹。</li>
+            <li>每次下单、复购和咨询都有连续上下文。</li>
+            <li>下一次推荐不再从零开始，而是基于上一阶段状态。</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">下一步</div>
+            <h2>先从主页完成首单，再让客户端承接长期关系。</h2>
+            <p>主页负责转化第一步，客户端负责把用户留下来。</p>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a class="button button-primary" href="/assess">进入 AI 评估</a>
+          <a class="button button-secondary" href="/product-hub">查看产品端工作台</a>
+          <a class="button button-secondary" href="/">回到主页</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">MediSlim 客户端预览 · 用户侧体验、履约追踪与长期复购入口。</div>
+  </footer>
+
+  <script>
+    async function api(path) {
+      const response = await fetch(path);
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || '请求失败');
+      }
+      return payload;
+    }
+
+    async function loadClientPreview() {
+      const stats = await api('/api/stats');
+      document.getElementById('clientUsers').textContent = stats.total_users;
+      document.getElementById('clientOrders').textContent = stats.total_orders;
+      document.getElementById('clientSubs').textContent = stats.total_subscriptions || 0;
+    }
+
+    loadClientPreview().catch(() => {});
+  </script>
+</body>
+</html>
