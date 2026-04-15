@@ -328,16 +328,26 @@ class SlimAIEngine:
     @staticmethod
     def _analyze_generic(product, product_id, answers, questions):
         """通用评估：根据症状应答分数生成治疗方案推荐。"""
-        positive = sum(1 for k, v in answers.items() if v in ["是", "严重", "经常"])
+        # 显式正向关键词 + 非空选项均视为症状信号
+        positive_kw = {"是", "严重", "经常", "偏高", "偏低"}
+        positive = 0
+        for v in answers.values():
+            if v in positive_kw:
+                positive += 1
+            elif isinstance(v, str) and v.strip() and v not in {"否", "无", "未使用", "未检测", "正常", "不适用", "不确定"}:
+                positive += 0.5  # 非默认选项也计入半分
         total = len(questions)
-        score = round(positive / max(total, 1) * 100, 1)
+        score = round(min(positive / max(total, 1), 1.0) * 100, 1)
 
         if score >= 60:
             urgency, plan = "high", f"建议立即开始{product.get('name', '治疗')}方案"
+            months = 6
         elif score >= 30:
             urgency, plan = "medium", f"推荐{product.get('name', '调理')}方案"
+            months = 3
         else:
             urgency, plan = "low", "症状较轻，可先尝试生活方式调整"
+            months = 1
 
         return {
             "product": product.get("name", ""),
@@ -345,8 +355,8 @@ class SlimAIEngine:
             "urgency": urgency,
             "score": score,
             "plan": plan,
-            "estimated_months": 3,
-            "estimated_total_cost": product.get("first_price", 0) + product.get("renew_price", 0) * 2,
+            "estimated_months": months,
+            "estimated_total_cost": product.get("first_price", 0) + product.get("renew_price", 0) * (months - 1),
             "first_month_price": product.get("first_price", 0),
             "includes": product.get("includes", []),
             "next_step": "order",
