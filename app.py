@@ -7,10 +7,27 @@ import os
 import json
 import uuid
 import time
+import logging
+import traceback
 from datetime import datetime, timedelta
 from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
+
+# ========== 决策检查点 ==========
+from decision_checkpoint import (
+    validate_phone, validate_address, validate_product_exists,
+    validate_order_preview, validate_prescription_check,
+    validate_data_save, get_audit_log, get_checkpoint_registry,
+)
+
+# ========== 日志配置 ==========
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger("MediSlim")
 
 # ========== 配置 ==========
 class Config:
@@ -137,25 +154,57 @@ DATA_DIR.mkdir(exist_ok=True)
 def load_data(name):
     f = DATA_DIR / f"{name}.json"
     if f.exists():
-        return json.loads(f.read_text())
+        try:
+            return json.loads(f.read_text())
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            logger.error(f"load_data({name}): JSON解析失败: {e}")
+            return {}
     return {}
 
 def save_data(name, data):
-    (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
+    """保存数据，带决策检查点校验"""
+    result = validate_data_save(name, data)
+    if not result.passed:
+        logger.error(f"save_data({name}): 数据校验失败 - {result.message}")
+        raise ValueError(f"数据校验失败: {result.message}")
+    try:
+        (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
+    except (TypeError, OSError) as e:
+        logger.error(f"save_data({name}): 写入失败: {e}")
+        raise
 
 # ========== AI引擎 ==========
 class SlimAIEngine:
     @staticmethod
     def analyze(product_id, answers):
-        product = Config.PRODUCTS.get(product_id, {})
-        questions = Config.ASSESSMENT_QUESTIONS.get(product_id, [])
+        """分析评估结果，带完整异常处理"""
+        if not product_id or not isinstance(product_id, str):
+            logger.warning("analyze: product_id 为空或类型错误")
+            return {"error": "产品ID不能为空", "eligible": False}
 
-        if product_id == "glp1":
-            return SlimAIEngine._analyze_glp1(product, answers, questions)
-        elif product_id == "hair":
-            return SlimAIEngine._analyze_hair(product, answers, questions)
-        else:
-            return SlimAIEngine._analyze_generic(product, product_id, answers, questions)
+        product = Config.PRODUCTS.get(product_id)
+        if not product:
+            logger.warning(f"analyze: 未知产品 {product_id}")
+            return {"error": f"未知产品: {product_id}", "eligible": False}
+
+        questions = Config.ASSESSMENT_QUESTIONS.get(product_id, [])
+        if not answers or not isinstance(answers, dict):
+            logger.warning(f"analyze({product_id}): answers为空或类型错误")
+            return {"error": "评估答案不能为空", "eligible": False}
+
+        try:
+            if product_id == "glp1":
+                return SlimAIEngine._analyze_glp1(product, answers, questions)
+            elif product_id == "hair":
+                return SlimAIEngine._analyze_hair(product, answers, questions)
+            else:
+                return SlimAIEngine._analyze_generic(product, product_id, answers, questions)
+        except (ValueError, TypeError) as e:
+            logger.error(f"analyze({product_id}) 数据错误: {e}")
+            return {"error": f"数据处理错误: {e}", "eligible": False}
+        except Exception as e:
+            logger.error(f"analyze({product_id}) 未知错误: {e}\n{traceback.format_exc()}")
+            return {"error": "系统内部错误，请稍后重试", "eligible": False}
 
     @staticmethod
     def _analyze_glp1(product, answers, questions):
@@ -163,7 +212,8 @@ class SlimAIEngine:
             height = float(answers.get("1", "170")) / 100
             weight = float(answers.get("2", "80"))
             target = float(answers.get("3", "70"))
-        except:
+        except (ValueError, TypeError) as e:
+            logger.warning(f"GLP-1数据解析失败: {e}，使用默认值")
             height, weight, target = 1.70, 80.0, 70.0
 
         bmi = round(weight / (height ** 2), 1)
@@ -302,8 +352,50 @@ class SlimAIEngine:
 class OrderManager:
     @staticmethod
     def create_order(user_id, product_id, assessment_result, name, phone, address):
-        products_db = load_data("products")
+        """创建订单 — 带完整决策检查点流程：预览→校验→确认→执行"""
+
+        # ====== 第一步：预览 ======
+        preview_data = {
+            "product_id": product_id,
+            "product_name": Config.PRODUCTS.get(product_id, {}).get("name", ""),
+            "price": Config.PRODUCTS.get(product_id, {}).get("first_price", 0),
+            "name": name,
+            "phone": phone,
+            "address": address,
+        }
+        preview_result = validate_order_preview(preview_data)
+        if not preview_result.passed:
+            logger.warning(f"订单创建拦截(预览): {preview_result.message}")
+            raise ValueError(preview_result.message)
+
+        # ====== 第二步：校验 ======
+        # 2a. 产品校验
+        prod_check = validate_product_exists(product_id, Config.PRODUCTS)
+        if not prod_check.passed:
+            raise ValueError(prod_check.message)
+
+        # 2b. 手机号校验
+        phone_check = validate_phone(phone)
+        if not phone_check.passed:
+            raise ValueError(phone_check.message)
+
         product = Config.PRODUCTS.get(product_id, {})
+
+        # 2c. 地址校验（处方药品必须有地址）
+        addr_check = validate_address(address, product.get("requires_prescription", False))
+        if not addr_check.passed:
+            raise ValueError(addr_check.message)
+
+        # 2d. 处方药品评估结果校验
+        rx_check = validate_prescription_check(product, assessment_result)
+        if not rx_check.passed:
+            raise ValueError(rx_check.message)
+
+        # ====== 第三步：确认（自动通过，生产环境应由用户前端确认） ======
+        logger.info(f"订单创建确认通过：{product.get('name', product_id)} | {phone[:3]}****{phone[-4:]}")
+
+        # ====== 第四步：执行 ======
+        products_db = load_data("products")
 
         order = {
             "id": str(uuid.uuid4())[:12],
@@ -318,7 +410,13 @@ class OrderManager:
             "assessment": assessment_result,
             "created_at": datetime.now().isoformat(),
             "timeline": [
-                {"time": datetime.now().isoformat(), "status": "created", "desc": "订单创建"},
+                {"time": datetime.now().isoformat(), "status": "created", "desc": "订单创建（检查点全部通过）"},
+            ],
+            "checkpoints_passed": [
+                "order_validate_phone",
+                "order_validate_address",
+                "order_create_confirm",
+                "prescription_required",
             ],
         }
 
@@ -361,38 +459,63 @@ class MediSlimHandler(BaseHTTPRequestHandler):
                 "products": len(Config.PRODUCTS),
                 "hospitals": len(Config.PARTNER_HOSPITALS),
             })
+        elif path == "/api/checkpoints":
+            self._json(get_checkpoint_registry())
+        elif path == "/api/checkpoints/audit":
+            limit = int(urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("limit", ["50"])[0])
+            self._json(get_audit_log(limit))
         else:
             self._json({"error": "Not found"}, 404)
 
     def do_POST(self):
-        length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(length).decode("utf-8") if length else "{}"
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+            if length > 1_000_000:  # 1MB限制
+                logger.warning(f"请求体过大: {length} bytes")
+                self._json({"error": "请求体过大"}, 413)
+                return
+            body = self.rfile.read(length).decode("utf-8") if length else "{}"
+        except (ValueError, OSError) as e:
+            logger.error(f"读取请求体失败: {e}")
+            self._json({"error": "请求格式错误"}, 400)
+            return
+
         try:
             data = json.loads(body)
-        except:
-            data = {}
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON解析失败: {e}")
+            self._json({"error": "JSON格式错误"}, 400)
+            return
 
         path = self.path
 
         if path == "/api/user/register":
+            phone = data.get("phone", "")
+            if not phone or not isinstance(phone, str) or len(phone) < 11:
+                self._json({"error": "手机号格式不正确"}, 400)
+                return
             users = load_data("users")
             uid = str(uuid.uuid4())[:12]
             users[uid] = {
                 "id": uid,
-                "phone": data.get("phone", ""),
+                "phone": phone,
                 "name": data.get("name", "用户"),
                 "created_at": datetime.now().isoformat(),
                 "orders": [],
             }
             save_data("users", users)
+            logger.info(f"新用户注册: {uid} ({data.get('name', '')})")
             self._json(users[uid])
 
         elif path == "/api/assessment/start":
             pid = data.get("product_id", "")
+            if not pid:
+                self._json({"error": "缺少product_id参数"}, 400)
+                return
             questions = Config.ASSESSMENT_QUESTIONS.get(pid, [])
             product = Config.PRODUCTS.get(pid, {})
-            if not questions:
-                self._json({"error": "产品不存在"}, 400)
+            if not questions or not product:
+                self._json({"error": f"产品不存在: {pid}"}, 400)
                 return
             self._json({
                 "product_id": pid,
@@ -410,14 +533,28 @@ class MediSlimHandler(BaseHTTPRequestHandler):
         elif path == "/api/order/create":
             uid = data.get("user_id", "")
             pid = data.get("product_id", "")
+            if not uid:
+                self._json({"error": "缺少user_id参数"}, 400)
+                return
+            if not pid or pid not in Config.PRODUCTS:
+                self._json({"error": f"无效的product_id: {pid}"}, 400)
+                return
+            name = data.get("name", "")
+            phone = data.get("phone", "")
+            if not phone:
+                self._json({"error": "缺少手机号"}, 400)
+                return
             result = data.get("assessment", {})
-            order = OrderManager.create_order(
-                uid, pid, result,
-                data.get("name", ""),
-                data.get("phone", ""),
-                data.get("address", ""),
-            )
-            self._json(order)
+            try:
+                order = OrderManager.create_order(
+                    uid, pid, result, name, phone,
+                    data.get("address", ""),
+                )
+                logger.info(f"订单创建: {order['id']} 用户:{uid} 产品:{pid}")
+                self._json(order)
+            except Exception as e:
+                logger.error(f"订单创建失败: {e}\n{traceback.format_exc()}")
+                self._json({"error": "订单创建失败，请稍后重试"}, 500)
 
         elif path == "/api/order/status":
             oid = data.get("order_id", "")
@@ -448,8 +585,8 @@ class MediSlimHandler(BaseHTTPRequestHandler):
         else:
             self._json({"error": "Not found"}, 404)
 
-    def log_message(self, *a):
-        pass
+    def log_message(self, format, *args):
+        logger.info(f"{self.client_address[0]} - {format % args}")
 
 # ========== 启动 ==========
 def main():

@@ -10,6 +10,12 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+# ========== 决策检查点 ==========
+from decision_checkpoint import (
+    validate_state_transition, validate_data_save,
+    validate_batch_operation, get_audit_log, get_checkpoint_registry,
+)
+
 DATA_DIR = Path("./data")
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -18,6 +24,10 @@ def load_db(name):
     return json.loads(f.read_text()) if f.exists() else {}
 
 def save_db(name, data):
+    """保存数据，带决策检查点校验"""
+    result = validate_data_save(name, data)
+    if not result.passed:
+        raise ValueError(f"数据校验失败: {result.message}")
     (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
 
 def now():
@@ -171,7 +181,7 @@ class OrderEngine:
     
     @staticmethod
     def advance_state(order_id, note=""):
-        """推进订单状态"""
+        """推进订单状态 — 带状态流转检查点"""
         orders = load_db("orders")
         order = orders.get(order_id)
         if not order:
@@ -183,6 +193,12 @@ class OrderEngine:
         if not next_state:
             return order  # 已终态
         
+        # ====== 决策检查点：状态流转校验 ======
+        trans_check = validate_state_transition(order, current, next_state, ORDER_STATES)
+        if not trans_check.passed:
+            logger.warning(f"状态流转拦截: {trans_check.message}")
+            return {"error": trans_check.message, "checkpoint_failed": True}
+        
         # 执行状态转换的副作用
         result = OrderEngine._execute_transition(order, current, next_state)
         
@@ -192,6 +208,7 @@ class OrderEngine:
             "time": now(),
             "note": note or ORDER_STATES.get(next_state, {}).get("action", ""),
             "result": result,
+            "checkpoint": "state_advance_confirm",
         })
         order["updated_at"] = now()
         
@@ -253,17 +270,27 @@ class OrderEngine:
         return OrderEngine.advance_state(order_id, "系统自动推进")
     
     @staticmethod
-    def process_all():
-        """批量处理所有可推进的订单"""
+    def process_all(confirm_token=None):
+        """批量处理所有可推进的订单 — 带批量操作确认检查点"""
         orders = load_db("orders")
-        results = []
+        
+        # 统计可推进的订单数
+        advanceable = []
         for oid, order in orders.items():
             current = order.get("state")
             next_state = ORDER_STATES.get(current, {}).get("next")
             if next_state and next_state not in ("refill_paid",):
-                # 自动推进（除复购外）
-                result = OrderEngine.auto_advance(oid)
-                results.append({"order_id": oid, "from": current, "to": order["state"]})
+                advanceable.append((oid, order, current))
+        
+        # ====== 决策检查点：批量操作确认 ======
+        batch_check = validate_batch_operation("process_all", len(advanceable), confirm_token)
+        if not batch_check.passed:
+            return {"error": batch_check.message, "details": batch_check.details, "checkpoint_failed": True}
+        
+        results = []
+        for oid, order, current in advanceable:
+            result = OrderEngine.auto_advance(oid)
+            results.append({"order_id": oid, "from": current, "to": order.get("state", current)})
         return results
     
     @staticmethod
@@ -300,10 +327,15 @@ class FlowHandler(BaseHTTPRequestHandler):
             orders = load_db("orders")
             self._json(list(orders.values()))
         elif path == "/api/flow/process":
-            result = OrderEngine.process_all()
-            self._json({"processed": len(result), "results": result})
+            # 首次调用返回确认信息，不直接执行
+            result = OrderEngine.process_all(confirm_token=None)
+            self._json(result)
         elif path == "/api/flow/states":
             self._json(ORDER_STATES)
+        elif path == "/api/flow/checkpoints":
+            self._json(get_checkpoint_registry())
+        elif path == "/api/flow/checkpoints/audit":
+            self._json(get_audit_log())
         else:
             self._json({"error": "Not found"}, 404)
     
@@ -334,8 +366,9 @@ class FlowHandler(BaseHTTPRequestHandler):
             self._json(order if order else {"error": "Order not found"}, 404 if not order else 200)
         
         elif path == "/api/flow/order/process-all":
-            result = OrderEngine.process_all()
-            self._json({"processed": len(result), "results": result})
+            # 支持 confirm_token 二次确认
+            result = OrderEngine.process_all(confirm_token=data.get("confirm_token"))
+            self._json(result if "error" in result else {"processed": len(result), "results": result})
         
         elif path == "/api/flow/simulate-full":
             # 模拟完整业务流
@@ -389,6 +422,9 @@ products = {
 }
 if not (DATA_DIR / "products.json").exists():
     save_db("products", products)
+
+import logging
+logger = logging.getLogger("FlowEngine")
 
 def main():
     port = int(os.environ.get("PORT", 8092))

@@ -11,6 +11,12 @@ from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import urllib.parse
 
+# ========== 决策检查点 ==========
+from decision_checkpoint import (
+    validate_content_publish, validate_data_save,
+    get_audit_log, get_checkpoint_registry,
+)
+
 DATA_DIR = Path("./data")
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -19,6 +25,10 @@ def load_db(name):
     return json.loads(f.read_text()) if f.exists() else {}
 
 def save_db(name, data):
+    """保存数据，带决策检查点校验"""
+    result = validate_data_save(name, data)
+    if not result.passed:
+        raise ValueError(f"数据校验失败: {result.message}")
     (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
 
 def now():
@@ -166,8 +176,14 @@ class ContentManager:
         result["id"] = gen_id()
         result["platform"] = platform
         result["template_id"] = template_id
-        result["status"] = "draft"
         result["created_at"] = now()
+        
+        # ====== 决策检查点：内容合规审查 ======
+        approval = validate_content_publish(result)
+        result["status"] = "draft" if approval.passed else "rejected"
+        result["approval_message"] = approval.message
+        if not approval.passed:
+            result["rejection_reason"] = approval.details
         
         # 保存到内容库
         contents = load_db("contents")
@@ -453,6 +469,8 @@ class AdminHandler(BaseHTTPRequestHandler):
             "/api/admin/crm": lambda: self._json(load_db("crm_users")),
             "/api/admin/crm/dashboard": lambda: self._json(CRMManager.get_dashboard()),
             "/api/admin/content/templates": lambda: self._json(ContentManager.TEMPLATES),
+            "/api/admin/checkpoints": lambda: self._json(get_checkpoint_registry()),
+            "/api/admin/checkpoints/audit": lambda: self._json(get_audit_log()),
         }
         
         handler = routes.get(path)
