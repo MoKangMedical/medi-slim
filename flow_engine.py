@@ -6,9 +6,13 @@ import os
 import json
 import uuid
 import time
+import logging
+import traceback
 from datetime import datetime, timedelta
 from pathlib import Path
 from http.server import HTTPServer, BaseHTTPRequestHandler
+
+logger = logging.getLogger("FlowEngine")
 
 # ========== 决策检查点 ==========
 from decision_checkpoint import (
@@ -25,10 +29,21 @@ def load_db(name):
 
 def save_db(name, data):
     """保存数据，带决策检查点校验"""
-    result = validate_data_save(name, data)
-    if not result.passed:
-        raise ValueError(f"数据校验失败: {result.message}")
-    (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
+    try:
+        result = validate_data_save(name, data)
+        if not result.passed:
+            logger.error(f"save_db({name}): 校验失败 - {result.message}")
+            raise ValueError(f"数据校验失败: {result.message}")
+    except ValueError:
+        raise
+    except Exception as e:
+        logger.error(f"save_db({name}): 检查点异常: {e}")
+        raise
+    try:
+        (DATA_DIR / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=2))
+    except (TypeError, OSError) as e:
+        logger.error(f"save_db({name}): 写入失败: {e}")
+        raise
 
 def now():
     return datetime.now().isoformat()
@@ -422,9 +437,6 @@ products = {
 }
 if not (DATA_DIR / "products.json").exists():
     save_db("products", products)
-
-import logging
-logger = logging.getLogger("FlowEngine")
 
 def main():
     port = int(os.environ.get("PORT", 8092))
