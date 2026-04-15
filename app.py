@@ -152,6 +152,7 @@ DATA_DIR = Path("./data")
 DATA_DIR.mkdir(exist_ok=True)
 
 def load_data(name):
+    """从JSON文件加载数据，解析失败时返回空字典。"""
     f = DATA_DIR / f"{name}.json"
     if f.exists():
         try:
@@ -208,6 +209,7 @@ class SlimAIEngine:
 
     @staticmethod
     def _analyze_glp1(product, answers, questions):
+        """GLP-1减重专项评估：BMI计算、禁忌症筛查、疗程估算。"""
         try:
             height = float(answers.get("1", "170")) / 100
             weight = float(answers.get("2", "80"))
@@ -279,6 +281,7 @@ class SlimAIEngine:
 
     @staticmethod
     def _analyze_hair(product, answers, questions):
+        """防脱生发评估：脱发程度分级与用药方案推荐。"""
         severity_map = {
             "不到半年": "early",
             "半年~2年": "moderate",
@@ -324,6 +327,7 @@ class SlimAIEngine:
 
     @staticmethod
     def _analyze_generic(product, product_id, answers, questions):
+        """通用评估：根据症状应答分数生成治疗方案推荐。"""
         positive = sum(1 for k, v in answers.items() if v in ["是", "严重", "经常"])
         total = len(questions)
         score = round(positive / max(total, 1) * 100, 1)
@@ -433,6 +437,7 @@ class OrderManager:
 class MediSlimHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        """处理GET请求：静态页面、API查询、审计日志。"""
         path = self.path.split("?")[0]
 
         if path in ("/", "/index.html"):
@@ -468,6 +473,7 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
 
     def do_POST(self):
+        """处理POST请求：评估分析、订单创建、数据更新。"""
         try:
             length = int(self.headers.get("Content-Length", 0))
             if length > 1_000_000:  # 1MB限制
@@ -569,6 +575,7 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
 
     def _json(self, data, status=200):
+        """发送JSON响应，支持CORS跨域。"""
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Access-Control-Allow-Origin", "*")
@@ -576,6 +583,7 @@ class MediSlimHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8"))
 
     def _serve(self, filepath, content_type):
+        """提供静态文件服务，文件不存在时返回404。"""
         full = Path(__file__).parent / filepath
         if full.exists():
             self.send_response(200)
@@ -586,10 +594,12 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json({"error": "Not found"}, 404)
 
     def log_message(self, format, *args):
+        """覆盖默认日志格式，统一使用项目logger。"""
         logger.info(f"{self.client_address[0]} - {format % args}")
 
 # ========== 启动 ==========
 def main():
+    """启动MediSlim HTTP服务器，默认监听8090端口。"""
     port = int(os.environ.get("PORT", 8090))
     server = HTTPServer(("0.0.0.0", port), MediSlimHandler)
     print(f"💰 MediSlim 轻健康平台启动成功")
