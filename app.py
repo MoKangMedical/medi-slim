@@ -458,6 +458,10 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._serve("templates/flow.html", "text/html; charset=utf-8")
         elif path == "/admin":
             self._serve("templates/admin2.html", "text/html; charset=utf-8")
+        elif path == "/health":
+            # Hermes改进：健康检查端点
+            import sys
+            self._json({"status": "healthy", "app": Config.APP_NAME, "version": Config.VERSION, "products": len(Config.PRODUCTS), "hospitals": len(Config.PARTNER_HOSPITALS)})
         elif path.startswith("/static/"):
             ct = "text/css" if path.endswith(".css") else "application/javascript"
             self._serve(path[1:], ct)
