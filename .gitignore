@@ -35,3 +35,7 @@ logs/
 tmp/
 temp/
 nohup.out
+*.key
+*.pem
+*_secret*
+credentials.json
