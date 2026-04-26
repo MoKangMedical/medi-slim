@@ -60,6 +60,7 @@ HTML = """<!DOCTYPE html>
 <div class="hdr">
   <h1>🌿 MediSlim</h1>
   <p>AI驱动的消费医疗平台 · 在线问诊+药品直达</p>
+  <div style="margin-top:8px"><a href="http://localhost:5002/admin" style="color:rgba(255,255,255,.8);font-size:12px;text-decoration:none;margin:0 6px;padding:3px 8px;background:rgba(255,255,255,.15);border-radius:4px">🏢 企业健康</a><a href="/" style="color:rgba(255,255,255,.8);font-size:12px;text-decoration:none;margin:0 6px;padding:3px 8px;background:rgba(255,255,255,.15);border-radius:4px">🛒 消费产品</a></div>
 </div>
 <div class="wrap">
   <div class="trust">
@@ -92,7 +93,7 @@ HTML = """<!DOCTYPE html>
   <div class="b2b">
     <h3>🏢 企业健康管理</h3>
     <p>为企业员工提供健康管理服务<br>HR付费 · 员工免费 · ROI 8.2x</p>
-    <a class="b2b-btn" href="/admin">了解企业方案 →</a>
+    <a class="b2b-btn" href="http://localhost:5002/admin">了解企业方案 →</a>
   </div>
 </div>
 
