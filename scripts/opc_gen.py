@@ -24,8 +24,7 @@ for _ in range(6): doc.add_paragraph()
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r = p.add_run('MediSlim OPC 综合运营手册'); r.font.size = Pt(48); r.font.bold = True; r.font.color.rgb = RGBColor(7,193,96)
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-r = p.add_run('一人公司+AI驱动的消费医疗平台
-完整操作指南 v1.0'); r.font.size = Pt(20); r.font.color.rgb = RGBColor(100,100,100)
+r = p.add_run('一人公司+AI驱动的消费医疗平台 完整操作指南 v1.0'); r.font.size = Pt(20); r.font.color.rgb = RGBColor(100,100,100)
 p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r = p.add_run('日期：2026-04-04 编制：贾维斯AI系统'); r.font.size = Pt(12); r.font.color.rgb = RGBColor(150,150,150)
 doc.add_page_break()
