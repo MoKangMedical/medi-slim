@@ -39,3 +39,4 @@ nohup.out
 *.pem
 *_secret*
 credentials.json
+enterprise-b2b/*.db

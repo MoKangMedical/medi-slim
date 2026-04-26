@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediSlim 员工健康中心</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,sans-serif;background:#f5f7fa;color:#333}
+.hdr{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff;padding:16px 20px;text-align:center}
+.hdr h1{font-size:20px}.hdr p{font-size:12px;opacity:.8;margin-top:4px}
+.wrap{max-width:600px;margin:16px auto;padding:0 16px}
+.sec{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:16px}
+.sec h2{font-size:15px;margin-bottom:12px}
+label{display:block;font-size:13px;color:#555;margin:8px 0 4px}
+input[type=range]{width:100%}input[type=number],select{width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+.btn{width:100%;padding:12px;background:#43a047;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;margin-top:10px}
+.btn:active{background:#2e7d32}
+.result{margin-top:12px;padding:14px;background:#f1f8e9;border-radius:10px;font-size:13px;line-height:1.8;display:none}
+.quiz{margin:6px 0}.quiz p{font-size:14px;font-weight:600;margin-bottom:6px}
+.quiz label{display:inline-block;margin-right:12px;font-size:13px;cursor:pointer}
+.quiz input{margin-right:4px}
+.chat-box{display:flex;gap:8px;margin-bottom:10px}
+.chat-box input{flex:1;padding:8px;border:1px solid #ddd;border-radius:8px}
+.chat-box button{padding:8px 14px;background:#43a047;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.msg{padding:10px;border-radius:10px;margin-bottom:8px;font-size:13px;line-height:1.6}
+.msg.user{background:#e3f2fd;margin-left:40px}.msg.ai{background:#f1f8e9;margin-right:40px}
+nav a{color:rgba(255,255,255,.8);text-decoration:none;margin:0 10px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>🌿 MediSlim 员工健康中心</h1>
+  <p>您的私人AI健康助手</p>
+  <nav style="margin-top:8px"><a href="/admin">HR后台</a><a href="/employee">员工入口</a></nav>
+</div>
+<div class="wrap">
+  <!-- 健康打卡 -->
+  <div class="sec">
+    <h2>📝 今日健康打卡</h2>
+    <label>睡眠时长: <span id="sleepVal">7</span> 小时</label>
+    <input type="range" id="sleep" min="3" max="12" value="7" step="0.5" oninput="document.getElementById('sleepVal').textContent=this.value">
+    <label>运动时长: <span id="exVal">20</span> 分钟</label>
+    <input type="range" id="exercise" min="0" max="120" value="20" step="5" oninput="document.getElementById('exVal').textContent=this.value">
+    <label>饮水量: <span id="waterVal">1500</span> ml</label>
+    <input type="range" id="water" min="0" max="4000" value="1500" step="100" oninput="document.getElementById('waterVal').textContent=this.value">
+    <label>今日心情</label>
+    <select id="mood"><option value="5">😄 很好</option><option value="4">🙂 还行</option><option value="3" selected>😐 一般</option><option value="2">😕 不太好</option><option value="1">😞 很差</option></select>
+    <button class="btn" onclick="doCheckin()">✅ 打卡</button>
+    <div class="result" id="checkinResult"></div>
+  </div>
+
+  <!-- 体质测试 -->
+  <div class="sec">
+    <h2>🧬 中医体质快速测试</h2>
+    <div class="quiz"><p>1. 您容易疲劳吗？</p><label><input name="q1" type="radio" value="0"> 很少</label><label><input name="q1" type="radio" value="1" checked> 有时</label><label><input name="q1" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>2. 您睡眠质量如何？</p><label><input name="q2" type="radio" value="0"> 很好</label><label><input name="q2" type="radio" value="1" checked> 一般</label><label><input name="q2" type="radio" value="2"> 很差</label></div>
+    <div class="quiz"><p>3. 您容易感冒吗？</p><label><input name="q3" type="radio" value="0"> 很少</label><label><input name="q3" type="radio" value="1" checked> 有时</label><label><input name="q3" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>4. 您手脚容易发凉吗？</p><label><input name="q4" type="radio" value="0"> 不会</label><label><input name="q4" type="radio" value="1" checked> 有时</label><label><input name="q4" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>5. 您容易口干舌燥吗？</p><label><input name="q5" type="radio" value="0"> 不会</label><label><input name="q5" type="radio" value="1" checked> 有时</label><label><input name="q5" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>6. 您体型偏胖吗？</p><label><input name="q6" type="radio" value="0"> 标准</label><label><input name="q6" type="radio" value="1" checked> 微胖</label><label><input name="q6" type="radio" value="2"> 肥胖</label></div>
+    <div class="quiz"><p>7. 您容易长痘/出油吗？</p><label><input name="q7" type="radio" value="0"> 不会</label><label><input name="q7" type="radio" value="1" checked> 有时</label><label><input name="q7" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>8. 您容易情绪低落吗？</p><label><input name="q8" type="radio" value="0"> 不会</label><label><input name="q8" type="radio" value="1" checked> 有时</label><label><input name="q8" type="radio" value="2"> 经常</label></div>
+    <div class="quiz"><p>9. 您容易过敏吗？</p><label><input name="q9" type="radio" value="0"> 不会</label><label><input name="q9" type="radio" value="1" checked> 有时</label><label><input name="q9" type="radio" value="2"> 经常</label></div>
+    <button class="btn" onclick="doAssess()">🔍 开始评估</button>
+    <div class="result" id="assessResult"></div>
+  </div>
+
+  <!-- AI健康问答 -->
+  <div class="sec">
+    <h2>🤖 AI健康问答</h2>
+    <div id="chatHistory"></div>
+    <div class="chat-box">
+      <input id="chatInput" placeholder="问我任何健康问题..." onkeydown="if(event.key==='Enter')doChat()">
+      <button onclick="doChat()">发送</button>
+    </div>
+  </div>
+</div>
+<script>
+function $(s){return document.getElementById(s)}
+
+async function doCheckin(){
+  const emp_id='EMP0001';
+  const res=await fetch('/api/employee/'+emp_id+'/checkin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    sleep:parseFloat($('sleep').value),exercise:parseInt($('exercise').value),
+    water:parseInt($('water').value),mood:parseInt($('mood').value)})});
+  const data=await res.json();
+  const el=$('checkinResult');el.style.display='block';
+  el.innerHTML='✅ '+data.message+'<br>📊 继续保持，健康习惯是最好的投资！';
+}
+
+async function doAssess(){
+  const answers=[];
+  for(let i=1;i<=9;i++){const v=document.querySelector('input[name=q'+i+']:checked');answers.push(v?parseInt(v.value):1)}
+  const res=await fetch('/api/assess',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers})});
+  const data=await res.json();
+  const el=$('assessResult');el.style.display='block';
+  el.innerHTML=`<strong>🎯 您的体质：${data.primary_constitution}</strong><br><br>📋 调理建议：<br>${data.detail}<br><br>💡 以上为参考建议，具体请咨询中医师。`;
+}
+
+async function doChat(){
+  const input=$('chatInput');const q=input.value.trim();if(!q)return;
+  const history=$('chatHistory');
+  history.innerHTML+=`<div class="msg user">👤 ${q}</div>`;
+  input.value='';
+  const res=await fetch('/api/ai_chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+  const data=await res.json();
+  history.innerHTML+=`<div class="msg ai">🤖 ${data.answer}</div>`;
+  history.scrollTop=history.scrollHeight;
+}
+</script>
+</body>
+</html>
