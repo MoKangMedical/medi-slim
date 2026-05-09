@@ -136,7 +136,7 @@ def forward_app_post(path, payload):
 
 
 def system_status():
-    mimo = provider_status()
+    ai_provider = provider_status()
     return [
         {
             "name": "主站前台",
@@ -187,16 +187,16 @@ def system_status():
             "status": check_service("http://127.0.0.1:8101/api/ab/analysis"),
         },
         {
-            "name": "小米 MiMo API",
-            "entry": mimo["model"],
+            "name": f"{ai_provider['provider_label']} API",
+            "entry": ai_provider["model"],
             "port": None,
-            "health_url": "https://platform.xiaomimimo.com/#/console/api-keys" if mimo["configured"] else "",
+            "health_url": "https://platform.deepseek.com/api_keys" if ai_provider["configured"] else "",
             "description": (
-                f"已启用 {mimo['model']}，用于评估说明与体质解读"
-                if mimo["configured"]
-                else "未配置 MIMO_API_KEY，当前仍使用本地规则引擎"
+                f"已启用 {ai_provider['model']}，用于评估说明与体质解读"
+                if ai_provider["configured"]
+                else "未配置 DEEPSEEK_API_KEY/API_KEY，当前仍使用本地规则引擎"
             ),
-            "status": "ready" if mimo["configured"] else "pending",
+            "status": "ready" if ai_provider["configured"] else "pending",
         },
     ]
 

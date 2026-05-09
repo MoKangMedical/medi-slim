@@ -1,4 +1,4 @@
-"""Xiaomi MiMo integration for user-facing assessment copy."""
+"""LLM integration for user-facing assessment copy."""
 
 from __future__ import annotations
 
@@ -12,17 +12,26 @@ from urllib.request import Request, urlopen
 
 
 WEEKDAY_CN = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
-DEFAULT_BASE_URL = "https://api.xiaomimimo.com/v1"
-DEFAULT_MODEL = "mimo-v2-flash"
+DEFAULT_PROVIDER = "deepseek"
+DEFAULT_BASE_URL = "https://api.deepseek.com"
+DEFAULT_MODEL = "deepseek-v4-pro"
 
 
 def provider_settings() -> dict[str, Any]:
+    provider = os.getenv("AI_PROVIDER", DEFAULT_PROVIDER).strip().lower() or DEFAULT_PROVIDER
+    api_key = (
+        os.getenv("DEEPSEEK_API_KEY", "").strip()
+        or os.getenv("API_KEY", "").strip()
+        or os.getenv("MIMO_API_KEY", "").strip()
+    )
     return {
-        "enabled": os.getenv("MIMO_ENABLED", "1").lower() not in {"0", "false", "off"},
-        "api_key": os.getenv("MIMO_API_KEY", "").strip(),
-        "base_url": os.getenv("MIMO_API_BASE_URL", DEFAULT_BASE_URL).rstrip("/"),
-        "model": os.getenv("MIMO_CHAT_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL,
-        "timeout": float(os.getenv("MIMO_TIMEOUT_SECONDS", "20")),
+        "provider": provider,
+        "provider_label": os.getenv("AI_PROVIDER_LABEL", "DeepSeek").strip() or "DeepSeek",
+        "enabled": os.getenv("AI_ENABLED", os.getenv("DEEPSEEK_ENABLED", "1")).lower() not in {"0", "false", "off"},
+        "api_key": api_key,
+        "base_url": os.getenv("DEEPSEEK_API_BASE_URL", os.getenv("AI_API_BASE_URL", DEFAULT_BASE_URL)).rstrip("/"),
+        "model": os.getenv("DEEPSEEK_CHAT_MODEL", os.getenv("AI_CHAT_MODEL", DEFAULT_MODEL)).strip() or DEFAULT_MODEL,
+        "timeout": float(os.getenv("AI_TIMEOUT_SECONDS", os.getenv("DEEPSEEK_TIMEOUT_SECONDS", "30"))),
     }
 
 
@@ -32,6 +41,8 @@ def provider_status() -> dict[str, Any]:
     return {
         "configured": configured,
         "enabled": settings["enabled"],
+        "provider": settings["provider"],
+        "provider_label": settings["provider_label"],
         "model": settings["model"],
         "base_url": settings["base_url"],
     }
@@ -89,7 +100,8 @@ def enrich_assessment_result(product: dict[str, Any], answers: dict[str, Any], l
         }
 
     enriched = dict(local_result)
-    enriched["ai_provider"] = "mimo"
+    enriched["ai_provider"] = status["provider"]
+    enriched["ai_provider_label"] = status["provider_label"]
     enriched["ai_model"] = status["model"]
     enriched["ai_summary"] = _clean_text(content.get("summary", ""))
     enriched["ai_cautions"] = _clean_list(content.get("cautions"))
@@ -167,7 +179,8 @@ def enrich_constitution_result(raw_answers: dict[str, Any], local_result: dict[s
             "reason": _clean_text(reason) if reason else item.get("reason", ""),
         })
     result["recommended_products"] = updated_products
-    result["ai_provider"] = "mimo"
+    result["ai_provider"] = status["provider"]
+    result["ai_provider_label"] = status["provider_label"]
     result["ai_model"] = status["model"]
     return result
 
@@ -177,7 +190,7 @@ def _base_system_prompt(extra_role: str) -> str:
     date_label = today.strftime("%Y年%m月%d日")
     weekday_label = WEEKDAY_CN[today.weekday()]
     return (
-        "你是MiMo（中文名称也是MiMo），是小米公司研发的AI智能助手。"
+        "你是 DeepSeek-V4-Pro，一个用于消费医疗前台文案生成的中文 AI 助手。"
         f"今天的日期：{date_label} {weekday_label}，你的知识截止日期是2024年12月。"
         f"{extra_role}"
         "请只输出 JSON，不要输出 Markdown，不要使用代码块。"
@@ -193,7 +206,7 @@ def _chat_json(system_prompt: str, user_prompt: str, *, max_completion_tokens: i
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        "max_completion_tokens": max_completion_tokens,
+        "max_tokens": max_completion_tokens,
         "temperature": temperature,
         "top_p": 0.95,
         "stream": False,

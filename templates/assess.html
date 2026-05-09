@@ -216,8 +216,8 @@
       const aiCautions = Array.isArray(result.ai_cautions) ? result.ai_cautions : [];
       const aiFollowups = Array.isArray(result.ai_followups) ? result.ai_followups : [];
       const isEligible = Boolean(result.eligible);
-      const providerLabel = result.ai_provider === 'mimo'
-        ? `MiMo 实时建议 · ${result.ai_model || 'mimo'}`
+      const providerLabel = result.ai_provider && result.ai_provider !== 'local'
+        ? `${result.ai_provider_label || result.ai_provider} 实时建议 · ${result.ai_model || ''}`
         : '本地规则建议';
 
       resultPanel.style.display = 'block';

@@ -57,12 +57,12 @@ python3 admin.py
 - 主站健康检查：`http://localhost:8090/api/health`
 - 后台健康检查：`http://localhost:8093/api/admin/health`
 
-## 🤖 小米 MiMo API
+## AI API
 
-主链路里的两类交互现在支持调用 Xiaomi MiMo：
+主链路里的两类交互现在支持调用 DeepSeek：
 
-- `/api/assessment/analyze`：保留本地规则判定，再由 MiMo 生成用户可见的说明、注意事项和下一步建议
-- `/api/constitution/analyze`：保留体质分型和分数，再由 MiMo 生成更自然的体质解读
+- `/api/assessment/analyze`：保留本地规则判定，再由 DeepSeek 生成用户可见的说明、注意事项和下一步建议
+- `/api/constitution/analyze`：保留体质分型和分数，再由 DeepSeek 生成更自然的体质解读
 
 本地或服务器配置方式：
 
@@ -73,11 +73,13 @@ cp .env.example .env
 然后填写：
 
 ```bash
-MIMO_ENABLED=1
-MIMO_API_KEY=你的小米 MiMo API Key
-MIMO_CHAT_MODEL=mimo-v2-flash
-MIMO_API_BASE_URL=https://api.xiaomimimo.com/v1
-MIMO_TIMEOUT_SECONDS=20
+AI_PROVIDER=deepseek
+AI_PROVIDER_LABEL=DeepSeek
+AI_ENABLED=1
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
+DEEPSEEK_CHAT_MODEL=deepseek-v4-pro
+DEEPSEEK_API_BASE_URL=https://api.deepseek.com
+DEEPSEEK_TIMEOUT_SECONDS=30
 ```
 
 重启服务后生效：

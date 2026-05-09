@@ -111,8 +111,8 @@
 
     function renderResult(result) {
       const primary = result.primary || {};
-      const providerLabel = result.ai_provider === 'mimo'
-        ? `MiMo 实时解读 · ${result.ai_model || 'mimo'}`
+      const providerLabel = result.ai_provider && result.ai_provider !== 'local'
+        ? `${result.ai_provider_label || result.ai_provider} 实时解读 · ${result.ai_model || ''}`
         : '本地规则解读';
       document.getElementById('resultPanel').style.display = 'block';
       document.getElementById('resultPanel').innerHTML = `
