@@ -1,0 +1,2 @@
+"""MediSlim 企业健康管理MVP — requirements"""
+flask>=2.3

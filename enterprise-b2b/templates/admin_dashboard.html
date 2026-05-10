@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MediSlim 企业健康管理 — HR后台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,sans-serif;background:#f5f7fa;color:#333}
+.hdr{background:linear-gradient(135deg,#43a047,#2e7d32);color:#fff;padding:20px 30px;display:flex;justify-content:space-between;align-items:center}
+.hdr h1{font-size:22px}.hdr .tag{background:rgba(255,255,255,.2);padding:6px 14px;border-radius:20px;font-size:13px}
+.wrap{max-width:1200px;margin:20px auto;padding:0 20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.cd{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.cd .lb{font-size:12px;color:#888;margin-bottom:4px}.cd .vl{font-size:26px;font-weight:700}
+.cd .vl.grn{color:#43a047}.cd .vl.org{color:#ef6c00}.cd .vl.blu{color:#1565c0}
+.sec{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:20px}
+.sec h2{font-size:15px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #eee}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 10px;font-size:13px;border-bottom:1px solid #f0f0f0}
+th{background:#fafafa;color:#666;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.highlight{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:12px;padding:18px;margin-top:12px}
+.highlight .big{font-size:32px;font-weight:800;color:#2e7d32}
+nav a{color:rgba(255,255,255,.8);text-decoration:none;margin-left:20px;font-size:14px}nav a:hover{color:#fff}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <h1>🏢 MediSlim 企业健康管理</h1>
+  <div><span class="tag">越狱思维 · 企业HR付费</span><nav><a href="/admin">HR后台</a><a href="/employee">员工入口</a></nav></div>
+</div>
+<div class="wrap">
+  <div style="margin-bottom:14px"><select id="company" onchange="loadAll()" style="padding:8px 12px;border-radius:8px;border:1px solid #ddd;font-size:14px"><option value="1">字节跳动 (科技)</option><option value="2">比亚迪 (制造业)</option><option value="3">招商银行 (金融)</option></select></div>
+  <div class="cards" id="stats"></div>
+  <div class="sec">
+    <h2>📊 部门健康对比</h2>
+    <canvas id="deptChart" height="70"></canvas>
+  </div>
+  <div class="grid2">
+    <div class="sec">
+      <h2>📈 健康趋势（30天）</h2>
+      <canvas id="trendChart" height="120"></canvas>
+    </div>
+    <div class="box">
+      <h2 style="font-size:15px;margin-bottom:12px">💰 ROI计算器</h2>
+      <div id="roi"></div>
+    </div>
+  </div>
+  <div class="sec">
+    <h2>👥 员工健康排行</h2>
+
+  <div class="sec">
+    <h2>🏆 健康活动管理</h2>
+    <div style="font-size:13px;line-height:2.2">
+      <div>🏃 <strong>万步挑战赛</strong> <span style="color:#43a047">进行中</span> · 32人参与 · 奖金池¥2000</div>
+      <div>🧘 <strong>正念冥想周</strong> <span style="color:#888">已结束</span> · 28人参与 · 完成率89%</div>
+      <div>🥗 <strong>健康饮食月</strong> <span style="color:#ff9800">即将开始</span> · 报名中 · 15人已报名</div>
+    </div>
+    <button style="width:100%;padding:10px;background:#43a047;color:#fff;border:none;border-radius:8px;margin-top:8px;cursor:pointer" onclick="alert("创建新活动：支持步数/打卡/问卷/体检等多种类型")">+ 创建新活动</button>
+  </div>
+
+  <div class="sec">
+    <h2>⭐ 员工积分系统</h2>
+    <div style="font-size:13px;line-height:2">
+      完成体质测试：+100分 · 每日打卡：+10分 · 参加活动：+50分<br>
+      积分兑换：体检券/运动装备/健康产品/带薪假<br>
+      本月积分榜：🥇 王芳(1280分) 🥈 李明(980分) 🥉 张伟(850分)
+    </div>
+  </div>
+    <table><thead><tr><th>工号</th><th>姓名</th><th>部门</th><th>体质</th><th>健康分</th><th>最后活跃</th></tr></thead><tbody id="empTable"></tbody></table>
+  </div>
+</div>
+<script>
+let deptChart,trendChart;
+function $(s){return document.getElementById(s)}
+async function api(u){return(await fetch(u)).json()}
+
+async function loadAll(){
+  const cid=$('company').value;
+  const s=await api('/api/company/'+cid+'/summary');
+  $('stats').innerHTML=`
+    <div class="cd"><div class="lb">员工总数</div><div class="vl blu">${s.employee_count}</div></div>
+    <div class="cd"><div class="lb">平均健康分</div><div class="vl ${s.avg_health_score>70?'grn':'org'}">${s.avg_health_score}</div></div>
+    <div class="cd"><div class="lb">7日活跃率</div><div class="vl grn">${s.coverage}%</div></div>
+    <div class="cd"><div class="lb">覆盖部门</div><div class="vl blu">${s.departments}</div></div>
+    <div class="cd"><div class="lb">预估节省医疗费</div><div class="vl grn">¥${(s.estimated_medical_saved||0).toLocaleString()}</div></div>`;
+  const dept=await api('/api/company/'+cid+'/departments');
+  if(deptChart)deptChart.destroy();
+  deptChart=new Chart($('deptChart'),{type:'bar',data:{labels:dept.map(d=>d.department),datasets:[{label:'平均健康分',data:dept.map(d=>d.avg_score),backgroundColor:['#43a047','#66bb6a','#81c784','#a5d6a7','#c8e6c9','#1565c0','#42a5f5']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:100}}}});
+  const emps=await api('/api/company/'+cid+'/employees');
+  $('empTable').innerHTML=emps.map(e=>`<tr><td>${e.emp_id}</td><td>${e.name}</td><td>${e.department}</td><td>${e.constitution_type}</td><td><strong>${e.health_score}</strong></td><td>${e.last_active}</td></tr>`).join('');
+  const r=await api('/api/pricing?employees='+s.employee_count+'&industry='+(cid==1?'科技':cid==2?'制造业':'金融'));
+  $('roi').innerHTML=`<div style="font-size:13px;line-height:2;color:#555">
+    员工数: <strong>${r.roi.employee_count}</strong><br>
+    年平台费: <strong>¥${(r.roi.annual_cost||0).toLocaleString()}</strong><br>
+    医疗支出节省: <strong>¥${(r.roi.medical_saved||0).toLocaleString()}</strong><br>
+    生产力提升价值: <strong>¥${(r.roi.productivity_value||0).toLocaleString()}</strong>
+  </div><div class="highlight"><div style="font-size:12px;color:#555">年度净收益</div><div class="big">¥${(r.roi.net_benefit||0).toLocaleString()}</div><div style="font-size:12px;color:#555;margin-top:4px">ROI ${r.roi.roi_multiple}x · ${r.fee.plan} · ¥${r.fee.price_per_person}/人/月</div></div>`;
+  loadTrend(cid);
+}
+
+async function loadTrend(cid){
+  const emps=await api('/api/company/'+cid+'/employees');
+  if(!emps.length)return;
+  const sc=await api('/api/employee/'+emps[0].emp_id+'/score');
+  const labels=[];const data=[];
+  for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);labels.push((d.getMonth()+1)+'/'+d.getDate());data.push(Math.round(55+Math.random()*35))}
+  if(trendChart)trendChart.destroy();
+  trendChart=new Chart($('trendChart'),{type:'line',data:{labels,datasets:[{label:'平均健康分',data,borderColor:'#43a047',backgroundColor:'rgba(67,160,71,.1)',fill:true,tension:.3}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:100}}}});
+}
+
+loadAll();
+</script>
+</body>
+</html>
