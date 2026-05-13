@@ -34,9 +34,9 @@
 
 | 工具 | 用途 | MediSlim对标 |
 |------|------|-------------|
-| ChatGPT | 平台代码 | MIMO API（零成本） |
-| Claude | 架构搭建 | MIMO API |
-| Grok | 辅助编码 | MIMO API |
+| ChatGPT | 平台代码 | DeepSeek API（零成本） |
+| Claude | 架构搭建 | DeepSeek API |
+| Grok | 辅助编码 | DeepSeek API |
 | Midjourney | 广告素材图片 | 待接入 |
 | Runway | 营销视频生成 | 待接入 |
 | ElevenLabs | 语音配音 | 待接入 |
@@ -110,7 +110,7 @@ MediSlim = 健康管理平台（卖方案+服务+产品）
 
 | 策略 | Medvi做法 | MediSlim适配 |
 |------|----------|-------------|
-| AI内容工厂 | Midjourney+Runway批量素材 | MIMO+小红书/抖音模板 |
+| AI内容工厂 | Midjourney+Runway批量素材 | DeepSeek+小红书/抖音模板 |
 | 极致轻量化 | 2人团队 | 1人+AI+全外包 |
 | 单品切入 | 先做GLP-1爆品 | GLP-1减重为引流爆品 |
 | 快速扩品 | 首月5万客户后扩品 | 3个月后扩药食同源品类 |

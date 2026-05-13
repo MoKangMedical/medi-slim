@@ -10,6 +10,7 @@ from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+from decision_checkpoint import get_audit_log, get_checkpoint_registry, validate_content_publish
 from mimo_client import provider_status
 from order_flow import decorate_order
 from partner_hub import partner_dashboard
@@ -339,8 +340,16 @@ class ContentManager:
         result["id"] = gen_id()
         result["platform"] = platform
         result["template_id"] = template_id
-        result["status"] = "draft"
         result["created_at"] = now()
+
+        approval = validate_content_publish({
+            "title": result.get("title", template_id),
+            "platform": platform,
+            "body": result.get("body", result.get("script", "")),
+            "content": result.get("content", ""),
+        })
+        result["status"] = "draft" if approval.passed else "rejected"
+        result["approval"] = approval.to_dict()
         
         # 保存到内容库
         contents = load_db("contents")
@@ -747,6 +756,10 @@ class AdminHandler(BaseHTTPRequestHandler):
             self._json(queue_summary())
         elif path == "/api/admin/system":
             self._json(system_status())
+        elif path == "/api/admin/checkpoints":
+            self._json(get_checkpoint_registry())
+        elif path == "/api/admin/audit-log":
+            self._json(get_audit_log())
         elif path == "/api/admin/content/templates":
             self._json(ContentManager.TEMPLATES)
         elif path == "/api/admin/content/summary":

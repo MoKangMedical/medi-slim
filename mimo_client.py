@@ -19,11 +19,7 @@ DEFAULT_MODEL = "deepseek-v4-pro"
 
 def provider_settings() -> dict[str, Any]:
     provider = os.getenv("AI_PROVIDER", DEFAULT_PROVIDER).strip().lower() or DEFAULT_PROVIDER
-    api_key = (
-        os.getenv("DEEPSEEK_API_KEY", "").strip()
-        or os.getenv("API_KEY", "").strip()
-        or os.getenv("MIMO_API_KEY", "").strip()
-    )
+    api_key = os.getenv("DEEPSEEK_API_KEY", "").strip() or os.getenv("API_KEY", "").strip()
     return {
         "provider": provider,
         "provider_label": os.getenv("AI_PROVIDER_LABEL", "DeepSeek").strip() or "DeepSeek",

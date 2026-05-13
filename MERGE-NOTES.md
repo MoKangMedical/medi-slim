@@ -1,12 +1,19 @@
 # MediSlim Final Merge Notes
 
-Generated: 2026-05-09
+Generated: 2026-05-13
 
 ## Final Directory
 
-`/Users/apple/Desktop/OPC/MediSlim-final`
+`/Users/apple/Desktop/OPC/MediSlim-完整项目`
 
 This directory uses the production-running MediSlim app as the base, then adds the newer GitHub/main-side modules and documents from `/Users/apple/Desktop/OPC/medi-slim`.
+
+Current canonical runtime:
+
+- Public site: `https://medislim.cloud`
+- Admin site: `https://admin.medislim.cloud`
+- AI provider: `DeepSeek API` with `deepseek-v4-pro`
+- Server deployment: direct Tencent Cloud Lighthouse + nginx, not a localhost tunnel
 
 ## Sources
 
@@ -43,9 +50,19 @@ Newer main-side modules were added when they did not overwrite production-critic
 - `vector_memory.py`
 - additional docs and content assets
 
+Main-side decision-checkpoint functionality has been absorbed into the production runtime:
+
+- order creation validates product, phone, address, prescription eligibility, and order preview
+- admin content generation runs content approval checks
+- admin API exposes checkpoint registry and audit log endpoints
+
+Historical localhost.run tunnel helpers were moved out of the active scripts folder:
+
+- `_archive/localhost-run-tunnel-scripts/`
+
 ## Conflicting Incoming Files
 
-Incoming versions of same-name core files were preserved under `_incoming-main/` for manual review:
+Incoming versions of same-name core files were preserved under `_incoming-main/` for archive and future reference:
 
 - `_incoming-main/app.py`
 - `_incoming-main/admin.py`

@@ -10,6 +10,13 @@ from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
 from constitution_engine import get_questionnaire, analyze_constitution
+from decision_checkpoint import (
+    validate_address,
+    validate_order_preview,
+    validate_phone,
+    validate_prescription_check,
+    validate_product_exists,
+)
 from mimo_client import enrich_assessment_result, enrich_constitution_result
 from order_flow import create_order_record, apply_order_action, decorate_order
 from partner_hub import (
@@ -1026,10 +1033,34 @@ class MediSlimHandler(BaseHTTPRequestHandler):
         elif path == "/api/order/create":
             uid = data.get("user_id", "")
             pid = data.get("product_id", "")
-            if pid not in Config.PRODUCTS:
-                self._json({"error": "产品不存在"}, 400)
+            product_check = validate_product_exists(pid, Config.PRODUCTS)
+            if not product_check.passed:
+                self._json({"error": product_check.message, "checkpoint": product_check.to_dict()}, 400)
                 return
+            product = Config.PRODUCTS[pid]
             result = data.get("assessment", {})
+            phone_check = validate_phone(data.get("phone", ""))
+            if not phone_check.passed:
+                self._json({"error": phone_check.message, "checkpoint": phone_check.to_dict()}, 400)
+                return
+            address_check = validate_address(data.get("address", ""), product.get("requires_prescription", False))
+            if not address_check.passed:
+                self._json({"error": address_check.message, "checkpoint": address_check.to_dict()}, 400)
+                return
+            prescription_check = validate_prescription_check(product, result)
+            if not prescription_check.passed:
+                self._json({"error": prescription_check.message, "checkpoint": prescription_check.to_dict()}, 400)
+                return
+            preview_check = validate_order_preview({
+                "product_name": product.get("name", ""),
+                "price": product.get("first_price", 0),
+                "name": data.get("name", ""),
+                "phone": data.get("phone", ""),
+                "address": data.get("address", ""),
+            })
+            if not preview_check.passed:
+                self._json({"error": preview_check.message, "checkpoint": preview_check.to_dict()}, 400)
+                return
             order = OrderManager.create_order(
                 uid, pid, result,
                 data.get("name", ""),

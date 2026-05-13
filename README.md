@@ -119,40 +119,15 @@ python3 scripts/export_frontend_demo.py
 - `static/media/demo/medislim-film-manifest.json`
 - `static/media/demo/medislim-film-voiceover.wav`
 
-## 🌐 公网访问与自定义域名
+## 公网访问与正式部署
 
-匿名公网隧道：
+当前正式入口：
 
-```bash
-./scripts/start_services.sh
-./scripts/start_public_tunnels.sh
-./scripts/read_public_urls.py
-```
+- 前台：`https://medislim.cloud`
+- 前台备用网址：`https://www.medislim.cloud`
+- 后台：`https://admin.medislim.cloud`
 
-自定义域名隧道（localhost.run 付费/固定域名方案）：
-
-1. 在 `https://admin.localhost.run` 开通账号与 custom domain。
-2. 把本机公钥 `~/.ssh/medislim_localhost_run.pub` 加到 localhost.run 账号。
-3. 按 localhost.run 控制台要求，在 DNS 提供商侧完成 `medislim.cloud` / `www.medislim.cloud` / `admin.medislim.cloud` 的验证与解析。
-4. 解析生效后启动：
-
-```bash
-./scripts/start_services.sh
-./scripts/start_custom_domain_tunnels.sh
-```
-
-可覆盖默认域名：
-
-```bash
-APP_DOMAIN=medislim.cloud \
-WWW_DOMAIN=www.medislim.cloud \
-ADMIN_DOMAIN=admin.medislim.cloud \
-./scripts/start_custom_domain_tunnels.sh
-```
-
-## ☁️ 腾讯云轻量服务器部署
-
-如果域名已经直接解析到腾讯云轻量服务器 IP，例如 `43.134.3.158`，不要再走 tunnel，直接看部署手册：
+域名直接解析到腾讯云轻量服务器，由 `nginx` 反向代理到本机 Python 服务。部署和更新流程以服务器部署手册为准：
 
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 

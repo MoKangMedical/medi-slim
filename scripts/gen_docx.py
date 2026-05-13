@@ -380,7 +380,7 @@ doc.add_paragraph(
     '• 互联网医院/药房/支付 API对接'
 )
 
-doc.add_heading('7.2 AI能力（MIMO API驱动）', level=2)
+doc.add_heading('7.2 AI能力（DeepSeek API驱动）', level=2)
 items = [
     '体质辨识：15题问卷 → AI九种体质判断',
     '产品推荐：基于体质+症状+偏好 → 个性化方案',
@@ -457,7 +457,7 @@ data = [
     ['护城河', '零', 'AI体质辨识+用户健康数据'],
     ['复购驱动', '药物依赖', '文化认同+习惯养成'],
     ['利润率', '16.2%', '预估35%'],
-    ['AI能力', 'ChatGPT+Claude（付费）', 'MIMO API（无限额度零成本）'],
+    ['AI能力', 'ChatGPT+Claude（付费）', 'DeepSeek API'],
 ]
 for row_idx, row_data in enumerate(data, 1):
     for col_idx, val in enumerate(row_data):
