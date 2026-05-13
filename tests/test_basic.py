@@ -23,6 +23,23 @@ def test_data_files():
                     json.load(f)  # 验证 JSON 有效
 
 
+def test_ai_assistant_local_fallback(monkeypatch):
+    """AI助手在未配置外部API时也要有本地兜底。"""
+    monkeypatch.setenv("AI_ENABLED", "0")
+    from ai_assistant import smart_chat
+
+    result = smart_chat("我想了解减重")
+    assert result["reply"]
+    assert result["source"] in {"local", "deepseek"}
+
+
+def test_nutrition_seed_data():
+    """营养数据作为可复用种子数据纳入归档。"""
+    with open("data/nutrition-data.json", "r", encoding="utf-8") as f:
+        payload = json.load(f)
+    assert len(payload.get("foods", [])) >= 40
+
+
 def test_python_syntax():
     """测试 Python 文件语法"""
     src_dir = "src"

@@ -9,6 +9,7 @@ import urllib.parse
 from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 
+from ai_assistant import generate_health_plan, get_ai_assistant_status, smart_chat
 from constitution_engine import get_questionnaire, analyze_constitution
 from decision_checkpoint import (
     validate_address,
@@ -295,6 +296,7 @@ class Config:
 # ========== 数据存储 ==========
 TEMPLATES_DIR = BASE_DIR / "templates"
 CONTENT_CATALOG_PATH = BASE_DIR / "content_engine" / "output" / "catalog.json"
+NUTRITION_DATA_PATH = BASE_DIR / "data" / "nutrition-data.json"
 STATIC_CONTENT_TYPES = {
     ".css": "text/css; charset=utf-8",
     ".js": "application/javascript; charset=utf-8",
@@ -316,6 +318,36 @@ def load_data(name):
 
 def save_data(name, data):
     save_json(name, data)
+
+
+def load_nutrition_foods():
+    if not NUTRITION_DATA_PATH.exists():
+        return []
+    payload = json.loads(NUTRITION_DATA_PATH.read_text(encoding="utf-8"))
+    foods = payload.get("foods", [])
+    return foods if isinstance(foods, list) else []
+
+
+def query_nutrition_foods(params):
+    foods = load_nutrition_foods()
+    keyword = params.get("q", [""])[0].strip().lower()
+    category = params.get("category", [""])[0].strip()
+    try:
+        limit = max(1, min(int(params.get("limit", ["20"])[0]), 100))
+    except ValueError:
+        limit = 20
+    if keyword:
+        foods = [
+            food for food in foods
+            if keyword in str(food.get("name", "")).lower()
+            or keyword in str(food.get("category", "")).lower()
+        ]
+    if category:
+        foods = [food for food in foods if str(food.get("category", "")) == category]
+    return {
+        "total": len(foods),
+        "items": foods[:limit],
+    }
 
 
 def static_content_type(filepath):
@@ -875,6 +907,10 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json(partner_dashboard())
         elif path == "/api/constitution/questions":
             self._json(get_questionnaire())
+        elif path == "/api/ai/status":
+            self._json(get_ai_assistant_status())
+        elif path == "/api/nutrition/foods":
+            self._json(query_nutrition_foods(params))
         elif path == "/api/subscriptions":
             self._json(list_subscriptions())
         elif path == "/api/wecom/queue":
@@ -1012,6 +1048,12 @@ class MediSlimHandler(BaseHTTPRequestHandler):
                 "primary": result.get("primary", {}).get("id", ""),
             })
             self._json(result)
+
+        elif path == "/api/ai/chat":
+            self._json(smart_chat(data.get("message", ""), data.get("context", {})))
+
+        elif path == "/api/ai/plan":
+            self._json(generate_health_plan(data, Config.PRODUCTS))
 
         elif path == "/api/lead/create":
             phone = data.get("phone", "").strip()

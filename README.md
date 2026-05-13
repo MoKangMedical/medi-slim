@@ -155,6 +155,10 @@ python3 scripts/export_frontend_demo.py
 | `/api/assessment/analyze` | POST | AI分析 |
 | `/api/constitution/questions` | GET | 九型体质问卷 |
 | `/api/constitution/analyze` | POST | 九型体质辨识 |
+| `/api/ai/status` | GET | AI助手可用性与模型状态 |
+| `/api/ai/chat` | POST | AI健康助手对话 |
+| `/api/ai/plan` | POST | 基于目标生成健康方案建议 |
+| `/api/nutrition/foods` | GET | 常见食物营养数据查询 |
 | `/api/order/create` | POST | 创建订单 |
 | `/api/order/action` | POST | 推进订单状态 |
 | `/api/order/status` | POST | 订单状态 |
@@ -204,8 +208,20 @@ python3 scripts/export_frontend_demo.py
 - `data/subscriptions.json`：订阅中心
 - `data/wecom_queue.json`：企微承接队列
 - `data/partner_records.json`：支付/问诊/处方/药房伙伴记录
+- `data/nutrition-data.json`：49 种常见食物营养数据，用于轻量营养查询
 
 当前版本会自动兼容早期把订单写入 `products.json` 的旧数据格式，并在启动时迁移到 `orders.json`。
+
+## GitHub main 选择性吸收
+
+本归档已吸收 GitHub `main` 里有价值但不会破坏生产链路的部分：
+
+- `ai_assistant.py`：升级为 DeepSeek-backed AI 健康助手，保留本地兜底回复
+- `data/nutrition-data.json`：纳入可复用营养数据
+- `content/xiaohongshu_20260404.json`：纳入小红书内容样例
+- `content_engine/data/daily_schedule.json`、`post_queue.json`、`content_engine/output/catalog.json`：纳入内容工厂种子数据
+
+未吸收项：`data/vector_memory/*`、`content_engine/data/tracking_events.json`、`ops_platform.py.bak`。这些属于运行态数据或备份文件，不应进入正式代码归档。
 
 ## 🔄 订单链路
 

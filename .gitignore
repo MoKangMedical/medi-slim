@@ -8,13 +8,18 @@ build/
 
 # 数据
 data/*.json
+!data/nutrition-data.json
 !data/.gitkeep
 !data/samples/
 !data/samples/**
 data/vector_memory/
 content_engine/data/*.json
+!content_engine/data/daily_schedule.json
+!content_engine/data/post_queue.json
 content_engine/output/catalog.json
+!content_engine/output/catalog.json
 content/*.json
+!content/xiaohongshu_20260404.json
 
 # 环境
 .env
