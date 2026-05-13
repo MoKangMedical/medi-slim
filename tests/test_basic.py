@@ -40,6 +40,23 @@ def test_nutrition_seed_data():
     assert len(payload.get("foods", [])) >= 40
 
 
+def test_product_catalog_dashboards():
+    """三圈产品目录和收入看板应能在无数据时稳定返回。"""
+    from product_catalog import product_catalog_summary, product_performance_dashboard, revenue_dashboard
+
+    catalog = product_catalog_summary()
+    assert catalog["total"] >= 15
+    assert "处方药" in catalog["by_circle"]
+
+    performance = product_performance_dashboard({})
+    assert len(performance) == catalog["total"]
+    assert all("gross_margin" in row for row in performance)
+
+    revenue = revenue_dashboard({}, {})
+    assert revenue["total_revenue"] == 0
+    assert revenue["total_orders"] == 0
+
+
 def test_python_syntax():
     """测试 Python 文件语法"""
     src_dir = "src"

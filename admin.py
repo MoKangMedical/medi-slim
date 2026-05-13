@@ -14,6 +14,7 @@ from decision_checkpoint import get_audit_log, get_checkpoint_registry, validate
 from mimo_client import provider_status
 from order_flow import decorate_order
 from partner_hub import partner_dashboard
+from product_catalog import product_catalog_summary, product_performance_dashboard, revenue_dashboard
 from runtime_env import load_env_file
 from storage import BASE_DIR, load_json, save_json, load_orders, migrate_legacy_orders, now_iso, short_id
 from subscription_engine import list_subscriptions, due_subscriptions
@@ -752,6 +753,12 @@ class AdminHandler(BaseHTTPRequestHandler):
             })
         elif path == "/api/admin/partners":
             self._json(partner_dashboard())
+        elif path == "/api/admin/product-catalog":
+            self._json(product_catalog_summary())
+        elif path == "/api/admin/product-dashboard":
+            self._json(product_performance_dashboard(load_orders()))
+        elif path == "/api/admin/revenue":
+            self._json(revenue_dashboard(load_orders(), load_db("leads")))
         elif path == "/api/admin/wecom":
             self._json(queue_summary())
         elif path == "/api/admin/system":

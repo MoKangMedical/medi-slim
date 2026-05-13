@@ -90,6 +90,21 @@
     </section>
 
     <section class="section">
+      <div class="shell">
+        <div class="section-title">
+          <div>
+            <div class="eyebrow">三圈产品目录</div>
+            <h2>保留处方药主链路，同时把药食同源和保健品作为后续扩展池。</h2>
+            <p>当前可下单品类保持稳定，扩展 SKU 先进入产品端规划，不影响前台评估和医师审核链路。</p>
+          </div>
+        </div>
+        <div class="products product-shelf" id="hubCatalogGrid">
+          <div class="loading">正在加载三圈产品目录...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="shell narrative-grid">
         <article class="narrative-panel">
           <div class="eyebrow">产品方视角</div>
@@ -165,6 +180,7 @@
         api('/api/products'),
         api('/api/product-partners'),
       ]);
+      const catalog = await api('/api/product-catalog');
 
       document.getElementById('hubProducts').textContent = stats.products;
       document.getElementById('hubHospitals').textContent = stats.hospitals;
@@ -213,10 +229,31 @@
           </div>
         </article>
       `).join('');
+
+      document.getElementById('hubCatalogGrid').innerHTML = catalog.items.map((item) => `
+        <article class="product-card">
+          <div class="product-copy">
+            <div class="product-copy-head">
+              <div class="product-support">${item.circle}</div>
+              <h3>${item.name}</h3>
+              <p>${item.status === 'active' ? '已接入真实评估/履约链路' : '产品端规划池，等待内容和供应链验证'}</p>
+            </div>
+            <div class="product-meta">
+              <span>首单 ¥${item.price}</span>
+              <span>续费 ¥${item.renewal}</span>
+            </div>
+            <div class="tags">
+              <span class="tag">${item.category}</span>
+              <span class="tag">${item.status}</span>
+            </div>
+          </div>
+        </article>
+      `).join('');
     }
 
     loadProductHub().catch(() => {
       document.getElementById('hubProductGrid').innerHTML = '<div class="empty">品类加载失败。</div>';
+      document.getElementById('hubCatalogGrid').innerHTML = '<div class="empty">三圈产品目录加载失败。</div>';
       document.getElementById('hubSupplierGrid').innerHTML = '<div class="empty">合作产品方加载失败。</div>';
     });
   </script>

@@ -147,6 +147,9 @@ python3 scripts/export_frontend_demo.py
 | `/api/hospitals` | GET | 合作医院 |
 | `/api/pharmacies` | GET | 合作药房 |
 | `/api/partners` | GET | 支付/医院/药房/物流伙伴列表 |
+| `/api/product-catalog` | GET | 三圈产品目录 |
+| `/api/product-dashboard` | GET | 产品收入/毛利看板 |
+| `/api/revenue-dashboard` | GET | 收入、渠道、品类汇总 |
 | `/api/user/register` | POST | 用户注册 |
 | `/api/user/tracking` | GET | 用户物流查询 |
 | `/api/user/refill` | POST | 用户发起续费 |
@@ -193,6 +196,9 @@ python3 scripts/export_frontend_demo.py
 | `/api/admin/subscriptions` | GET | 后台订阅中心 |
 | `/api/admin/subscriptions/action` | POST | 后台订阅动作 |
 | `/api/admin/partners` | GET | 后台伙伴层概览 |
+| `/api/admin/product-catalog` | GET | 后台三圈产品目录 |
+| `/api/admin/product-dashboard` | GET | 后台产品收入/毛利看板 |
+| `/api/admin/revenue` | GET | 后台收入汇总 |
 | `/api/admin/wecom` | GET | 后台企微队列 |
 | `/api/admin/wecom/action` | POST | 后台企微动作 |
 | `/api/admin/content/summary` | GET | 内容中心摘要 |
@@ -209,6 +215,7 @@ python3 scripts/export_frontend_demo.py
 - `data/wecom_queue.json`：企微承接队列
 - `data/partner_records.json`：支付/问诊/处方/药房伙伴记录
 - `data/nutrition-data.json`：49 种常见食物营养数据，用于轻量营养查询
+- `product_catalog.py`：三圈产品目录与收入/毛利看板逻辑
 
 当前版本会自动兼容早期把订单写入 `products.json` 的旧数据格式，并在启动时迁移到 `orders.json`。
 
@@ -220,6 +227,7 @@ python3 scripts/export_frontend_demo.py
 - `data/nutrition-data.json`：纳入可复用营养数据
 - `content/xiaohongshu_20260404.json`：纳入小红书内容样例
 - `content_engine/data/daily_schedule.json`、`post_queue.json`、`content_engine/output/catalog.json`：纳入内容工厂种子数据
+- `product_catalog.py`：从旧 `ops_platform.py.bak` 抽取三圈产品目录、收入汇总、产品毛利看板能力，并改成正式模块/API
 
 未吸收项：`data/vector_memory/*`、`content_engine/data/tracking_events.json`、`ops_platform.py.bak`。这些属于运行态数据或备份文件，不应进入正式代码归档。
 

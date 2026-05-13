@@ -35,6 +35,7 @@ from partner_hub import (
     sync_order_partners,
     partner_dashboard,
 )
+from product_catalog import product_catalog_summary, product_performance_dashboard, revenue_dashboard
 from storage import BASE_DIR, load_json, save_json, load_orders, save_orders, migrate_legacy_orders, now_iso, short_id
 from subscription_engine import (
     list_subscriptions,
@@ -901,6 +902,12 @@ class MediSlimHandler(BaseHTTPRequestHandler):
             self._json(Config.PARTNER_PHARMACIES)
         elif path == "/api/product-partners":
             self._json(Config.PARTNER_PRODUCT_SUPPLIERS)
+        elif path == "/api/product-catalog":
+            self._json(product_catalog_summary())
+        elif path == "/api/product-dashboard":
+            self._json(product_performance_dashboard(load_orders()))
+        elif path == "/api/revenue-dashboard":
+            self._json(revenue_dashboard(load_orders(), load_data("leads")))
         elif path == "/api/partners":
             self._json(PARTNERS)
         elif path == "/api/partner/dashboard":
